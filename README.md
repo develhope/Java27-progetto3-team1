@@ -1,101 +1,93 @@
-# Progetto Spring Boot - Gestione Autosalone
+# Progetto: Piattaforma di Streaming con Acquisto e Noleggio di Film
+Questo progetto mira a sviluppare una piattaforma di streaming, simile all'app TV Show Time, che consente agli utenti di gestire la propria esperienza di visione di film e serie TV, con l'aggiunta di funzionalità per acquistare e noleggiare contenuti.
 
-## Descrizione del progetto
-
-L’autosalone avrà degli utenti semplici (acquirenti) che possono effettuare l’ordine o l’acquisto di un modello in pronta consegna. O il noleggio di un veicolo. Avrà degli utenti di amministrazione (admin) che potranno aggiungere veicoli in pronta consegna, usati, ordinabili, noleggiabili e potranno gestire le vendite i noleggi e gli ordini. Avrà poi dei venditori che gestiranno le vendite e i noleggi.
+Aggiungere ruolo così da avere una sola classe utente che poi si differenzia per metodi in base al ruolo
 
 ## Utenti
-
-### Acquirente
-
-Per ogni acquirente avremo una serie di attributi:
-
+### Utente
+Per ogni Utente avremo una serie di attributi:
+- Id
 - Nome
 - Cognome
 - Telefono
 - Email
 - Password
+- Ruolo(User o Admin)
+- Status Abbonamento
+- Lista di film/serie già viste
+- Lista di film/serie da vedere
 
-### Amministratore
 
-Per ogni amministratore avremo una serie di attributi:
 
-- Nome
-- Cognome
-- Email
-- Password
+## Film/Serie TV
+I film possono essere di diversi tipi: horror, romantico, commedia, ecc (così come le serie)
+Per ogni Film avremo una serie di attributi:
+- Id
+- Titolo
+- Durata
+- Genere
+- Regista
+- Cast
+- Anno di uscita
+- Se è conclusa oppure no (serie tv)
+- Rating iMdb
+- Prezzo acquisto
+- Prezzo noleggio
+- Trama/Descrizione
+- Suggeriti (?)
+- Rating per età (?)
+- Flag che identifichi se è acquistabile o solo noleggiabile o non più disponibile
 
-### Venditore
-
-Per ogni venditore avremo una serie di attributi:
-
-- Nome
-- Cognome
-- Telefono
-- Email
-- Password
-
-## Veicoli
-
-I veicoli possono essere di diversi tipi: auto, moto, scooter, furgoni. Per ogni veicolo avremo una serie di attributi:
-
-- Marca
-- Modello
-- Cilindrata
-- Colore
-- Potenza
-- Tipo Cambio
-- Anno immatricolazione
-- Alimentazione
-- Prezzo
-- Eventuale sconto sul prezzo di listino
-- Eventuali accessori a corredo
-- Flag che identifichi se il veicolo è nuovo o usato
-- Flag che identifichi se il veicolo è ordinabile, acquistabile o non più disponibile
-
-## Ordini/Acquisti
-
-Per ogni ordine/acquisto avremo:
-
-- Anticipo
+## Noleggio/Acquisto
+Per ogni noleggio/acquisto avremo:
+- Abbonamento
 - Flag pagato
 - Stato ordine
-- Veicolo ordinato/acquistato
-
+- Film/serie ordinato/acquistato
 ## Noleggio
-
 Per un noleggio avremo:
-
 - Data inizio noleggio
 - Data fine noleggio
-- Costo giornaliero noleggio
 - Costo totale noleggio
 - Flag pagato
-- Veicolo noleggiato
+- Film/serie noleggiato
 
 ## Funzionalità degli utenti
-
-### Un cliente potrà:
-
-- Creare un ordine a partire da un veicolo contrassegnato come ordinabile
+### Un Utente Base potrà:
+- Creare un ordine a partire da un film/serie contrassegnato come ordinabile
 - Vedere i propri ordini
+- Vedere i propri film/serie
 - Cancellare un ordine
-- Creare un acquisto a partire da un veicolo contrassegnato come acquistabile
+- Creare un acquisto a partire da un film/serie contrassegnato come acquistabile
 - Vedere i propri acquisti
 - Creare un noleggio
 - Vedere i propri noleggi
 - Cancellare un noleggio
 - Cancellare la propria utenza
 - Modificare i dati dell’utente
-- Ricercare un veicolo secondo diversi criteri (prezzo, colore, marca, modello, ecc.)
-- Ottenere i dettagli di un veicolo specifico
-
-### Un admin potrà:
-
-- Aggiungere un veicolo
-- Modificare un veicolo
-- Cancellare un veicolo
-- Cambiare lo stato di un veicolo
+- Ricercare un film secondo diversi criteri (prezzo, colore, marca, modello, ecc.)
+- Ottenere i dettagli di un film specifico
+### Un Utente Premium (cioè con lo status abbonamento settato true) potrà:
+- Creare un ordine a partire da un film/serie contrassegnato come ordinabile
+- Vedere i propri ordini
+- Vedere i propri film/serie
+- Cancellare un ordine
+- Creare un acquisto a partire da un film/serie contrassegnato come acquistabile
+- Vedere i propri acquisti
+- Creare un noleggio
+- Vedere i propri noleggi
+- Cancellare un noleggio
+- Cancellare la propria utenza
+- Modificare i dati dell’utente
+- Ricercare un film secondo diversi criteri (prezzo, colore, marca, modello, ecc.)
+- Ottenere i dettagli di un film specifico
+- Avere accesso ad una lista di titoli premium
+- Accesso a Sconti su nuovi film/serie
+### Un Admin potrà:
+- Aggiungere un film/serie
+- Modificare un film/serie
+- Cancellare un film/serie
+- Cambiare lo stato di un film/serie
 - Creare un ordine per un utente
 - Cancellare un ordine per un utente
 - Modificare un ordine per un utente
@@ -105,31 +97,14 @@ Per un noleggio avremo:
 - Creare un acquisto per un utente
 - Cancellare un acquisto per un utente
 - Modificare un acquisto per un utente
-- Verificare un venditore quante vendite ha fatto in un determinato periodo di tempo
-- Verificare un venditore quanti soldi ha generato in un determinato periodo di tempo
-- Verificare il guadagno del salone in un determinato periodo
-- Verificare i veicoli attualmente ordinabili/acquistabili/non disponibili/nuovi/usati
+- Verificare un film/serie quante vendite ha fatto in un determinato periodo di tempo
+- Verificare un film/serie quanti soldi ha generato in un determinato periodo di tempo
+- Verificare il guadagno della piattaforma in un determinato periodo
+- Verificare i film/serie attualmente ordinabili/acquistabili/non disponibili/nuovi
 - Cancellare un utente
 - Modificare un utente
-- Cancellare un venditore
-- Modificare un venditore
-- Ottenere il veicolo più venduto in un dato periodo
-- Ottenere il veicolo con valore più alto venduto fino a quel dato istante
-- Ottenere il veicolo più ricercato/ordinato
-
-### Un venditore potrà:
-
-- Ottenere i dettagli di un veicolo specifico
-- Creare un ordine a partire da un veicolo ordinabile
-- Cancellare un ordine creato
-- Modificare un ordine creato
-- Verificare lo stato di un ordine specifico
-- Aggiornare lo stato di un ordine specifico
-- Verificare tutti gli ordini filtrati per uno stato
-- Creare un noleggio
-- Cancellare un noleggio
-- Modificare un noleggio
-
+- Ottenere il film/serie più venduto/visto in un dato periodo
+- Ottenere il film/serie più ricercato/ordinato
+- Ottenere i dettagli di un film/serie specifico
 ## Autenticazione e Registrazione
-
 Il sistema dovrà inoltre permettere il login e la registrazione degli utenti attraverso due rotte specifiche.
