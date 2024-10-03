@@ -2,6 +2,7 @@ package com.team1.dealerApp.models.dtos;
 
 import com.team1.dealerApp.models.SubsciprionStatus;
 import lombok.*;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
