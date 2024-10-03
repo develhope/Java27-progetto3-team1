@@ -16,5 +16,16 @@ public class UserMapper {
 				 .build();
 	 }
 
+	public UserDTO toUserDTO ( User user ){
+		return UserDTO.builder()
+				.firstName(user.getFirstName())
+				.lastName(user.getLastName())
+				.email(user.getEmail())
+				.phoneNumber(user.getPhoneNumber())
+				.subsciprionStatus(user.getSubsciprionStatus())
+				.watchedMovies(user.getWatchedMovies())
+				.watchedShows(user.getWatchedShows())
+				.build();
+	}
 
 }
