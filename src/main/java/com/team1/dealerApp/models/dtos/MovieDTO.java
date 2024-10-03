@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class VideoDTO {
+public class MovieDTO {
 
     private String title;
 
@@ -36,4 +36,5 @@ public class VideoDTO {
     private float rating;
 
     private VideoStatus videoStatus;
+
 }
