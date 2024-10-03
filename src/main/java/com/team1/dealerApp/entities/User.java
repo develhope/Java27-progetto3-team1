@@ -2,10 +2,7 @@ package com.team1.dealerApp.entities;
 
 import com.team1.dealerApp.models.SubsciprionStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -13,6 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Entity
+@Builder
 public class User {
 
 	@Id
