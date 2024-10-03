@@ -5,7 +5,7 @@ import com.team1.dealerApp.models.dtos.MovieDTO;
 
 public class MovieMapper {
 
-    public Movie toVideo(MovieDTO movieDTO){
+    public Movie toMovie(MovieDTO movieDTO){
         return Movie.builder()
                 .videoStatus(movieDTO.getVideoStatus())
                 .plot(movieDTO.getPlot())
@@ -21,7 +21,7 @@ public class MovieMapper {
                 .build();
     }
 
-    public MovieDTO toDTO(Movie movie){
+    public MovieDTO toMovieDTO(Movie movie){
         return MovieDTO.builder()
                 .videoStatus(movie.getVideoStatus())
                 .cast(movie.getCast())
