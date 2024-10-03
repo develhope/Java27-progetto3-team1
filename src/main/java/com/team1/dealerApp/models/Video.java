@@ -1,18 +1,17 @@
-package com.team1.dealerApp.entities;
+package com.team1.dealerApp.models;
 
-import com.team1.dealerApp.models.Genre;
-import com.team1.dealerApp.models.VideoStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.Year;
 import java.util.List;
 
-@Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
+@MappedSuperclass
 public class Video {
 
     @Id
@@ -22,10 +21,6 @@ public class Video {
     @Setter
     @Column(nullable = false)
     private String title;
-
-    @Setter
-    @Column(name="running_time", nullable = false)
-    private int runningTime;
 
     @Setter
     @Enumerated(EnumType.STRING)
@@ -41,8 +36,8 @@ public class Video {
     private String director;
 
     @Setter
-    @Column(nullable = false)
-    private Year year;
+    @Column(name = "release_year", nullable = false)
+    private Year releaseYear;
 
     @Setter
     @Column(name = "purchase_price", nullable = false)
