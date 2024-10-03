@@ -3,10 +3,7 @@ package com.team1.dealerApp.entities;
 import com.team1.dealerApp.models.Genre;
 import com.team1.dealerApp.models.VideoStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Year;
 import java.util.List;
@@ -15,6 +12,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Video {
 
     @Id
