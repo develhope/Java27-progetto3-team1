@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -41,7 +42,7 @@ public class User {
 	@Column(name = "subscription_status")
 	@Enumerated(EnumType.STRING)
 	private SubsciprionStatus subsciprionStatus;
-	/*
+
 	@Setter
 	@OneToMany()
 	private List<Movie> watchedMovies;
@@ -49,5 +50,4 @@ public class User {
 	@Setter
 	@OneToMany
 	private List<TvShow> watchedShows;
-	*/
 }
