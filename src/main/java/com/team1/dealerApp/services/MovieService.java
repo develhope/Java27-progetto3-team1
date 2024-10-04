@@ -7,9 +7,11 @@ import com.team1.dealerApp.models.dtos.MovieDTO;
 import com.team1.dealerApp.repositories.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -35,4 +37,14 @@ public class MovieService {
             throw new BadRequestException("There are no film!");
         }
     }
+
+    public MovieDTO getMovieById(Long movieId) {
+       return movieMapper
+               .toMovieDTO(movieRepository
+                       .findById(movieId)
+                       .orElseThrow(()-> new NoSuchElementException("There is no film with id " + movieId)
+                       )
+               );
+    }
+
 }
