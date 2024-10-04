@@ -2,7 +2,6 @@ package com.team1.dealerApp.controllers;
 
 import com.team1.dealerApp.models.dtos.TvShowDTO;
 import com.team1.dealerApp.services.TvShowService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
