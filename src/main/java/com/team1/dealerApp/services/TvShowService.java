@@ -33,7 +33,11 @@ public class TvShowService {
 		TvShow tvShow = tvShowRepository
 				.findById(id)
 				.orElseThrow(() -> new BadRequestException("No show with id: " + id));
-
 		return  tvShowMapper.toTvShowDTO(tvShow);
+	}
+
+	public TvShowDTO addTvShow (TvShowDTO tvShowDTO){
+		tvShowRepository.save(tvShowMapper.toTvShow(tvShowDTO));
+		return tvShowDTO;
 	}
 }
