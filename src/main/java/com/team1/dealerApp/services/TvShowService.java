@@ -70,5 +70,8 @@ public class TvShowService {
 		return tvShowMapper.toTvShowDTO(updated);
 	}
 
+	public void deleteShowById ( Long id ){
+		tvShowRepository.deleteById(id);
+	}
 
 }
