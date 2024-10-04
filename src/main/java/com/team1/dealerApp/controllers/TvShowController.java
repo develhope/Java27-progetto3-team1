@@ -67,4 +67,10 @@ public class TvShowController {
 		}
 	}
 
+	@DeleteMapping("{id}")
+	public ResponseEntity<?> deleteShowById (@PathVariable Long id){
+		tvShowService.deleteShowById(id);
+		return ResponseEntity.ok().build();
+	}
+
 }
