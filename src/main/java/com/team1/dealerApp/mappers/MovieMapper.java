@@ -3,6 +3,8 @@ package com.team1.dealerApp.mappers;
 import com.team1.dealerApp.entities.Movie;
 import com.team1.dealerApp.models.dtos.MovieDTO;
 
+import java.util.List;
+
 public class MovieMapper {
 
     public Movie toMovie(MovieDTO movieDTO){
