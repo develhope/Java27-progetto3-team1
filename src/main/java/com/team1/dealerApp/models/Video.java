@@ -37,11 +37,11 @@ public class Video {
 
     @Setter
     @Column(name = "purchase_price", nullable = false)
-    private double purchasePrice;
+    private Double purchasePrice;
 
     @Setter
     @Column(name = "rental_price", nullable = false)
-    private double rentalPrice;
+    private Double rentalPrice;
 
     @Setter
     @Column(nullable = false)
@@ -49,7 +49,7 @@ public class Video {
 
     @Setter
     @Column
-    private float rating;
+    private Float rating;
 
     @Setter
     @Enumerated(EnumType.STRING)

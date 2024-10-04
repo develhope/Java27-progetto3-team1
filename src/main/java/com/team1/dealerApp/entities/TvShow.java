@@ -22,10 +22,10 @@ public class TvShow extends Video {
     private Long id;
 
     @Column(nullable = false)
-    private int season;
+    private Integer season;
 
     @Column(nullable = false)
-    private int episode;
+    private Integer episode;
 
 
     public TvShow( String title, Genre genre, List<String> cast, String director, Year year, double purchasePrice, double rentalPrice, String plot, float rating, VideoStatus videoStatus, int season, int episode) {
