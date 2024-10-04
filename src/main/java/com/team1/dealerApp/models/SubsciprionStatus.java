@@ -4,5 +4,5 @@ public enum SubsciprionStatus {
 	NOT_SUBSCRIBED,
 	MOVIES,
 	TV_SERIES,
-	ALL
+	FULL_SUBSCRIPTION;
 }
