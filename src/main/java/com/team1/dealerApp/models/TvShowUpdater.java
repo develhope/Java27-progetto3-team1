@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.lang.reflect.Field;
 
+@SuppressWarnings("unused")
 @RequiredArgsConstructor
 public class TvShowUpdater <T>{
 
