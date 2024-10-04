@@ -19,4 +19,7 @@ public class MovieService {
         return movieDTO;
     }
 
+    public void deleteMovieById(Long id) {
+        movieRepository.deleteById(id);
+    }
 }
