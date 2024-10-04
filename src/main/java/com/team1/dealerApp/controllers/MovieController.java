@@ -52,4 +52,14 @@ public class MovieController {
         }
     }
 
+    @PutMapping("/{movieId}")
+    public ResponseEntity<?> updateMovie(@PathVariable ("movieId") Long movieId, @RequestBody MovieDTO movieDTO){
+        try{
+            return ResponseEntity.ok(movieService.updateMovie(movieId,movieDTO));
+        } catch (BadRequestException e){
+            log.error("Error in update movie by Id {} : {}",movieId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
 }
