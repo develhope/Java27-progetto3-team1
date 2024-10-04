@@ -14,10 +14,6 @@ import java.util.List;
 @MappedSuperclass
 public class Video {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Setter
     @Column(nullable = false)
     private String title;
