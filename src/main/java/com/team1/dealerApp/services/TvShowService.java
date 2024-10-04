@@ -5,12 +5,12 @@ import com.team1.dealerApp.mappers.TvShowMapper;
 import com.team1.dealerApp.models.dtos.TvShowDTO;
 import com.team1.dealerApp.repositories.TvShowRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @Service
 @RequiredArgsConstructor
 public class TvShowService {
@@ -27,5 +27,13 @@ public class TvShowService {
 		}else{
 			throw new BadRequestException("There are no shows!");
 		}
+	}
+
+	public TvShowDTO getShowById (Long id) throws BadRequestException {
+		TvShow tvShow = tvShowRepository
+				.findById(id)
+				.orElseThrow(() -> new BadRequestException("No show with id: " + id));
+
+		return  tvShowMapper.toTvShowDTO(tvShow);
 	}
 }
