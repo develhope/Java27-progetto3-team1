@@ -47,4 +47,9 @@ public class MovieService {
                );
     }
 
+    public MovieDTO updateMovie(Long movieId, MovieDTO movieDTO) throws BadRequestException {
+        Movie movieToUpdate = movieRepository.findById(movieId).orElseThrow(()-> new BadRequestException("Impossible to update the movie with id " + movieId ));
+        movieRepository.save(movieToUpdate);
+        return movieMapper.toMovieDTO(movieToUpdate);
+    }
 }
