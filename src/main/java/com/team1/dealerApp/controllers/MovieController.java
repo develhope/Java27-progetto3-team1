@@ -25,7 +25,6 @@ public class MovieController {
         return ResponseEntity.status(200).body(movieService.addMovie(movieDTO));
     }
 
-    // - Modifica film
     @DeleteMapping("/{movieId}")
     public ResponseEntity<MovieDTO> deleteMovieById(@RequestParam ("movieId") Long movieId){
         movieService.deleteMovieById(movieId);
