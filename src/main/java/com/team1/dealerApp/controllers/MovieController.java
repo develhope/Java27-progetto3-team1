@@ -18,5 +18,10 @@ public class MovieController {
         return ResponseEntity.status(200).body(movieService.addMovie(movieDTO));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MovieDTO> deleteMovieById(@RequestParam ("id") Long id){
+        movieService.deleteMovieById(id);
+        return ResponseEntity.ok().build();
+    }
 
 }
