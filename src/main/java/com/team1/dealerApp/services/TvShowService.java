@@ -6,18 +6,21 @@ import com.team1.dealerApp.models.TvShowUpdater;
 import com.team1.dealerApp.models.dtos.TvShowDTO;
 import com.team1.dealerApp.repositories.TvShowRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
+@Slf4j
 @SuppressWarnings("unused")
 @Service
 @RequiredArgsConstructor
 public class TvShowService {
 	private final TvShowRepository tvShowRepository;
 	private final TvShowMapper tvShowMapper;
-	private final TvShowUpdater<?> tvShowUpdater;
+	private final TvShowUpdater<Object> tvShowUpdater;
 
 	public List <TvShowDTO> getAllShows () throws BadRequestException {
 		List <TvShow> tvShows = tvShowRepository.findAll();
@@ -44,16 +47,28 @@ public class TvShowService {
 	}
 
 	public TvShowDTO updateShow (TvShowDTO tvShowDTO, Long id) throws BadRequestException {
-		TvShow found = tvShowMapper.toTvShow(getShowById(id));
-		found = tvShowMapper.toTvShow(tvShowDTO);
+		TvShow found = tvShowMapper.toTvShow(tvShowDTO);
 		found.setId(id);
 		tvShowRepository.save(found);
 		return tvShowMapper.toTvShowDTO(found);
 	}
 
-	public TvShowDTO updateShowField (Long id, double newPrice, String field) throws BadRequestException {
+	public TvShowDTO updateShowField ( Long id, Object value, String field ) throws BadRequestException {
 		TvShow tvShow = tvShowRepository
 				.findById(id)
-				.orElseThrow(() -> new BadRequestException("No show with id: " + id))
+				.orElseThrow(() -> new BadRequestException("No show with id: " + id));
+		TvShow updated = new TvShow();
+
+		try {
+			updated = tvShowUpdater.updateShowField(tvShow, field, value);
+		}catch ( NoSuchFieldException e ){
+			log.error("Error: the field {} does not exist: {}", field, e.getMessage());
+		}catch ( IllegalAccessException e){
+			log.error("Errore nell'accesso alla classe: {}", e.getMessage());
+		}
+		tvShowRepository.save(updated);
+		return tvShowMapper.toTvShowDTO(updated);
 	}
+
+
 }
