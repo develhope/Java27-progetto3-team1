@@ -12,10 +12,16 @@ import java.util.List;
 public class UserDTO {
 
 	private String firstName;
+
 	private String lastName;
+
 	private String email;
+
 	private String phoneNumber;
+
 	private SubsciprionStatus subsciprionStatus;
+
 	private List<Movie> watchedMovies;
+
 	private List<TvShow> watchedShows;
 }

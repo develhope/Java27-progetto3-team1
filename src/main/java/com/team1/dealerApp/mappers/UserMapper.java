@@ -1,9 +1,11 @@
 package com.team1.dealerApp.mappers;
 
 import com.team1.dealerApp.entities.User;
+import com.team1.dealerApp.models.dtos.CreateUserDTO;
 import com.team1.dealerApp.models.dtos.UserDTO;
 
 public class UserMapper {
+
 	 public User toUser ( UserDTO userDTO ){
 		 return User.builder()
 				 .firstName(userDTO.getFirstName())
@@ -26,6 +28,18 @@ public class UserMapper {
 				.watchedMovies(user.getWatchedMovies())
 				.watchedShows(user.getWatchedShows())
 				.build();
+	}
+
+	public User fromCreateUserDTOToUser ( CreateUserDTO createUserDTO ){
+		 return User.builder()
+				 .firstName(createUserDTO.getFirstName())
+				 .lastName(createUserDTO.getLastName())
+				 .email(createUserDTO.getEmail())
+				 .phoneNumber(createUserDTO.getPhoneNumber())
+				 .subsciprionStatus(createUserDTO.getSubsciprionStatus())
+				 .watchedMovies(createUserDTO.getWatchedMovies())
+				 .watchedShows(createUserDTO.getWatchedShows())
+				 .build();
 	}
 
 }
