@@ -60,4 +60,14 @@ public class MovieController {
         }
     }
 
+    @PatchMapping("/{movieId}")
+    public ResponseEntity<?> updateMovieField(@PathVariable ("movieId") Long movieId, @RequestParam (name = "field") String fieldName, @RequestBody Object value){
+    try{
+        return ResponseEntity.ok(movieService.updateMovieField(movieId,value,fieldName));
+    } catch (BadRequestException e) {
+        log.error("Error in updating movie with id {}: {}", movieId, e.getMessage());
+       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+    }
+
 }
