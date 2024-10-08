@@ -23,8 +23,13 @@ public class MovieService {
     private final MovieMapper movieMapper;
     private final MovieUpdater<Object> movieUpdater;
 
-    public MovieDTO addMovie(MovieDTO movieDTO) {
-        movieRepository.save(movieMapper.toMovie(movieDTO));
+    public MovieDTO addMovie(MovieDTO movieDTO) throws BadRequestException {
+        Movie movieFound = movieRepository.findMovieByTitleAndDirector(movieDTO.getTitle(), movieDTO.getDirector());
+        if(movieFound == null){
+            movieRepository.save(movieMapper.toMovie(movieDTO));
+        } else {
+            throw new BadRequestException("This movie already exists");
+        }
         return movieDTO;
     }
 
@@ -32,12 +37,12 @@ public class MovieService {
         movieRepository.deleteById(id);
     }
 
-    public List<MovieDTO> getAllMovies() throws BadRequestException {
+    public List<MovieDTO> getAllMovies() throws NoSuchElementException {
         List<Movie> movies = movieRepository.findAll();
         if(!movies.isEmpty()){
             return movies.stream().map(movieMapper::toMovieDTO).toList();
         } else{
-            throw new BadRequestException("There are no film!");
+            throw new NoSuchElementException("There are no film!");
         }
     }
 
@@ -50,10 +55,13 @@ public class MovieService {
                );
     }
 
-    public MovieDTO updateMovie(Long movieId, MovieDTO movieDTO) throws BadRequestException {
-        Movie movieToUpdate = movieRepository.findById(movieId).orElseThrow(()-> new BadRequestException("Impossible to update the movie with id " + movieId ));
-        movieRepository.save(movieToUpdate);
-        return movieMapper.toMovieDTO(movieToUpdate);
+    public MovieDTO updateMovie(Long movieId, MovieDTO movieDTO) throws NoSuchElementException {
+        if(movieRepository.existsById(movieId)){
+            Movie movieToUpdate = movieMapper.toMovie(movieDTO);
+            movieToUpdate.setId(movieId);
+            movieRepository.save(movieToUpdate);
+        } throw new NoSuchElementException("There is no movie with id " + movieId);
+
     }
 
     public MovieDTO updateMovieField ( Long id, Object value, String field ) throws BadRequestException {
