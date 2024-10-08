@@ -7,11 +7,11 @@ import lombok.*;
 import java.util.UUID;
 import java.util.List;
 
+@Entity
+@Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Entity
-@Builder
 public class User {
 
 	@Id
@@ -50,4 +50,8 @@ public class User {
 	@Setter
 	@OneToMany
 	private List<TvShow> watchedShows;
+
+	public void setId(UUID id) {
+	}
+
 }
