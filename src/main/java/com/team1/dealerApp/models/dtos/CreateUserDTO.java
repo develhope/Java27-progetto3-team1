@@ -1,5 +1,7 @@
 package com.team1.dealerApp.models.dtos;
 
+import com.team1.dealerApp.entities.Movie;
+import com.team1.dealerApp.entities.TvShow;
 import com.team1.dealerApp.models.SubsciprionStatus;
 import lombok.*;
 
@@ -24,8 +26,8 @@ public class CreateUserDTO {
 
     private SubsciprionStatus subsciprionStatus;
 
-    private List<Movie> watchedMovies;
+    private List< Movie > watchedMovies;
 
-    private List<TvShow> watchedShows;
+    private List< TvShow > watchedShows;
 
 }
