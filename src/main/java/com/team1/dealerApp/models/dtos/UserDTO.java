@@ -4,11 +4,11 @@ import com.team1.dealerApp.models.SubsciprionStatus;
 import lombok.*;
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDTO {
 
 	private String firstName;
@@ -24,4 +24,5 @@ public class UserDTO {
 	private List<Movie> watchedMovies;
 
 	private List<TvShow> watchedShows;
+
 }
