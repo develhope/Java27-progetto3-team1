@@ -30,7 +30,8 @@ public class UserMapper {
 				.build();
 	}
 
-	public User fromCreateUserDTOToUser ( CreateUserDTO createUserDTO ){
+
+	public User fromCreateUserDTOToUser ( CreateUserDTO createUserDTO ) {
 		 return User.builder()
 				 .firstName(createUserDTO.getFirstName())
 				 .lastName(createUserDTO.getLastName())
