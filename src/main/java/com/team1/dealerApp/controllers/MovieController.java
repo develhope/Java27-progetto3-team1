@@ -20,8 +20,13 @@ public class MovieController {
     private final MovieService movieService;
 
     @PostMapping()
-    public ResponseEntity<MovieDTO> addMovie(@RequestBody MovieDTO movieDTO){
-        return ResponseEntity.status(200).body(movieService.addMovie(movieDTO));
+    public ResponseEntity<?> addMovie(@RequestBody MovieDTO movieDTO){
+        try{
+            return ResponseEntity.status(200).body(movieService.addMovie(movieDTO));
+        }catch (BadRequestException e){
+            log.error("Error to add movie: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{movieId}")
@@ -34,7 +39,7 @@ public class MovieController {
     public ResponseEntity<?> getAllMovies(){
         try{
             return ResponseEntity.ok(movieService.getAllMovies());
-        } catch (BadRequestException e) {
+        } catch (NoSuchElementException e) {
             log.error("Error in get all movies {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
         }
@@ -54,9 +59,9 @@ public class MovieController {
     public ResponseEntity<?> updateMovie(@PathVariable ("movieId") Long movieId, @RequestBody MovieDTO movieDTO){
         try{
             return ResponseEntity.ok(movieService.updateMovie(movieId,movieDTO));
-        } catch (BadRequestException e){
+        } catch (NoSuchElementException e){
             log.error("Error in update movie by Id {} : {}",movieId, e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
