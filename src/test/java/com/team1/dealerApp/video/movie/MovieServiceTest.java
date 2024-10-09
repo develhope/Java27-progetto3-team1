@@ -189,6 +189,23 @@ class MovieServiceTest {
         verify(movieRepository, never()).save(any(Movie.class));
     }
 
+    @Test
+    public void testUpdateMovieField() throws Exception {
+
+        when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
+
+        Movie updatedMovie = new Movie();
+        when(movieUpdater.updateMovieField(any(Movie.class), anyString(), any())).thenReturn(updatedMovie);
+        when(movieMapper.toMovieDTO(updatedMovie)).thenReturn(new MovieDTO());
+
+        MovieDTO result = movieService.updateMovieField(1L, "New Title", "title");
+
+        assertNotNull(result);
+
+        // Verifica che il film aggiornato sia salvato
+        verify(movieRepository, times(1)).save(updatedMovie);
+    }
+
 
   
 }
