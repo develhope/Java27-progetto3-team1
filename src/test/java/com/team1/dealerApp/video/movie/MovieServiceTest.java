@@ -175,6 +175,20 @@ class MovieServiceTest {
         verify(movieRepository, times(1)).save(any(Movie.class));
     }
 
+    @Test
+    public void testUpdateMovie_NotFound() {
+        when(movieRepository.existsById(1L)).thenReturn(false);
+
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
+            movieService.updateMovie(1L, movieDTO);
+        });
+
+        assertEquals("There is no movie with id 1", exception.getMessage());
+
+        // Verifica che non venga effettuato alcun salvataggio
+        verify(movieRepository, never()).save(any(Movie.class));
+    }
+
 
   
 }
