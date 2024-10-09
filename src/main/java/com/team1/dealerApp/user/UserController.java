@@ -32,7 +32,7 @@ public class UserController {
     }
 
 
-    @GetMapping("{/userId}")
+    @GetMapping("/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable("userId") UUID id) {
         try {
             UserDTO userDTO = userService.getUserById(id);
