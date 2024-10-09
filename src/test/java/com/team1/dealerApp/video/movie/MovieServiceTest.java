@@ -36,6 +36,7 @@ class MovieServiceTest {
     private MovieService movieService;
 
     MovieDTO movieDTO;
+    MovieDTO movieDTO2;
     Movie movie;
     Movie movie2;
 
@@ -44,14 +45,14 @@ class MovieServiceTest {
         // Inizializza i mock prima di ogni test
         MockitoAnnotations.openMocks(this);
         List<String> castMovie = Arrays.asList("Elijah Wood", "Ian McKellan", "Orlando Bloom");
-        List<String> castMovieDTO = Arrays.asList("Natalie Portman", "Rupert Grace", "Ben Miles");
-        movieDTO = new MovieDTO("Il signore degli anelli: il ritorno del Re", 110, Genre.FANTASY, castMovie, "Peter Jackson", Year.of(2003), 30.00, 10.00, "Il ritorno del Re", 4.0f, VideoStatus.PURCHASABLE);
+        List<String> castMovie2 = Arrays.asList("Ed Wynn", "Richard Haydn", "Kathryn Beaumont");
 
+        movieDTO = new MovieDTO("Il signore degli anelli: il ritorno del Re", 110, Genre.FANTASY, castMovie, "Peter Jackson", Year.of(2003), 30.00, 10.00, "Il ritorno del Re", 4.0f, VideoStatus.PURCHASABLE);
+        movieDTO2 = new MovieDTO("Alice nel paese delle Meraviglie", 110, Genre.ANIMATION, castMovie2,"Clyde Geronimi", Year.of(1951), 30.00, 10.00, "Alice nel paese delle meraviglie", 2.0f, VideoStatus.RENTABLE);
 
         movie = new Movie("Il signore degli anelli: il ritorno del Re", Genre.FANTASY, castMovie, "Peter Jackson", Year.of(2003), 30.00, 10.00, "Il ritorno del Re", 4.0f, VideoStatus.PURCHASABLE, 110);
 
-        List<String> castMovie2 = Arrays.asList("Ed Wynn", "Richard Haydn", "Kathryn Beaumont");
-        movie2 = new Movie("Alice nel paese delle Meraviglie", Genre.FANTASY, castMovie, "Clyde Geronimi", Year.of(1951), 30.00, 10.00, "Alice nel paese delle meraviglie", 2.0f, VideoStatus.RENTABLE, 110);
+        movie2 = new Movie("Alice nel paese delle Meraviglie", Genre.ANIMATION, castMovie, "Clyde Geronimi", Year.of(1951), 30.00, 10.00, "Alice nel paese delle meraviglie", 2.0f, VideoStatus.RENTABLE, 110);
     }
 
     @Test
@@ -89,6 +90,25 @@ class MovieServiceTest {
 
         // Verifica che il film venga cancellato correttamente
         verify(movieRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    public void testGetAllMovies() {
+
+        when(movieRepository.findAll()).thenReturn(Arrays.asList(movie, movie2));
+
+        when(movieMapper.toMovieDTO(movie)).thenReturn(movieDTO);
+        when(movieMapper.toMovieDTO(movie2)).thenReturn(movieDTO2);
+
+        List<MovieDTO> result = movieService.getAllMovies();
+
+        assertNotNull(result);
+        
+        // Verifica che vengano restituiti due film
+        assertEquals(2, result.size());
+
+        // Verifica che il metodo findAll venga chiamato
+        verify(movieRepository, times(1)).findAll();
     }
 
 
