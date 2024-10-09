@@ -14,8 +14,7 @@ import java.time.Year;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class MovieServiceTest {
@@ -72,6 +71,16 @@ class MovieServiceTest {
 
         // Verifica che il film sia stato salvato
         verify(movieRepository, times(1)).save(any(Movie.class));
+    }
+
+
+    @Test
+    public void testAddMovie_MovieAlreadyExists() {
+        when(movieRepository.findMovieByTitleAndDirector(movieDTO.getTitle(), movieDTO.getDirector())).thenReturn(movie);
+        assertThrows(BadRequestException.class, () -> movieService.addMovie(movieDTO));
+
+    // Verifica che non salvi un film già esistente
+        verify(movieRepository, never()).save(any(Movie.class));
     }
 
 
