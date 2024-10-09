@@ -1,8 +1,4 @@
-package com.team1.dealerApp.mappers;
-
-import com.team1.dealerApp.entities.User;
-import com.team1.dealerApp.models.dtos.CreateUserDTO;
-import com.team1.dealerApp.models.dtos.UserDTO;
+package com.team1.dealerApp.user;
 
 public class UserMapper {
 

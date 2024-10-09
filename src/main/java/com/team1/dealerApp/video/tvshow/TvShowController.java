@@ -1,7 +1,6 @@
-package com.team1.dealerApp.controllers;
+package com.team1.dealerApp.video.tvshow;
 
-import com.team1.dealerApp.models.dtos.TvShowDTO;
-import com.team1.dealerApp.services.TvShowService;
+import com.team1.dealerApp.video.movie.tvshow.TvShowService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;

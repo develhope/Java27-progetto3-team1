@@ -1,6 +1,7 @@
-package com.team1.dealerApp.entities;
+package com.team1.dealerApp.user;
 
-import com.team1.dealerApp.models.SubsciprionStatus;
+import com.team1.dealerApp.video.movie.Movie;
+import com.team1.dealerApp.video.tvshow.TvShow;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -45,11 +46,11 @@ public class User {
 
 	@Setter
 	@OneToMany()
-	private List<Movie> watchedMovies;
+	private List< Movie > watchedMovies;
 
 	@Setter
 	@OneToMany
-	private List<TvShow> watchedShows;
+	private List< TvShow > watchedShows;
 
 	public void setId(UUID id) {
 	}

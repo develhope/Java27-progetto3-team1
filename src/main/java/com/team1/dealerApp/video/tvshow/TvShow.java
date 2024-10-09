@@ -1,8 +1,8 @@
-package com.team1.dealerApp.entities;
+package com.team1.dealerApp.video.tvshow;
 
-import com.team1.dealerApp.models.Genre;
-import com.team1.dealerApp.models.Video;
-import com.team1.dealerApp.models.VideoStatus;
+import com.team1.dealerApp.video.Genre;
+import com.team1.dealerApp.video.Video;
+import com.team1.dealerApp.video.VideoStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

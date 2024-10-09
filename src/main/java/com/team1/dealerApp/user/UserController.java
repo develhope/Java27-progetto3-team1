@@ -1,8 +1,5 @@
-package com.team1.dealerApp.controllers;
+package com.team1.dealerApp.user;
 
-import com.team1.dealerApp.models.dtos.CreateUserDTO;
-import com.team1.dealerApp.models.dtos.UserDTO;
-import com.team1.dealerApp.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

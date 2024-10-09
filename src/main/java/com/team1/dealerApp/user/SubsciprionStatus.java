@@ -1,4 +1,4 @@
-package com.team1.dealerApp.models;
+package com.team1.dealerApp.user;
 
 public enum SubsciprionStatus {
 	NOT_SUBSCRIBED,

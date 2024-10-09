@@ -1,7 +1,8 @@
-package com.team1.dealerApp.models.dtos;
+package com.team1.dealerApp.video.movie;
 
-import com.team1.dealerApp.models.Genre;
-import com.team1.dealerApp.models.VideoStatus;
+import com.team1.dealerApp.video.Genre;
+import com.team1.dealerApp.video.VideoStatus;
+
 import lombok.*;
 
 import java.time.Year;
@@ -9,12 +10,14 @@ import java.util.List;
 
 @Setter
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class TvShowDTO {
+public class MovieDTO {
 
     private String title;
+
+    private int runningTime;
 
     private Genre genre;
 
@@ -22,7 +25,7 @@ public class TvShowDTO {
 
     private String director;
 
-    private Year releaseYear;
+    private Year year;
 
     private double purchasePrice;
 
@@ -31,10 +34,6 @@ public class TvShowDTO {
     private String plot;
 
     private float rating;
-
-    private int season;
-
-    private int episode;
 
     private VideoStatus videoStatus;
 

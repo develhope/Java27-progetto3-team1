@@ -1,8 +1,5 @@
-package com.team1.dealerApp.models;
+package com.team1.dealerApp.video.movie;
 
-import com.team1.dealerApp.entities.Movie;
-import com.team1.dealerApp.mappers.MovieMapper;
-import com.team1.dealerApp.repositories.MovieRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.lang.reflect.Field;

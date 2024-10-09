@@ -1,4 +1,4 @@
-package com.team1.dealerApp.models;
+package com.team1.dealerApp.video;
 
 import jakarta.persistence.*;
 import lombok.*;

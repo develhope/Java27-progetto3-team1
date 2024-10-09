@@ -1,7 +1,4 @@
-package com.team1.dealerApp.mappers;
-
-import com.team1.dealerApp.entities.TvShow;
-import com.team1.dealerApp.models.dtos.TvShowDTO;
+package com.team1.dealerApp.video.tvshow;
 
 public class TvShowMapper {
 
