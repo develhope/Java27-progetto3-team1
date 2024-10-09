@@ -42,7 +42,7 @@ public class User {
 	@Setter
 	@Column(name = "subscription_status")
 	@Enumerated(EnumType.STRING)
-	private SubsciprionStatus subsciprionStatus;
+	private SubscriptionStatus subscriptionStatus;
 
 	@Setter
 	@OneToMany()

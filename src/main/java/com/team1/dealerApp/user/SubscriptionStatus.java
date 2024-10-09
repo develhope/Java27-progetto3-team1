@@ -1,6 +1,6 @@
 package com.team1.dealerApp.user;
 
-public enum SubsciprionStatus {
+public enum SubscriptionStatus {
 	NOT_SUBSCRIBED,
 	MOVIES,
 	TV_SERIES,

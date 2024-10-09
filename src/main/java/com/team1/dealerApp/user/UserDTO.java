@@ -21,7 +21,7 @@ public class UserDTO {
 
 	private String phoneNumber;
 
-	private SubsciprionStatus subsciprionStatus;
+	private SubscriptionStatus subsciprionStatus;
 
 	private List< Movie > watchedMovies;
 

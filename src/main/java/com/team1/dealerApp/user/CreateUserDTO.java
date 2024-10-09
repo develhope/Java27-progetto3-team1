@@ -23,7 +23,7 @@ public class CreateUserDTO {
 
     private String password;
 
-    private SubsciprionStatus subsciprionStatus;
+    private SubscriptionStatus subscriptionStatus;
 
     private List< Movie > watchedMovies;
 
