@@ -1,9 +1,10 @@
 package com.team1.dealerApp.video.movie;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
-
+@Component
 @RequiredArgsConstructor
 public class MovieUpdater <T>{
     private final MovieRepository movieRepository;
