@@ -1,9 +1,9 @@
-package com.team1.dealerApp.models.dtos;
+package com.team1.dealerApp.user;
 
-import com.team1.dealerApp.entities.Movie;
-import com.team1.dealerApp.entities.TvShow;
-import com.team1.dealerApp.models.SubsciprionStatus;
+import com.team1.dealerApp.video.movie.Movie;
+import com.team1.dealerApp.video.tvshow.TvShow;
 import lombok.*;
+
 import java.util.List;
 
 @Getter
@@ -21,7 +21,7 @@ public class UserDTO {
 
 	private String phoneNumber;
 
-	private SubsciprionStatus subsciprionStatus;
+	private SubscriptionStatus subsciprionStatus;
 
 	private List< Movie > watchedMovies;
 

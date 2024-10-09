@@ -1,7 +1,4 @@
-package com.team1.dealerApp.mappers;
-
-import com.team1.dealerApp.entities.Movie;
-import com.team1.dealerApp.models.dtos.MovieDTO;
+package com.team1.dealerApp.video.movie;
 
 
 public class MovieMapper {

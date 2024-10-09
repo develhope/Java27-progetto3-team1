@@ -1,10 +1,5 @@
-package com.team1.dealerApp.services;
+package com.team1.dealerApp.user;
 
-import com.team1.dealerApp.entities.User;
-import com.team1.dealerApp.mappers.UserMapper;
-import com.team1.dealerApp.models.dtos.CreateUserDTO;
-import com.team1.dealerApp.models.dtos.UserDTO;
-import com.team1.dealerApp.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;

@@ -1,6 +1,5 @@
-package com.team1.dealerApp.repositories;
+package com.team1.dealerApp.video.movie;
 
-import com.team1.dealerApp.entities.Movie;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MovieRepository extends JpaRepository<Movie, Long> {

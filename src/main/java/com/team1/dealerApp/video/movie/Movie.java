@@ -1,10 +1,12 @@
-package com.team1.dealerApp.entities;
+package com.team1.dealerApp.video.movie;
 
-import com.team1.dealerApp.models.Genre;
-import com.team1.dealerApp.models.Video;
-import com.team1.dealerApp.models.VideoStatus;
+import com.team1.dealerApp.video.Genre;
+import com.team1.dealerApp.video.Video;
+import com.team1.dealerApp.video.VideoStatus;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.Year;

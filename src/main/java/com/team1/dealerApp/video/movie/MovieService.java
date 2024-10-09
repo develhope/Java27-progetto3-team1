@@ -1,11 +1,6 @@
-package com.team1.dealerApp.services;
+package com.team1.dealerApp.video.movie;
 
 
-import com.team1.dealerApp.entities.Movie;
-import com.team1.dealerApp.mappers.MovieMapper;
-import com.team1.dealerApp.models.MovieUpdater;
-import com.team1.dealerApp.models.dtos.MovieDTO;
-import com.team1.dealerApp.repositories.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
