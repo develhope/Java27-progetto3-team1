@@ -13,6 +13,7 @@ import org.mockito.MockitoAnnotations;
 import java.time.Year;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -103,9 +104,25 @@ class MovieServiceTest {
         List<MovieDTO> result = movieService.getAllMovies();
 
         assertNotNull(result);
-        
+
         // Verifica che vengano restituiti due film
         assertEquals(2, result.size());
+
+        // Verifica che il metodo findAll venga chiamato
+        verify(movieRepository, times(1)).findAll();
+    }
+
+    @Test
+    public void testGetAllMovies_NoMoviesFound() {
+
+        when(movieRepository.findAll()).thenReturn(Arrays.asList());
+
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
+            movieService.getAllMovies();
+        });
+
+        // Verifica che il messaggio di errore sia corretto
+        assertEquals("There are no film!", exception.getMessage());
 
         // Verifica che il metodo findAll venga chiamato
         verify(movieRepository, times(1)).findAll();
