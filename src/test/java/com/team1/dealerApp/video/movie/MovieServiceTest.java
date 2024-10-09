@@ -159,6 +159,22 @@ class MovieServiceTest {
         verify(movieRepository, times(1)).findById(1L);
     }
 
+    @Test
+    public void testUpdateMovie() {
+        movieDTO.setTitle("Il signore degli anelli: le due torri");
+
+        when(movieRepository.existsById(1L)).thenReturn(true);
+        when(movieMapper.toMovie(movieDTO)).thenReturn(movie);
+        when(movieMapper.toMovieDTO(movie)).thenReturn(movieDTO);
+
+        MovieDTO result = movieService.updateMovie(1L, movieDTO);
+
+        assertNotNull(result);
+        assertEquals("Il signore degli anelli: le due torri", result.getTitle());
+        // Verifica che il film aggiornato sia salvato
+        verify(movieRepository, times(1)).save(any(Movie.class));
+    }
+
 
   
 }
