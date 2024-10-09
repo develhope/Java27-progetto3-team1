@@ -144,6 +144,21 @@ class MovieServiceTest {
         verify(movieRepository, times(1)).findById(1L);
     }
 
+    @Test
+    public void testGetMovieById_NotFound() {
+
+        when(movieRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
+            movieService.getMovieById(1L);
+        });
+
+        assertEquals("There is no film with id 1", exception.getMessage());
+
+        // Verifica che venga effettuata una ricerca per ID
+        verify(movieRepository, times(1)).findById(1L);
+    }
+
 
   
 }
