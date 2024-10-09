@@ -55,6 +55,7 @@ public class MovieService {
             Movie movieToUpdate = movieMapper.toMovie(movieDTO);
             movieToUpdate.setId(movieId);
             movieRepository.save(movieToUpdate);
+            return movieMapper.toMovieDTO(movieToUpdate);
         } throw new NoSuchElementException("There is no movie with id " + movieId);
 
     }
