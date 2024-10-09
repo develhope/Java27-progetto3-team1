@@ -83,6 +83,14 @@ class MovieServiceTest {
         verify(movieRepository, never()).save(any(Movie.class));
     }
 
+    @Test
+    public void testDeleteMovieById() {
+        movieService.deleteMovieById(1L);
+
+        // Verifica che il film venga cancellato correttamente
+        verify(movieRepository, times(1)).deleteById(1L);
+    }
+
 
   
 }
