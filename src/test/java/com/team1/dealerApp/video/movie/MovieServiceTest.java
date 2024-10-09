@@ -206,6 +206,18 @@ class MovieServiceTest {
         verify(movieRepository, times(1)).save(updatedMovie);
     }
 
+    @Test
+    public void testUpdateMovieField_NoMovieFound() {
+        when(movieRepository.findById(1L)).thenReturn(Optional.empty());
+
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
+            movieService.updateMovieField(1L, "New Title", "title");
+        });
+
+        assertEquals("No movie with id: 1", exception.getMessage());
+        // Verifica che non venga effettuato alcun salvataggio
+        verify(movieRepository, never()).save(any(Movie.class));
+    }
 
   
 }
