@@ -23,8 +23,8 @@ public class UserDTO {
 
 	private SubsciprionStatus subsciprionStatus;
 
-	private List<Movie> watchedMovies;
+	private List< Movie > watchedMovies;
 
-	private List<TvShow> watchedShows;
+	private List< TvShow > watchedShows;
 
 }
