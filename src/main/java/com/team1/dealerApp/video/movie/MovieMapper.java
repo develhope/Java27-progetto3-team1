@@ -1,6 +1,8 @@
 package com.team1.dealerApp.video.movie;
 
+import org.springframework.stereotype.Component;
 
+@Component
 public class MovieMapper {
 
     public Movie toMovie(MovieDTO movieDTO){

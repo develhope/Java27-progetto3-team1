@@ -1,7 +1,9 @@
 package com.team1.dealerApp.video.tvshow;
 
-public class TvShowMapper {
+import org.springframework.stereotype.Component;
 
+@Component
+public class TvShowMapper {
 
     public TvShow toTvShow(TvShowDTO tvShowDTO){
         return TvShow.builder()
