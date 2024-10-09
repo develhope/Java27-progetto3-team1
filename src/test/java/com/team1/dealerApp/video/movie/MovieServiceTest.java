@@ -14,6 +14,7 @@ import java.time.Year;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -126,6 +127,21 @@ class MovieServiceTest {
 
         // Verifica che il metodo findAll venga chiamato
         verify(movieRepository, times(1)).findAll();
+    }
+
+    @Test
+    public void testGetMovieById() {
+        // con anyLong() si assegna un qualsiasi valore Long visto che movie non ha ancora un Id
+        when(movieRepository.findById(anyLong())).thenReturn(Optional.of(movie));
+
+        when(movieMapper.toMovieDTO(movie)).thenReturn(movieDTO);
+
+        MovieDTO result = movieService.getMovieById(1L);
+
+        assertNotNull(result);
+
+        // Verifica che il repository venga chiamato
+        verify(movieRepository, times(1)).findById(1L);
     }
 
 
