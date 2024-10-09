@@ -1,5 +1,8 @@
 package com.team1.dealerApp.user;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class UserMapper {
 
 	 public User toUser ( UserDTO userDTO ){

@@ -1,7 +1,6 @@
 package com.team1.dealerApp.video.tvshow;
 
 
-import com.team1.dealerApp.video.movie.TvShowUpdater;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
