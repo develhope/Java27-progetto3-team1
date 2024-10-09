@@ -1,9 +1,11 @@
 package com.team1.dealerApp.video.tvshow;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 
+@Component
 @SuppressWarnings("unused")
 @RequiredArgsConstructor
 public class TvShowUpdater <T>{
