@@ -3,6 +3,7 @@ package com.team1.dealerApp.user;
 import com.team1.dealerApp.video.movie.Movie;
 import com.team1.dealerApp.video.tvshow.TvShow;
 import lombok.*;
+
 import java.util.List;
 
 @Getter

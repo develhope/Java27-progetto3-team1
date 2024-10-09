@@ -2,7 +2,6 @@ package com.team1.dealerApp.video.movie;
 
 import com.team1.dealerApp.video.Genre;
 import com.team1.dealerApp.video.VideoStatus;
-
 import lombok.*;
 
 import java.time.Year;

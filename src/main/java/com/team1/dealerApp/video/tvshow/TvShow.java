@@ -4,7 +4,9 @@ import com.team1.dealerApp.video.Genre;
 import com.team1.dealerApp.video.Video;
 import com.team1.dealerApp.video.VideoStatus;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.Year;

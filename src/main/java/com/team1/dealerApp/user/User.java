@@ -5,8 +5,8 @@ import com.team1.dealerApp.video.tvshow.TvShow;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.UUID;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter

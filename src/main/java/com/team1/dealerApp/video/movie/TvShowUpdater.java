@@ -1,8 +1,8 @@
 package com.team1.dealerApp.video.movie;
 
+import com.team1.dealerApp.video.tvshow.TvShowRepository;
 import com.team1.dealerApp.video.tvshow.TvShow;
 import com.team1.dealerApp.video.tvshow.TvShowMapper;
-import com.team1.dealerApp.video.movie.tvshow.TvShowRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.lang.reflect.Field;
