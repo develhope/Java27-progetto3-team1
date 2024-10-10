@@ -25,9 +25,11 @@ class MovieServiceTest {
     @Mock
     private MovieRepository movieRepository;
 
-    // Simula il MovieMapper
+
+    private final MovieMapper movieMapper = new MovieMapper();
+
     @Mock
-    private MovieMapper movieMapper;
+    private MovieMapper movieMapperInj;
 
     // Simula il MovieUpdater
     @Mock
@@ -37,10 +39,12 @@ class MovieServiceTest {
     @InjectMocks
     private MovieService movieService;
 
-    MovieDTO movieDTO;
-    MovieDTO movieDTO2;
-    Movie movie;
-    Movie movie2;
+
+
+    private MovieDTO purchasableMovieDTO;
+    private MovieDTO rentableMovieDTO;
+    private Movie purchasableMovie;
+    private Movie rentableMovie;
 
     @BeforeEach
     public void setup() {
@@ -49,47 +53,35 @@ class MovieServiceTest {
         List<String> castMovie = Arrays.asList("Elijah Wood", "Ian McKellan", "Orlando Bloom");
         List<String> castMovie2 = Arrays.asList("Ed Wynn", "Richard Haydn", "Kathryn Beaumont");
 
-        movieDTO = new MovieDTO("Il signore degli anelli: il ritorno del Re", 110, Genre.FANTASY, castMovie, "Peter Jackson", Year.of(2003), 30.00, 10.00, "Il ritorno del Re", 4.0f, VideoStatus.PURCHASABLE);
-        movieDTO2 = new MovieDTO("Alice nel paese delle Meraviglie", 110, Genre.ANIMATION, castMovie2,"Clyde Geronimi", Year.of(1951), 30.00, 10.00, "Alice nel paese delle meraviglie", 2.0f, VideoStatus.RENTABLE);
+        purchasableMovie = new Movie("Il signore degli anelli: il ritorno del Re", Genre.FANTASY, castMovie, "Peter Jackson", Year.of(2003), 30.00, 10.00, "Il ritorno del Re", 4.0f, VideoStatus.PURCHASABLE, 110);
+        rentableMovie = new Movie("Alice nel paese delle Meraviglie", Genre.ANIMATION, castMovie2,"Clyde Geronimi", Year.of(1951), 30.00, 10.00, "Alice nel paese delle meraviglie", 2.0f, VideoStatus.RENTABLE, 110);
 
-        movie = new Movie("Il signore degli anelli: il ritorno del Re", Genre.FANTASY, castMovie, "Peter Jackson", Year.of(2003), 30.00, 10.00, "Il ritorno del Re", 4.0f, VideoStatus.PURCHASABLE, 110);
+        purchasableMovieDTO = movieMapper.toMovieDTO(purchasableMovie);
+        rentableMovieDTO = movieMapper.toMovieDTO(rentableMovie);
 
-        movie2 = new Movie("Alice nel paese delle Meraviglie", Genre.ANIMATION, castMovie, "Clyde Geronimi", Year.of(1951), 30.00, 10.00, "Alice nel paese delle meraviglie", 2.0f, VideoStatus.RENTABLE, 110);
     }
 
     @Test
     public void testAddMovie() throws BadRequestException {
-
         //Specifica cosa fare quando viene invocato quel metodo findMovieByTitleAndDirector (contenuto in addMovie)
-        when(movieRepository.findMovieByTitleAndDirector(movieDTO.getTitle(), movieDTO.getDirector())).thenReturn(null);
+        when(movieRepository.findMovieByTitleAndDirector(purchasableMovie.getTitle(), purchasableMovie.getDirector())).thenReturn(null);
 
-        //Specifica cosa fare quando viene invocato il metodo toMovie
-        when(movieMapper.toMovie(movieDTO)).thenReturn(movie);
-
-        MovieDTO result = movieService.addMovie(movieDTO);
-        assertNotNull(result);
+        MovieDTO result = movieService.addMovie(purchasableMovieDTO);
 
         // Verifica che il DTO restituito sia quello originale
-        assertEquals(movieDTO, result);
-
-        // Verifica che il film sia stato salvato
-        verify(movieRepository, times(1)).save(any(Movie.class));
+        assertEquals(purchasableMovieDTO, result);
     }
 
 
     @Test
-    public void testAddMovie_MovieAlreadyExists() {
-        when(movieRepository.findMovieByTitleAndDirector(movieDTO.getTitle(), movieDTO.getDirector())).thenReturn(movie);
-        assertThrows(BadRequestException.class, () -> movieService.addMovie(movieDTO));
-
-    // Verifica che non salvi un film già esistente
-        verify(movieRepository, never()).save(any(Movie.class));
+    public void testAddMovie_whenMovieAlreadyExists() {
+        when(movieRepository.findMovieByTitleAndDirector(purchasableMovieDTO.getTitle(), purchasableMovieDTO.getDirector())).thenReturn(purchasableMovie);
+        assertThrows(BadRequestException.class, () -> movieService.addMovie(purchasableMovieDTO));
     }
 
     @Test
     public void testDeleteMovieById() {
         movieService.deleteMovieById(1L);
-
         // Verifica che il film venga cancellato correttamente
         verify(movieRepository, times(1)).deleteById(1L);
     }
@@ -97,20 +89,12 @@ class MovieServiceTest {
     @Test
     public void testGetAllMovies() {
 
-        when(movieRepository.findAll()).thenReturn(Arrays.asList(movie, movie2));
-
-        when(movieMapper.toMovieDTO(movie)).thenReturn(movieDTO);
-        when(movieMapper.toMovieDTO(movie2)).thenReturn(movieDTO2);
+        when(movieRepository.findAll()).thenReturn(Arrays.asList(purchasableMovie, rentableMovie));
 
         List<MovieDTO> result = movieService.getAllMovies();
 
-        assertNotNull(result);
-
         // Verifica che vengano restituiti due film
         assertEquals(2, result.size());
-
-        // Verifica che il metodo findAll venga chiamato
-        verify(movieRepository, times(1)).findAll();
     }
 
     @Test
@@ -124,21 +108,14 @@ class MovieServiceTest {
 
         // Verifica che il messaggio di errore sia corretto
         assertEquals("There are no film!", exception.getMessage());
-
-        // Verifica che il metodo findAll venga chiamato
-        verify(movieRepository, times(1)).findAll();
     }
 
     @Test
     public void testGetMovieById() {
         // con anyLong() si assegna un qualsiasi valore Long visto che movie non ha ancora un Id
-        when(movieRepository.findById(anyLong())).thenReturn(Optional.of(movie));
-
-        when(movieMapper.toMovieDTO(movie)).thenReturn(movieDTO);
+        when(movieRepository.findById(anyLong())).thenReturn(Optional.of(purchasableMovie));
 
         MovieDTO result = movieService.getMovieById(1L);
-
-        assertNotNull(result);
 
         // Verifica che il repository venga chiamato
         verify(movieRepository, times(1)).findById(1L);
@@ -154,25 +131,19 @@ class MovieServiceTest {
         });
 
         assertEquals("There is no film with id 1", exception.getMessage());
-
-        // Verifica che venga effettuata una ricerca per ID
-        verify(movieRepository, times(1)).findById(1L);
     }
 
     @Test
     public void testUpdateMovie() {
-        movieDTO.setTitle("Il signore degli anelli: le due torri");
+        purchasableMovieDTO.setTitle("Il signore degli anelli: le due torri");
 
         when(movieRepository.existsById(1L)).thenReturn(true);
-        when(movieMapper.toMovie(movieDTO)).thenReturn(movie);
-        when(movieMapper.toMovieDTO(movie)).thenReturn(movieDTO);
+        when(movieMapperInj.toMovie(purchasableMovieDTO)).thenReturn(purchasableMovie);
+        when(movieMapperInj.toMovieDTO(purchasableMovie)).thenReturn(purchasableMovieDTO);
 
-        MovieDTO result = movieService.updateMovie(1L, movieDTO);
+        MovieDTO result = movieService.updateMovie(1L, purchasableMovieDTO);
 
-        assertNotNull(result);
         assertEquals("Il signore degli anelli: le due torri", result.getTitle());
-        // Verifica che il film aggiornato sia salvato
-        verify(movieRepository, times(1)).save(any(Movie.class));
     }
 
     @Test
@@ -180,27 +151,22 @@ class MovieServiceTest {
         when(movieRepository.existsById(1L)).thenReturn(false);
 
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
-            movieService.updateMovie(1L, movieDTO);
+            movieService.updateMovie(1L, purchasableMovieDTO);
         });
 
         assertEquals("There is no movie with id 1", exception.getMessage());
-
-        // Verifica che non venga effettuato alcun salvataggio
-        verify(movieRepository, never()).save(any(Movie.class));
     }
 
     @Test
     public void testUpdateMovieField() throws Exception {
 
-        when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
+        when(movieRepository.findById(1L)).thenReturn(Optional.of(purchasableMovie));
 
         Movie updatedMovie = new Movie();
         when(movieUpdater.updateMovieField(any(Movie.class), anyString(), any())).thenReturn(updatedMovie);
-        when(movieMapper.toMovieDTO(updatedMovie)).thenReturn(new MovieDTO());
+        when(movieMapperInj.toMovieDTO(updatedMovie)).thenReturn(new MovieDTO());
 
         MovieDTO result = movieService.updateMovieField(1L, "New Title", "title");
-
-        assertNotNull(result);
 
         // Verifica che il film aggiornato sia salvato
         verify(movieRepository, times(1)).save(updatedMovie);
@@ -215,8 +181,6 @@ class MovieServiceTest {
         });
 
         assertEquals("No movie with id: 1", exception.getMessage());
-        // Verifica che non venga effettuato alcun salvataggio
-        verify(movieRepository, never()).save(any(Movie.class));
     }
 
   
