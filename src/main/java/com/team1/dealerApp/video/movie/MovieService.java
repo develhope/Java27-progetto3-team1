@@ -61,13 +61,13 @@ public class MovieService {
     }
 
     public MovieDTO updateMovieField ( Long id, Object value, String field ) throws BadRequestException {
-        Movie tvShow = movieRepository
+        Movie movie = movieRepository
                 .findById(id)
                 .orElseThrow(() -> new BadRequestException("No movie with id: " + id));
         Movie updated = new Movie();
 
         try {
-            updated = movieUpdater.updateMovieField(tvShow, field, value);
+            updated = movieUpdater.updateMovieField(movie, field, value);
         }catch ( NoSuchFieldException e ){
             log.error("Error: the field {} does not exist: {}", field, e.getMessage());
         }catch ( IllegalAccessException e){
