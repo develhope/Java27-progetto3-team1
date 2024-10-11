@@ -55,10 +55,10 @@ public class TvShowService {
 		throw new NoSuchElementException("There is no show with id: " + id);
 	}
 
-	public TvShowDTO updateShowField ( Long id, Object value, String field ) throws BadRequestException {
+	public TvShowDTO updateShowField ( Long id, Object value, String field ) throws NoSuchElementException {
 		TvShow tvShow = tvShowRepository
 				.findById(id)
-				.orElseThrow(() -> new BadRequestException("No show with id: " + id));
+				.orElseThrow(() -> new NoSuchElementException("No show with id: " + id));
 		TvShow updated = new TvShow();
 
 		try {
