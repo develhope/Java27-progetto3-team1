@@ -12,8 +12,10 @@ import org.mockito.MockitoAnnotations;
 import java.time.Year;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 class TvShowServiceTest {
@@ -63,4 +65,21 @@ class TvShowServiceTest {
 		when(tvShowRepository.existsByTitleAndDirector(purchasableShowDTO.getTitle(), purchasableShowDTO.getDirector())).thenReturn(true);
 		assertThrows(BadRequestException.class, () -> tvShowService.addTvShow(purchasableShowDTO));
 	}
+
+	@Test
+	void testGetAllShows () throws BadRequestException {
+		when(tvShowRepository.findAll()).thenReturn(Arrays.asList(purchasableShow, rentableShow));
+
+		List<TvShowDTO> found = tvShowService.getAllShows();
+
+		assertEquals(2, found.size());
+	}
+
+	@Test
+	void testGetAllShows_NoShowFound (){
+		when(tvShowRepository.findAll()).thenReturn(List.of());
+
+		assertThrows(BadRequestException.class, () -> tvShowService.getAllShows());
+	}
+
 }
