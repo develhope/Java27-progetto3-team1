@@ -103,3 +103,10 @@ fabric.properties
 hs_err_pid*
 replay_pid*
 
+.idea/encodings.xml
+.idea/workspace.xml
+.idea/vcs.xml
+.idea/uiDesigner.xml
+.idea/material_theme_project_new.xml
+.idea/jpa.xml
+.idea/shelf/
