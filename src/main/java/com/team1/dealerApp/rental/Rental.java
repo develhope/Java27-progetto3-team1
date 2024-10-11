@@ -39,7 +39,6 @@ public class Rental {
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "rental_id")
     )
-    @Column(name = "movies")
     private List<Movie> movies;
 
     @ManyToMany
@@ -49,7 +48,6 @@ public class Rental {
             inverseJoinColumns = @JoinColumn(name = "rental_id")
 
     )
-    @Column(name = "rental_shows")
     private List<TvShow> tvShows;
 
     @ManyToOne
