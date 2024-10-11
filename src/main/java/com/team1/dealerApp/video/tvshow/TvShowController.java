@@ -39,9 +39,15 @@ public class TvShowController {
 	}
 
 	@PostMapping()
-	public ResponseEntity<TvShowDTO> addTvShow (@RequestBody TvShowDTO tvShowDTO){
-		log.debug("TvShow added successfully in db");
-		return ResponseEntity.ok(tvShowService.addTvShow(tvShowDTO));
+	public ResponseEntity<?> addTvShow (@RequestBody TvShowDTO tvShowDTO) {
+		try {
+			TvShowDTO added = tvShowService.addTvShow(tvShowDTO);
+			log.debug("TvShow added successfully in db");
+			return ResponseEntity.status(HttpStatus.CREATED).body(added);
+		} catch ( BadRequestException e ) {
+			log.error("Error in adding tvShow: {}", e.getMessage(), e);
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+		}
 	}
 
 	@PutMapping("{id}")
