@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 import java.time.Year;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -98,5 +99,25 @@ class TvShowServiceTest {
 		when(tvShowRepository.findById(anyLong())).thenReturn(Optional.empty());
 
 		assertThrows(BadRequestException.class, () -> tvShowService.getShowById(1L));
+	}
+
+	@Test
+	void testUpdateShow () throws NoSuchElementException{
+		purchasableShowDTO.setPlot("Bella serie");
+
+		when(tvShowRepository.existsById(anyLong())).thenReturn(true);
+		when(tvShowMapperInj.toTvShow(purchasableShowDTO)).thenReturn(purchasableShow);
+		when(tvShowMapperInj.toTvShowDTO(purchasableShow)).thenReturn(purchasableShowDTO);
+
+		TvShowDTO updated = tvShowService.updateShow(purchasableShowDTO, 1L);
+
+		assertEquals("Bella serie", updated.getPlot());
+	}
+
+	@Test
+	void testUpdateShow_ShowNotFound () {
+		when(tvShowRepository.existsById(anyLong())).thenReturn(false);
+
+		assertThrows(NoSuchElementException.class, () -> tvShowService.updateShow(purchasableShowDTO, 1L));
 	}
 }
