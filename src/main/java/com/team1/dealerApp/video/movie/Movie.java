@@ -1,5 +1,6 @@
 package com.team1.dealerApp.video.movie;
 
+import com.team1.dealerApp.rental.Rental;
 import com.team1.dealerApp.video.Genre;
 import com.team1.dealerApp.video.Video;
 import com.team1.dealerApp.video.VideoStatus;
@@ -25,6 +26,10 @@ public class Movie extends Video {
 
     @Column(name="running_time", nullable = false)
     private Integer runningTime;
+
+    @ManyToMany(mappedBy = "movies")
+    private List<Rental> rentals;
+
 
     public Movie(String title, Genre genre, List<String> cast, String director, Year releaseYear, double purchasePrice, double rentalPrice, String plot, float rating, VideoStatus videoStatus, int runningTime) {
         super(title, genre, cast, director, releaseYear, purchasePrice, rentalPrice, plot, rating, videoStatus);
