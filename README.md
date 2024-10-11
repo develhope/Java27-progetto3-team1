@@ -38,7 +38,7 @@ Per ogni Film avremo una serie di attributi:
 - Rating per età (?)
 - Flag che identifichi se è acquistabile o solo noleggiabile o non più disponibile
 
-## Noleggio/Acquisto
+## Acquisto
 Per ogni noleggio/acquisto avremo:
 - Abbonamento
 - Flag pagato
