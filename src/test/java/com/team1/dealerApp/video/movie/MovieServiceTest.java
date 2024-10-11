@@ -21,12 +21,11 @@ import static org.mockito.Mockito.*;
 
 class MovieServiceTest {
 
+    private final MovieMapper movieMapper = new MovieMapper();
+
     // Simula il MovieRepository
     @Mock
     private MovieRepository movieRepository;
-
-
-    private final MovieMapper movieMapper = new MovieMapper();
 
     @Mock
     private MovieMapper movieMapperInj;
