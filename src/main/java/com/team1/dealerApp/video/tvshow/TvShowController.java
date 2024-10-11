@@ -68,7 +68,7 @@ public class TvShowController {
 	public ResponseEntity<?> updateShowField (@PathVariable Long id, @RequestParam(name = "field") String fieldName, @RequestBody Object value){
 		try{
 			return ResponseEntity.ok(tvShowService.updateShowField(id,value, fieldName));
-		} catch ( BadRequestException e ) {
+		} catch ( NoSuchElementException e ) {
 			log.error("Error in updating product with id {}: {}", id, e.getMessage());
 			return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
