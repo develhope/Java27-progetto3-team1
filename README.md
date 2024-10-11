@@ -12,7 +12,6 @@ Per ogni Utente avremo una serie di attributi:
 - Telefono
 - Email
 - Password
-- Ruolo(User o Admin)
 - Status Abbonamento
 - Lista di film/serie già viste
 - Lista di film/serie da vedere
@@ -38,7 +37,7 @@ Per ogni Film avremo una serie di attributi:
 - Rating per età (?)
 - Flag che identifichi se è acquistabile o solo noleggiabile o non più disponibile
 
-## Noleggio/Acquisto
+## Acquisto
 Per ogni noleggio/acquisto avremo:
 - Abbonamento
 - Flag pagato
@@ -65,7 +64,7 @@ Per un noleggio avremo:
 - Cancellare un noleggio
 - Cancellare la propria utenza
 - Modificare i dati dell’utente
-- Ricercare un film secondo diversi criteri (prezzo, colore, marca, modello, ecc.)
+- Ricercare un film secondo diversi criteri (titolo, regista, anno di uscita, voto, ecc.)
 - Ottenere i dettagli di un film specifico
 ### Un Utente Premium (cioè con lo status abbonamento settato true) potrà:
 - Creare un ordine a partire da un film/serie contrassegnato come ordinabile
@@ -79,7 +78,7 @@ Per un noleggio avremo:
 - Cancellare un noleggio
 - Cancellare la propria utenza
 - Modificare i dati dell’utente
-- Ricercare un film secondo diversi criteri (prezzo, colore, marca, modello, ecc.)
+- Ricercare un film secondo diversi criteri (titolo, regista, anno di uscita, voto, ecc.)
 - Ottenere i dettagli di un film specifico
 - Avere accesso ad una lista di titoli premium
 - Accesso a Sconti su nuovi film/serie
