@@ -33,11 +33,24 @@ public class Rental {
     @Column
     private boolean paid;
 
-    @Column(name = "rental_movies")
-    private List<Movie> rentalMovies;
+    @ManyToMany
+    @JoinTable(
+            name = "rental_movie",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "rental_id")
+    )
+    @Column(name = "movies")
+    private List<Movie> movies;
 
-    @Column(name = "rental_tv_shows")
-    private List<TvShow> rentalTvShows;
+    @ManyToMany
+    @JoinTable(
+            name = "rental_show",
+            joinColumns = @JoinColumn(name = "show_id"),
+            inverseJoinColumns = @JoinColumn(name = "rental_id")
+
+    )
+    @Column(name = "rental_shows")
+    private List<TvShow> tvShows;
 
     @ManyToOne
     @Column(nullable = false)
