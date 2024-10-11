@@ -14,6 +14,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@SuppressWarnings("unused")
 public class User {
 
 	@Id
@@ -54,7 +55,7 @@ public class User {
 	private List< TvShow > watchedShows;
 
 	@Setter
-	@OneToMany
+	@OneToMany(mappedBy = "renter")
 	private List<Rental> rentals;
 
 	public void setId(UUID id) {
