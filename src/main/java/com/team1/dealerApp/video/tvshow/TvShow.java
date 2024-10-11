@@ -1,5 +1,6 @@
 package com.team1.dealerApp.video.tvshow;
 
+import com.team1.dealerApp.rental.Rental;
 import com.team1.dealerApp.video.Genre;
 import com.team1.dealerApp.video.Video;
 import com.team1.dealerApp.video.VideoStatus;
@@ -28,6 +29,9 @@ public class TvShow extends Video {
 
     @Column(nullable = false)
     private Integer episode;
+
+    @ManyToMany(mappedBy = "tvShows")
+    private List<Rental> rentals;
 
 
     public TvShow( String title, Genre genre, List<String> cast, String director, Year year, double purchasePrice, double rentalPrice, String plot, float rating, VideoStatus videoStatus, int season, int episode) {
