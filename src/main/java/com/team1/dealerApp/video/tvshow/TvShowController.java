@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
+
 @SuppressWarnings("unused")
 @Slf4j
 @RestController
@@ -53,10 +55,11 @@ public class TvShowController {
 	@PutMapping("{id}")
 	public ResponseEntity<?> updateShow (@RequestBody TvShowDTO tvShowDTO, @PathVariable Long id){
 		try {
+			TvShowDTO updated = tvShowService.updateShow(tvShowDTO, id);
 			log.debug("Show updated successfully");
-			return ResponseEntity.ok(tvShowService.updateShow(tvShowDTO, id));
-		}catch ( BadRequestException e ){
-			log.error("Error in updating show with id {}: {}",id, e.getMessage());
+			return ResponseEntity.ok(updated);
+		}catch ( NoSuchElementException e ){
+			log.error("Error in updating show with id {}: {}",id, e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 	}
