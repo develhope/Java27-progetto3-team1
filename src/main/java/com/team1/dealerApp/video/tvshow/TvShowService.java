@@ -7,6 +7,7 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @SuppressWarnings("unused")
@@ -44,11 +45,14 @@ public class TvShowService {
 		throw new BadRequestException("This Show already exists");
 	}
 
-	public TvShowDTO updateShow (TvShowDTO tvShowDTO, Long id) throws BadRequestException {
-		TvShow found = tvShowMapper.toTvShow(tvShowDTO);
-		found.setId(id);
-		tvShowRepository.save(found);
-		return tvShowMapper.toTvShowDTO(found);
+	public TvShowDTO updateShow (TvShowDTO tvShowDTO, Long id) throws NoSuchElementException {
+		if(tvShowRepository.existsById(id)) {
+			TvShow found = tvShowMapper.toTvShow(tvShowDTO);
+			found.setId(id);
+			tvShowRepository.save(found);
+			return tvShowMapper.toTvShowDTO(found);
+		}
+		throw new NoSuchElementException("There is no show with id: " + id);
 	}
 
 	public TvShowDTO updateShowField ( Long id, Object value, String field ) throws BadRequestException {
