@@ -1,5 +1,6 @@
 package com.team1.dealerApp.user;
 
+import com.team1.dealerApp.rental.Rental;
 import com.team1.dealerApp.video.movie.Movie;
 import com.team1.dealerApp.video.tvshow.TvShow;
 import jakarta.persistence.*;
@@ -51,6 +52,10 @@ public class User {
 	@Setter
 	@OneToMany
 	private List< TvShow > watchedShows;
+
+	@Setter
+	@OneToMany
+	private List<Rental> rentals;
 
 	public void setId(UUID id) {
 	}
