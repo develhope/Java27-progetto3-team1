@@ -1,5 +1,6 @@
 package com.team1.dealerApp.user;
 
+import com.team1.dealerApp.rental.Rental;
 import com.team1.dealerApp.video.movie.Movie;
 import com.team1.dealerApp.video.tvshow.TvShow;
 import jakarta.persistence.*;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@SuppressWarnings("unused")
 public class User {
 
 	@Id
@@ -51,6 +53,10 @@ public class User {
 	@Setter
 	@OneToMany
 	private List< TvShow > watchedShows;
+
+	@Setter
+	@OneToMany(mappedBy = "renter")
+	private List<Rental> rentals;
 
 	public void setId(UUID id) {
 	}
