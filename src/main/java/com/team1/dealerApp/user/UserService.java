@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -26,7 +27,7 @@ public class UserService {
         return userMapper.toUserDTO(newUser);
     }
 
-    public UserDTO getUserById(UUID id) throws Exception {
+    public UserDTO getUserDTOById(UUID id) throws Exception {
         User getUser = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User with Id " + id + " not found"));
         return userMapper.toUserDTO(getUser);
@@ -48,6 +49,10 @@ public class UserService {
     public boolean deleteUser(UUID id) {
         userRepository.deleteById(id);
         return true;
+    }
+
+    public User getUserById(UUID id) throws NoSuchElementException{
+        return userRepository.findById(id).orElseThrow(()-> new NoSuchElementException("No User with Id " + id));
     }
 
 }
