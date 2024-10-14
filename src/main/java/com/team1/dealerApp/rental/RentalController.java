@@ -48,4 +48,10 @@ public class RentalController {
         }
     }
 
+    @DeleteMapping("/{rentalId}")
+    public ResponseEntity<String> deleteRental(@PathVariable ("rentalId") Long id){
+        rentalService.deleteRental(id);
+        return ResponseEntity.ok("Rental deleted");
+    }
+
 }
