@@ -35,7 +35,7 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable("userId") UUID id) {
         try {
-            UserDTO userDTO = userService.getUserById(id);
+            UserDTO userDTO = userService.getUserDTOById(id);
             log.debug("User whti id: {} found", id);
             return ResponseEntity.status(HttpStatus.FOUND).body(userDTO);
         } catch (Exception e) {
