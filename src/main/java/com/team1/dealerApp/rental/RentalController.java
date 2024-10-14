@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Slf4j
@@ -34,6 +36,15 @@ public class RentalController {
         } catch (BadRequestException e) {
             log.error("Error in get all rental by user Id {} : {}", userId, e.getMessage(), e.getStackTrace());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+    @PatchMapping("/{rentalId}")
+    public ResponseEntity<?> updateRentalEndDate(@PathVariable ("rentalId") Long id, @RequestBody LocalDateTime dateTime){
+        try{
+            return ResponseEntity.ok(rentalService.updateRentalEndDate(id, dateTime));
+        } catch (NoSuchElementException e){
+            log.error("Error in update Rental's end date with id {} : {}", id, e.getMessage(), e.getStackTrace());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
