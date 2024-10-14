@@ -47,5 +47,14 @@ public class RentalService {
         }
         return rentalsFind.map(rentalMapper::toDTO);
     }
+    public RentalDTO updateRentalEndDate(Long id, LocalDateTime dateTime) {
+        Rental rentalFound = rentalRepository.findById(id).orElseThrow(()-> new NoSuchElementException("There is no rental with id " + id));
+        rentalFound.setEndDate(dateTime);
+        rentalRepository.save(rentalFound);
+        return rentalMapper.toDTO(rentalFound);
+    }
 
+    public void deleteRental(Long id) {
+        rentalRepository.deleteById(id);
+    }
 }
