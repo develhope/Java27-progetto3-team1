@@ -29,7 +29,7 @@ public class UserService {
 
     public UserDTO getUserDTOById(UUID id) throws Exception {
         User getUser = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User with Id " + id + " not found"));
+                .orElseThrow(() -> new NoSuchElementException("User with Id " + id + " not found"));
         return userMapper.toUserDTO(getUser);
     }
 
