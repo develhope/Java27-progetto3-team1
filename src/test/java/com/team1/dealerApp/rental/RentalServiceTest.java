@@ -18,7 +18,9 @@ import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 
 class RentalServiceTest {
@@ -96,5 +98,14 @@ class RentalServiceTest {
         createRentalDTO.setTvShows(Collections.emptyList());
 
         assertThrows(BadRequestException.class, () -> rentalService.addRental(userId, createRentalDTO));
+    }
+    @Test
+    void testAddRental() throws BadRequestException {
+
+        when(rentalMapper.toRental(createRentalDTO)).thenReturn(rental);
+        when(rentalMapper.toDTO(rental)).thenReturn(rentalDTO);
+        RentalDTO result = rentalService.addRental(userId, createRentalDTO);
+
+        assertEquals(40.0, rental.getRentalPrice());  // Assert the rental price is correct
     }
 }
