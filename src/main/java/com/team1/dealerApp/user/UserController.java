@@ -36,7 +36,7 @@ public class UserController {
     public ResponseEntity<?> getUserById(@PathVariable("userId") UUID id) {
         try {
             UserDTO userDTO = userService.getUserDTOById(id);
-            log.debug("User whti id: {} found", id);
+            log.debug("User with id: {} found", id);
             return ResponseEntity.status(HttpStatus.FOUND).body(userDTO);
         } catch (Exception e) {
             log.error("Error in getting User by Id: {} - {}", id, e.getMessage(), e);
