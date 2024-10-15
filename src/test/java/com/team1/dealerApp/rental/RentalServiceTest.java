@@ -131,4 +131,15 @@ class RentalServiceTest {
 
         assertEquals(1, result.getTotalElements());
     }
+
+    @Test
+    void testUpdateRentalEndDate() {
+        LocalDateTime newEndDate = LocalDateTime.now().plusDays(30);
+        when(rentalRepository.findById(rentalId)).thenReturn(Optional.of(rental));
+        when(rentalMapper.toDTO(rental)).thenReturn(rentalDTO);
+
+        RentalDTO result = rentalService.updateRentalEndDate(rentalId, newEndDate);
+
+        assertEquals(newEndDate, rental.getEndDate());
+    }
 }
