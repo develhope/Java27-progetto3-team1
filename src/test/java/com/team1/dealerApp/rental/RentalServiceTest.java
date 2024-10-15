@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -117,5 +118,17 @@ class RentalServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         when(rentalRepository.findByRenterId(userId, pageable)).thenReturn(Page.empty());
         assertThrows(NoSuchElementException.class, () -> rentalService.getAllRentalByUserId(userId, 0, 10));
+    }
+
+    @Test
+    void testGetAllRentalByUserId() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Rental> rentalPage = new PageImpl<>(List.of(rental));
+        when(rentalRepository.findByRenterId(userId, pageable)).thenReturn(rentalPage);
+        when(rentalMapper.toDTO(rental)).thenReturn(rentalDTO);
+
+        Page<RentalDTO> result = rentalService.getAllRentalByUserId(userId, 0, 10);
+
+        assertEquals(1, result.getTotalElements());
     }
 }
