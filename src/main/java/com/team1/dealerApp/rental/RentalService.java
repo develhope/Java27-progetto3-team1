@@ -39,11 +39,11 @@ public class RentalService {
 
     }
 
-    public Page<RentalDTO> getAllRentalByUserId(UUID userId, int page, int size) throws BadRequestException {
+    public Page<RentalDTO> getAllRentalByUserId(UUID userId, int page, int size) throws NoSuchElementException {
         Pageable pageable = PageRequest.of(page, size);
         Page<Rental> rentalsFind = rentalRepository.findByRenterId(userId,pageable);
         if(rentalsFind.isEmpty()){
-            throw new BadRequestException("Rental's list is empty");
+            throw new NoSuchElementException("Rental's list is empty");
         }
         return rentalsFind.map(rentalMapper::toDTO);
     }
