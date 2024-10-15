@@ -6,7 +6,9 @@ import com.team1.dealerApp.video.Genre;
 import com.team1.dealerApp.video.VideoStatus;
 import com.team1.dealerApp.video.movie.Movie;
 import com.team1.dealerApp.video.tvshow.TvShow;
+import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 class RentalServiceTest {
@@ -87,5 +90,11 @@ class RentalServiceTest {
         rentalDTO.setEndDate(LocalDateTime.now().plusDays(14));
     }
 
+    @Test
+    void testAddRental_ThrowsBadRequestException() {
+        createRentalDTO.setMovies(Collections.emptyList());
+        createRentalDTO.setTvShows(Collections.emptyList());
 
+        assertThrows(BadRequestException.class, () -> rentalService.addRental(userId, createRentalDTO));
+    }
 }
