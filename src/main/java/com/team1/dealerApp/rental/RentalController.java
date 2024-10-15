@@ -34,7 +34,7 @@ public class RentalController {
     public ResponseEntity<?> getAllRentalByUserId(@PathVariable ("userId") UUID userId, @RequestParam (defaultValue = "0") int page, @RequestParam (defaultValue = "10") int size){
         try{
             return ResponseEntity.ok(rentalService.getAllRentalByUserId(userId, page, size));
-        } catch (BadRequestException e) {
+        } catch (NoSuchElementException e) {
             log.error("Error in get all rental by user Id {} : {}", userId, e.getMessage(), e.getStackTrace());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
