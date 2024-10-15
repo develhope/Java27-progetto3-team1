@@ -19,11 +19,10 @@ public class RentalDTO {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private double rentalPrice;
-    private boolean paid;
     private List<Movie> movies;
     private List<TvShow> tvShows;
     private UUID userId;
-
+    private RentalStatus rentalStatus;
 
 
 }
