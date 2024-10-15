@@ -15,7 +15,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public UserDTO createUser(CreateUserDTO createUserDTO) throws Exception {
+    public UserDTO createUser(CreateUserDTO createUserDTO) throws BadRequestException {
 
         if (createUserDTO.getEmail() == null || createUserDTO.getPassword() == null) {
             throw new BadRequestException("Either Email or Password is null");
@@ -27,16 +27,16 @@ public class UserService {
         return userMapper.toUserDTO(newUser);
     }
 
-    public UserDTO getUserDTOById(UUID id) throws Exception {
+    public UserDTO getUserDTOById(UUID id) throws NoSuchElementException{
         User getUser = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User with Id " + id + " not found"));
         return userMapper.toUserDTO(getUser);
     }
 
-    public UserDTO updateUser(UUID id, CreateUserDTO createUserDTO) throws Exception {
+    public UserDTO updateUser(UUID id, CreateUserDTO createUserDTO) throws NoSuchElementException {
 
         if (!userRepository.existsById(id)) {
-            throw new EntityNotFoundException("This User doesn't exist");
+            throw new NoSuchElementException("This User doesn't exist");
         }
 
         User updateUser = userMapper.fromCreateUserDTOToUser(createUserDTO);
