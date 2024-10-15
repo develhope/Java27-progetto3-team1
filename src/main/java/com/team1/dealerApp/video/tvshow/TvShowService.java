@@ -7,6 +7,7 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @SuppressWarnings("unused")
@@ -36,22 +37,28 @@ public class TvShowService {
 		return  tvShowMapper.toTvShowDTO(tvShow);
 	}
 
-	public TvShowDTO addTvShow (TvShowDTO tvShowDTO){
-		tvShowRepository.save(tvShowMapper.toTvShow(tvShowDTO));
-		return tvShowDTO;
+	public TvShowDTO addTvShow (TvShowDTO tvShowDTO) throws BadRequestException {
+		if(!tvShowRepository.existsByTitleAndDirector(tvShowDTO.getTitle(), tvShowDTO.getDirector())){
+			tvShowRepository.save(tvShowMapper.toTvShow(tvShowDTO));
+			return tvShowDTO;
+		}
+		throw new BadRequestException("This Show already exists");
 	}
 
-	public TvShowDTO updateShow (TvShowDTO tvShowDTO, Long id) throws BadRequestException {
-		TvShow found = tvShowMapper.toTvShow(tvShowDTO);
-		found.setId(id);
-		tvShowRepository.save(found);
-		return tvShowMapper.toTvShowDTO(found);
+	public TvShowDTO updateShow (TvShowDTO tvShowDTO, Long id) throws NoSuchElementException {
+		if(tvShowRepository.existsById(id)) {
+			TvShow found = tvShowMapper.toTvShow(tvShowDTO);
+			found.setId(id);
+			tvShowRepository.save(found);
+			return tvShowMapper.toTvShowDTO(found);
+		}
+		throw new NoSuchElementException("There is no show with id: " + id);
 	}
 
-	public TvShowDTO updateShowField ( Long id, Object value, String field ) throws BadRequestException {
+	public TvShowDTO updateShowField ( Long id, Object value, String field ) throws NoSuchElementException {
 		TvShow tvShow = tvShowRepository
 				.findById(id)
-				.orElseThrow(() -> new BadRequestException("No show with id: " + id));
+				.orElseThrow(() -> new NoSuchElementException("No show with id: " + id));
 		TvShow updated = new TvShow();
 
 		try {

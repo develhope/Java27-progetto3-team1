@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
+
 @SuppressWarnings("unused")
 @Slf4j
 @RestController
@@ -39,18 +41,25 @@ public class TvShowController {
 	}
 
 	@PostMapping()
-	public ResponseEntity<TvShowDTO> addTvShow (@RequestBody TvShowDTO tvShowDTO){
-		log.debug("TvShow added successfully in db");
-		return ResponseEntity.ok(tvShowService.addTvShow(tvShowDTO));
+	public ResponseEntity<?> addTvShow (@RequestBody TvShowDTO tvShowDTO) {
+		try {
+			TvShowDTO added = tvShowService.addTvShow(tvShowDTO);
+			log.debug("TvShow added successfully in db");
+			return ResponseEntity.status(HttpStatus.CREATED).body(added);
+		} catch ( BadRequestException e ) {
+			log.error("Error in adding tvShow: {}", e.getMessage(), e);
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+		}
 	}
 
 	@PutMapping("{id}")
 	public ResponseEntity<?> updateShow (@RequestBody TvShowDTO tvShowDTO, @PathVariable Long id){
 		try {
+			TvShowDTO updated = tvShowService.updateShow(tvShowDTO, id);
 			log.debug("Show updated successfully");
-			return ResponseEntity.ok(tvShowService.updateShow(tvShowDTO, id));
-		}catch ( BadRequestException e ){
-			log.error("Error in updating show with id {}: {}",id, e.getMessage());
+			return ResponseEntity.ok(updated);
+		}catch ( NoSuchElementException e ){
+			log.error("Error in updating show with id {}: {}",id, e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 	}
@@ -59,7 +68,7 @@ public class TvShowController {
 	public ResponseEntity<?> updateShowField (@PathVariable Long id, @RequestParam(name = "field") String fieldName, @RequestBody Object value){
 		try{
 			return ResponseEntity.ok(tvShowService.updateShowField(id,value, fieldName));
-		} catch ( BadRequestException e ) {
+		} catch ( NoSuchElementException e ) {
 			log.error("Error in updating product with id {}: {}", id, e.getMessage());
 			return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
