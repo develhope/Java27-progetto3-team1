@@ -16,6 +16,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/rentals")
 public class RentalController {
 
     private final RentalService rentalService;
