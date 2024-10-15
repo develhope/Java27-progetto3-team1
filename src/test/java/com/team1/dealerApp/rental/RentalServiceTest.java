@@ -12,6 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 
 import java.time.LocalDateTime;
@@ -107,5 +110,12 @@ class RentalServiceTest {
         RentalDTO result = rentalService.addRental(userId, createRentalDTO);
 
         assertEquals(40.0, rental.getRentalPrice());  // Assert the rental price is correct
+    }
+
+    @Test
+    void testGetAllRentalByUserId_ThrowsNoSuchElementException() {
+        Pageable pageable = PageRequest.of(0, 10);
+        when(rentalRepository.findByRenterId(userId, pageable)).thenReturn(Page.empty());
+        assertThrows(NoSuchElementException.class, () -> rentalService.getAllRentalByUserId(userId, 0, 10));
     }
 }
