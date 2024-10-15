@@ -142,4 +142,11 @@ class RentalServiceTest {
 
         assertEquals(newEndDate, rental.getEndDate());
     }
+
+    @Test
+    void testUpdateRentalEndDate_ThrowsNoSuchElementException() {
+        when(rentalRepository.findById(rentalId)).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchElementException.class, () -> rentalService.updateRentalEndDate(rentalId, LocalDateTime.now()));
+    }
 }
