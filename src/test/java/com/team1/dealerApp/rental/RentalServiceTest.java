@@ -22,8 +22,7 @@ import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 
@@ -149,4 +148,17 @@ class RentalServiceTest {
 
         assertThrows(NoSuchElementException.class, () -> rentalService.updateRentalEndDate(rentalId, LocalDateTime.now()));
     }
+
+    @Test
+    void testDeleteRental() {
+        when(rentalRepository.findById(rentalId)).thenReturn(Optional.of(rental));
+
+        rentalService.deleteRental(rentalId);
+
+        when(rentalRepository.findById(rentalId)).thenReturn(Optional.empty());
+
+        Optional<Rental> deletedRental = rentalRepository.findById(rentalId);
+        assertTrue(deletedRental.isEmpty());
+    }
+
 }
