@@ -16,21 +16,15 @@ public class UserController {
 
     private final UserService userService;
 
-
-    @PostMapping()
-    public ResponseEntity<?> createUser(@RequestBody CreateUserDTO createUserDTO) throws Exception {
-
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody CreateUserDTO userDTO) {
         try {
-            UserDTO userDTO = userService.createUser(createUserDTO);
-            log.debug("User added in database {}", userDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
-        } catch (Exception e) {
-            log.error("Error in add new User {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            userService.registerUser(userDTO);
+            return ResponseEntity.ok("User registered successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
     }
-
 
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable("userId") UUID id) {
@@ -43,7 +37,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
 
     @PutMapping("/{userId}")
     public ResponseEntity<?> updateUser(@PathVariable("userId") UUID id, @RequestBody CreateUserDTO createUserDTO) throws Exception {
