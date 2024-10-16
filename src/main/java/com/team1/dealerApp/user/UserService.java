@@ -44,10 +44,10 @@ public class UserService {
     }
 
 
-    public User registerUser(CreateUserDTO userDTO) {
+    public User registerUser(CreateUserDTO userDTO) throws BadRequestException {
         User user = userMapper.toUser(userDTO);
         if(userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new BadRequestException("Email already exists");
         }
         // Crittografia della password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
