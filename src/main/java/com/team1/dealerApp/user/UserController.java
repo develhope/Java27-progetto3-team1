@@ -2,10 +2,12 @@ package com.team1.dealerApp.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Slf4j
@@ -29,20 +31,20 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable("userId") UUID id) {
         try {
-            UserDTO userDTO = userService.getUserById(id);
-            log.debug("User whti id: {} found", id);
+            UserDTO userDTO = userService.getUserDTOById(id);
+            log.debug("User with id: {} found", id);
             return ResponseEntity.status(HttpStatus.FOUND).body(userDTO);
-        } catch (Exception e) {
+        } catch (NoSuchElementException e) {
             log.error("Error in getting User by Id: {} - {}", id, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<?> updateUser(@PathVariable("userId") UUID id, @RequestBody CreateUserDTO createUserDTO) throws Exception {
+    public ResponseEntity<?> updateUser(@PathVariable("userId") UUID id, @RequestBody CreateUserDTO createUserDTO){
         try {
             return ResponseEntity.ok(userService.updateUser(id, createUserDTO));
-        } catch (Exception e) {
+        } catch (NoSuchElementException e) {
             log.error("Error in update User whit Id: {} - {}", id, e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

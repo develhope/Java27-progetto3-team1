@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -17,16 +18,17 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public UserDTO getUserById(UUID id) throws Exception {
+
+    public UserDTO getUserDTOById(UUID id) throws NoSuchElementException{
         User getUser = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User with Id " + id + " not found"));
+                .orElseThrow(() -> new NoSuchElementException("User with Id " + id + " not found"));
         return userMapper.toUserDTO(getUser);
     }
 
-    public UserDTO updateUser(UUID id, CreateUserDTO createUserDTO) throws Exception {
+    public UserDTO updateUser(UUID id, CreateUserDTO createUserDTO) throws NoSuchElementException {
 
         if (!userRepository.existsById(id)) {
-            throw new EntityNotFoundException("This User doesn't exist");
+            throw new NoSuchElementException("This User doesn't exist");
         }
 
         User updateUser = userMapper.toUser(createUserDTO);
@@ -41,6 +43,7 @@ public class UserService {
         return true;
     }
 
+
     public User registerUser(CreateUserDTO userDTO) {
         User user = userMapper.toUser(userDTO);
         if(userRepository.existsByEmail(user.getEmail())) {
@@ -49,6 +52,11 @@ public class UserService {
         // Crittografia della password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
+    }
+
+    public User getUserById(UUID id) throws NoSuchElementException{
+        return userRepository.findById(id).orElseThrow(()-> new NoSuchElementException("No User with Id " + id));
+
     }
 
 }
