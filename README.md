@@ -39,7 +39,6 @@ Per ogni Film avremo una serie di attributi:
 
 ## Acquisto
 Per ogni noleggio/acquisto avremo:
-- Abbonamento
 - Flag pagato
 - Stato ordine
 - Film/serie ordinato/acquistato
