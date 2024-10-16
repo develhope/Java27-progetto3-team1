@@ -22,15 +22,9 @@ public class Purchase {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "subscription_status",nullable = false)
-    private SubscriptionStatus subscriptionStatus;
-
-    @Enumerated(EnumType.STRING)
     @Column(name = "order_status",nullable = false)
     private OrderStatus orderStatus;
 
-    @Column //(nullable = false) ???
-    private boolean paid;
 
     @ManyToMany
     @JoinTable(
