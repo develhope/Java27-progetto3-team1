@@ -17,11 +17,11 @@ public class RentalMapper {
                 .id(rental.getId())
                 .startDate(rental.getStartDate())
                 .endDate(rental.getEndDate())
-                .paid(rental.isPaid())
                 .rentalPrice(rental.getRentalPrice())
                 .userId(rental.getRenter().getId())
                 .movies(rental.getMovies())
                 .tvShows(rental.getTvShows())
+                .rentalStatus(rental.getRentalStatus())
                 .build();
     }
 }
