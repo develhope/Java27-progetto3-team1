@@ -3,6 +3,8 @@ package com.team1.dealerApp.user;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -13,18 +15,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-
-    public UserDTO createUser(CreateUserDTO createUserDTO) throws Exception {
-
-        if (createUserDTO.getEmail() == null || createUserDTO.getPassword() == null) {
-            throw new BadRequestException("Either Email or Password is null");
-        }
-
-        User newUser = userMapper.fromCreateUserDTOToUser(createUserDTO);
-        userRepository.save(newUser);
-
-        return userMapper.toUserDTO(newUser);
-    }
+    private final PasswordEncoder passwordEncoder;
 
     public UserDTO getUserById(UUID id) throws Exception {
         User getUser = userRepository.findById(id)
@@ -38,7 +29,7 @@ public class UserService {
             throw new EntityNotFoundException("This User doesn't exist");
         }
 
-        User updateUser = userMapper.fromCreateUserDTOToUser(createUserDTO);
+        User updateUser = userMapper.toUser(createUserDTO);
         updateUser.setId(id);
         userRepository.save(updateUser);
 
@@ -48,6 +39,16 @@ public class UserService {
     public boolean deleteUser(UUID id) {
         userRepository.deleteById(id);
         return true;
+    }
+
+    public User registerUser(CreateUserDTO userDTO) {
+        User user = userMapper.toUser(userDTO);
+        if(userRepository.existsByEmail(user.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+        // Crittografia della password
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
     }
 
 }
