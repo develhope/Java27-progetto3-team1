@@ -30,7 +30,7 @@ public class UserMapper {
 	}
 
 
-	public User fromCreateUserDTOToUser ( CreateUserDTO createUserDTO ) {
+	public User toUser ( CreateUserDTO createUserDTO ) {
 		 return User.builder()
 				 .firstName(createUserDTO.getFirstName())
 				 .lastName(createUserDTO.getLastName())
@@ -39,6 +39,7 @@ public class UserMapper {
 				 .subscriptionStatus(createUserDTO.getSubscriptionStatus())
 				 .watchedMovies(createUserDTO.getWatchedMovies())
 				 .watchedShows(createUserDTO.getWatchedShows())
+				 .password(createUserDTO.getPassword())
 				 .build();
 	}
 

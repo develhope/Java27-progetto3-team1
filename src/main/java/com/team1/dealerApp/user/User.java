@@ -30,7 +30,7 @@ public class User {
 	private String lastName;
 
 	@Setter
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private String email;
 
 	@Setter
