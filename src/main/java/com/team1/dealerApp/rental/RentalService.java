@@ -54,7 +54,8 @@ public class RentalService {
         return rentalMapper.toDTO(rentalFound);
     }
 
-    public void deleteRental(Long id) {
+    public boolean deleteRental(Long id) {
         rentalRepository.deleteById(id);
+        return true;
     }
 }
