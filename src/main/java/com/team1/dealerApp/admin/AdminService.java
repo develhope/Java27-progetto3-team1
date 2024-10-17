@@ -27,9 +27,9 @@ public class AdminService {
         return adminMapper.toAdminDTO(newAdmin);
     }
 
-    public AdminDTO getAdminById(UUID id) throws Exception {
+    public AdminDTO getAdminById(UUID id) throws NoSuchElementException{
         Admin getAdmin = adminRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Admin with Id " + id + " not found"));
+                .orElseThrow(() -> new NoSuchElementException("Admin with Id " + id + " not found"));
         return adminMapper.toAdminDTO(getAdmin);
     }
 
