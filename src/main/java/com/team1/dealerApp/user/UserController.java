@@ -20,48 +20,31 @@ public class UserController {
 
 
     @PostMapping()
-    public ResponseEntity<?> createUser(@RequestBody CreateUserDTO createUserDTO){
-
-        try {
+    public ResponseEntity<UserDTO> createUser(@RequestBody CreateUserDTO createUserDTO) throws BadRequestException{
             UserDTO userDTO = userService.createUser(createUserDTO);
             log.debug("User added in database {}", userDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
-        } catch (BadRequestException e) {
-            log.error("Error in add new User {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
 
     }
 
 
     @GetMapping("/{userId}")
-    public ResponseEntity<?> getUserById(@PathVariable("userId") UUID id) {
-        try {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable("userId") UUID id) throws NoSuchElementException {
             UserDTO userDTO = userService.getUserDTOById(id);
             log.debug("User with id: {} found", id);
             return ResponseEntity.status(HttpStatus.FOUND).body(userDTO);
-        } catch (NoSuchElementException e) {
-            log.error("Error in getting User by Id: {} - {}", id, e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
 
 
     @PutMapping("/{userId}")
-    public ResponseEntity<?> updateUser(@PathVariable("userId") UUID id, @RequestBody CreateUserDTO createUserDTO){
-        try {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable("userId") UUID id, @RequestBody CreateUserDTO createUserDTO) throws NoSuchElementException{
             return ResponseEntity.ok(userService.updateUser(id, createUserDTO));
-        } catch (NoSuchElementException e) {
-            log.error("Error in update User whit Id: {} - {}", id, e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
     }
 
 
     @DeleteMapping
-    public ResponseEntity deleteUser(@PathVariable("userId") UUID id) {
-        userService.deleteUser(id);
-        return ResponseEntity.status(200).build();
+    public ResponseEntity<Boolean> deleteUser(@PathVariable("userId") UUID id) {
+        return ResponseEntity.ok(userService.deleteUser(id));
     }
 
 }
