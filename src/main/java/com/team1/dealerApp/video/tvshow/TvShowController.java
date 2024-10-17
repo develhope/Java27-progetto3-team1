@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @SuppressWarnings("unused")
@@ -19,65 +20,39 @@ public class TvShowController {
 	private final TvShowService tvShowService;
 
 	@GetMapping
-	public ResponseEntity<?> getAllUsers (){
-		try {
-			return ResponseEntity.ok(tvShowService.getAllShows());
-		}catch ( BadRequestException e ){
-			log.error("Error in getting users: {}", e.getMessage());
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		}
+	public ResponseEntity<List<TvShowDTO>> getAllShows () throws BadRequestException{
+		return ResponseEntity.ok(tvShowService.getAllShows());
 	}
 
 	@GetMapping("{id}")
-	public ResponseEntity<?> getShowById ( @PathVariable Long id ){
-		try {
+	public ResponseEntity<TvShowDTO> getShowById ( @PathVariable Long id ) throws BadRequestException{
 			TvShowDTO tvShowDTO = tvShowService.getShowById(id);
 			log.debug("Found user with id: {}", id);
 			return ResponseEntity.ok(tvShowDTO);
-		}catch ( BadRequestException e ){
-			log.error("Error in getting user: {}", e.getMessage());
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		}
 	}
 
 	@PostMapping()
-	public ResponseEntity<?> addTvShow (@RequestBody TvShowDTO tvShowDTO) {
-		try {
+	public ResponseEntity<TvShowDTO> addTvShow (@RequestBody TvShowDTO tvShowDTO) throws BadRequestException {
 			TvShowDTO added = tvShowService.addTvShow(tvShowDTO);
 			log.debug("TvShow added successfully in db");
 			return ResponseEntity.status(HttpStatus.CREATED).body(added);
-		} catch ( BadRequestException e ) {
-			log.error("Error in adding tvShow: {}", e.getMessage(), e);
-			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-		}
 	}
 
 	@PutMapping("{id}")
-	public ResponseEntity<?> updateShow (@RequestBody TvShowDTO tvShowDTO, @PathVariable Long id){
-		try {
+	public ResponseEntity<TvShowDTO> updateShow (@RequestBody TvShowDTO tvShowDTO, @PathVariable Long id) throws NoSuchElementException{
 			TvShowDTO updated = tvShowService.updateShow(tvShowDTO, id);
 			log.debug("Show updated successfully");
 			return ResponseEntity.ok(updated);
-		}catch ( NoSuchElementException e ){
-			log.error("Error in updating show with id {}: {}",id, e.getMessage(), e);
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		}
 	}
 
 	@PatchMapping("{id}")
-	public ResponseEntity<?> updateShowField (@PathVariable Long id, @RequestParam(name = "field") String fieldName, @RequestBody Object value){
-		try{
+	public ResponseEntity<TvShowDTO> updateShowField (@PathVariable Long id, @RequestParam(name = "field") String fieldName, @RequestBody Object value) throws NoSuchElementException{
 			return ResponseEntity.ok(tvShowService.updateShowField(id,value, fieldName));
-		} catch ( NoSuchElementException e ) {
-			log.error("Error in updating product with id {}: {}", id, e.getMessage());
-			return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		}
 	}
 
 	@DeleteMapping("{id}")
-	public ResponseEntity<?> deleteShowById (@PathVariable Long id){
-		tvShowService.deleteShowById(id);
-		return ResponseEntity.ok().build();
+	public ResponseEntity<Boolean> deleteShowById (@PathVariable Long id){
+		return ResponseEntity.ok(tvShowService.deleteShowById(id));
 	}
 
 }
