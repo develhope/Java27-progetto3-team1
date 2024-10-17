@@ -38,18 +38,18 @@ public class PurchaseService {
         purchaseUser.setPurchasePrice(totalPurchasePrice);
         purchaseUser.setPurchaser(userService.getUserById(userId));
 
-        return purchaseMapper.toPurchaseDTO(purchaseUser);
+        return purchaseMapper.toDTO(purchaseUser);
     }
 
 
     public Page<PurchaseDTO> getPurchaseByUserId(UUID userId, int page, int size) throws NoSuchElementException {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Purchase> purchaseFind = purchaseRepository.findByPurchaseUserId(userId,pageable);
+        Page<Purchase> purchaseFind = purchaseRepository.findByPurchaseUserId(userId, pageable);
 
-        if(purchaseFind.isEmpty()){
+        if (purchaseFind.isEmpty()) {
             throw new NoSuchElementException("Purchase's list is empty");
         }
-        return purchaseFind.map(purchaseMapper::toPurchaseDTO);
+        return purchaseFind.map(purchaseMapper::toDTO);
     }
 
 
@@ -61,11 +61,12 @@ public class PurchaseService {
         purchaseRepository.save(purchaseSelected);
         purchaseSelected.setId(id);
 
-        return purchaseMapper.toPurchaseDTO(purchaseSelected);
+        return purchaseMapper.toDTO(purchaseSelected);
     }
 
 
-    public void deletePurchaseById(Long id) {
+    public boolean deletePurchaseById(Long id) {
         purchaseRepository.deleteById(id);
+        return true;
     }
 }

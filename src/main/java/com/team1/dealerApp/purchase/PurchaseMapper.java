@@ -2,14 +2,14 @@ package com.team1.dealerApp.purchase;
 
 public class PurchaseMapper {
 
-    public Purchase toPurchase(CreatePurchaseDTO createPurchaseDTO){
+    public Purchase toPurchase(CreatePurchaseDTO createPurchaseDTO) {
         return Purchase.builder()
                 .movies(createPurchaseDTO.getMovies())
                 .tvShows(createPurchaseDTO.getTvShows())
                 .build();
     }
 
-    public PurchaseDTO toPurchaseDTO(Purchase purchase){
+    public PurchaseDTO toDTO(Purchase purchase) {
         return PurchaseDTO.builder()
                 .id(purchase.getId())
                 .purchasePrice(purchase.getPurchasePrice())
