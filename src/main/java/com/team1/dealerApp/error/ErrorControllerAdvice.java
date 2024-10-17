@@ -10,13 +10,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
-public class ErrorController extends ResponseEntityExceptionHandler {
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity< ErrorDTO > handleException (Exception e){
-        ErrorDTO errorDTO = ErrorDTO.builder().errorMessage(e.getMessage()).build();
-        return new ResponseEntity <>(errorDTO, HttpStatus.BAD_GATEWAY);
-    }
+public class ErrorControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorDTO> handleBadRequestException (BadRequestException e){
