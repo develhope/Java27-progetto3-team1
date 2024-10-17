@@ -1,6 +1,5 @@
 package com.team1.dealerApp.purchase;
 
-import com.team1.dealerApp.user.SubscriptionStatus;
 import com.team1.dealerApp.user.User;
 import com.team1.dealerApp.video.movie.Movie;
 import com.team1.dealerApp.video.tvshow.TvShow;
@@ -25,6 +24,8 @@ public class Purchase {
     @Column(name = "order_status",nullable = false)
     private OrderStatus orderStatus;
 
+    @Column(name = "purchase_price", nullable = false)
+    private double purchasePrice;
 
     @ManyToMany
     @JoinTable(
