@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -14,7 +15,7 @@ public class AdminService {
     private final AdminRepository adminRepository;
     private final AdminMapper adminMapper;
 
-    public AdminDTO createAdmin(CreateAdminDTO createAdminDTO) throws Exception {
+    public AdminDTO createAdmin(CreateAdminDTO createAdminDTO) throws BadRequestException {
 
         if (createAdminDTO.getEmail() == null || createAdminDTO.getPassword() == null) {
             throw new BadRequestException("Either Email or Password is null");
@@ -32,7 +33,7 @@ public class AdminService {
         return adminMapper.toAdminDTO(getAdmin);
     }
 
-    public AdminDTO updateAdmin(UUID id, CreateAdminDTO createAdminDTO) throws Exception {
+    public AdminDTO updateAdmin(UUID id, CreateAdminDTO createAdminDTO) throws NoSuchElementException {
 
         if (!adminRepository.existsById(id)) {
             throw new EntityNotFoundException("This Admin doesn't exist");

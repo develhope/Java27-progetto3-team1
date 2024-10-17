@@ -30,6 +30,7 @@ public class AdminMapper {
                 .firstName(createAdminDTO.getFirstName())
                 .lastName(createAdminDTO.getLastName())
                 .email(createAdminDTO.getEmail())
+                .password(createAdminDTO.getPassword())
                 .phoneNumber(createAdminDTO.getPhoneNumber())
                 .build();
     }
