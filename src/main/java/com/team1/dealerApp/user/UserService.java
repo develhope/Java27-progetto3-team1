@@ -1,6 +1,5 @@
 package com.team1.dealerApp.user;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,7 +18,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
 
-    public UserDTO getUserDTOById(UUID id) throws NoSuchElementException{
+    public UserDTO getUserDTOById(UUID id) throws NoSuchElementException {
         User getUser = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User with Id " + id + " not found"));
         return userMapper.toUserDTO(getUser);
@@ -46,7 +45,7 @@ public class UserService {
 
     public User registerUser(CreateUserDTO userDTO) throws BadRequestException {
         User user = userMapper.toUser(userDTO);
-        if(userRepository.existsByEmail(user.getEmail())) {
+        if (userRepository.existsByEmail(user.getEmail())) {
             throw new BadRequestException("Email already exists");
         }
         // Crittografia della password
@@ -54,8 +53,8 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User getUserById(UUID id) throws NoSuchElementException{
-        return userRepository.findById(id).orElseThrow(()-> new NoSuchElementException("No User with Id " + id));
+    public User getUserById(UUID id) throws NoSuchElementException {
+        return userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No User with Id " + id));
 
     }
 
