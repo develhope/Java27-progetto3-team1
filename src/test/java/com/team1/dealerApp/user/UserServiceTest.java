@@ -69,9 +69,9 @@ public class UserServiceTest {
         userId = UUID.randomUUID();
 
         user.setId(userId);
-        user.setFirstName("Simone");
-        user.setLastName("Cuccu");
-        user.setEmail("simone.cuccu3@gmail.com");
+        user.setFirstName("Mario");
+        user.setLastName("Rossi");
+        user.setEmail("mario.rossi@gmail.com");
         user.setPhoneNumber("3331234567");
         user.setSubscriptionStatus(SubscriptionStatus.FULL_SUBSCRIPTION);
         user.setWatchedMovies(whatchedMovieList);
@@ -80,9 +80,9 @@ public class UserServiceTest {
 
         createUserDTO = new CreateUserDTO();
 
-        createUserDTO.setFirstName("Simone");
-        createUserDTO.setLastName("Cuccu");
-        createUserDTO.setEmail("simone.cuccu3@gmail.com");
+        createUserDTO.setFirstName("Mario");
+        createUserDTO.setLastName("Rossi");
+        createUserDTO.setEmail("mario.rossi@gmail.com");
         createUserDTO.setPhoneNumber("3331234567");
         createUserDTO.setSubscriptionStatus(SubscriptionStatus.FULL_SUBSCRIPTION);
         createUserDTO.setWatchedMovies(whatchedMovieList);
@@ -161,7 +161,7 @@ public class UserServiceTest {
     }
 
 
-    //Test per deeleteUser
+    //Test per deleteUser
     @Test
     void testDeleteUser() {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
