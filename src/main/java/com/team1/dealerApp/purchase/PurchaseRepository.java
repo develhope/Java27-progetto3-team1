@@ -1,0 +1,14 @@
+package com.team1.dealerApp.purchase;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.UUID;
+
+@Repository
+public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
+    Page<Purchase> findByUserId(UUID userId, Pageable pageable);
+
+}

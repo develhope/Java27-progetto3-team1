@@ -33,7 +33,7 @@ public class RentalService {
         userRental.setStartDate(LocalDateTime.now());
         userRental.setEndDate(LocalDateTime.now().plusDays(14));
         userRental.setRenter(userService.getUserById(userId));
-        userRental.setPaid(true);
+        userRental.setRentalStatus(RentalStatus.ACTIVE);
         rentalRepository.save(userRental);
         return rentalMapper.toDTO(userRental);
 

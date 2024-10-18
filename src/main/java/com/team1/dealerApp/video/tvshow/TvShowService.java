@@ -72,8 +72,9 @@ public class TvShowService {
 		return tvShowMapper.toTvShowDTO(updated);
 	}
 
-	public void deleteShowById ( Long id ){
+	public boolean deleteShowById ( Long id ){
 		tvShowRepository.deleteById(id);
+		return true;
 	}
 
 }

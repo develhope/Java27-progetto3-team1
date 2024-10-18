@@ -31,7 +31,8 @@ public class Rental {
     private double rentalPrice;
 
     @Column
-    private boolean paid;
+    @Enumerated(EnumType.STRING)
+    private RentalStatus rentalStatus;
 
     @ManyToMany
     @JoinTable(

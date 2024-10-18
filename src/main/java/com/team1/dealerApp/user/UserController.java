@@ -18,8 +18,7 @@ public class UserController {
 
     private final UserService userService;
 
-
-    @PostMapping()
+    @PostMapping("/register")
     public ResponseEntity<UserDTO> createUser(@RequestBody CreateUserDTO createUserDTO) throws BadRequestException{
             UserDTO userDTO = userService.createUser(createUserDTO);
             log.debug("User added in database {}", userDTO);
@@ -27,14 +26,12 @@ public class UserController {
 
     }
 
-
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable("userId") UUID id) throws NoSuchElementException {
             UserDTO userDTO = userService.getUserDTOById(id);
             log.debug("User with id: {} found", id);
             return ResponseEntity.status(HttpStatus.FOUND).body(userDTO);
     }
-
 
     @PutMapping("/{userId}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable("userId") UUID id, @RequestBody CreateUserDTO createUserDTO) throws NoSuchElementException{
