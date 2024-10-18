@@ -44,10 +44,10 @@ public class PurchaseService {
 
     public Page<PurchaseDTO> getPurchaseByUserId(UUID userId, int page, int size) throws NoSuchElementException {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Purchase> purchaseFind = purchaseRepository.findByPurchaseUserId(userId, pageable);
+        Page<Purchase> purchaseFind = purchaseRepository.findByUserId(userId, pageable);
 
         if (purchaseFind.isEmpty()) {
-            throw new NoSuchElementException("Purchase's list is empty");
+            throw new NoSuchElementException("User with id " + userId + " has no purchases");
         }
         return purchaseFind.map(purchaseMapper::toDTO);
     }
@@ -58,8 +58,8 @@ public class PurchaseService {
                 .orElseThrow(() -> new NoSuchElementException("Purchase whit " + id + " not found!"));
 
         Purchase purchaseSelected = purchaseMapper.toPurchase(createPurchaseDTO);
-        purchaseRepository.save(purchaseSelected);
         purchaseSelected.setId(id);
+        purchaseRepository.save(purchaseSelected);
 
         return purchaseMapper.toDTO(purchaseSelected);
     }
