@@ -1,8 +1,7 @@
-package com.team1.dealerApp;
+package com.team1.dealerApp.user;
 
 import com.team1.dealerApp.rental.Rental;
 import com.team1.dealerApp.rental.RentalStatus;
-import com.team1.dealerApp.user.*;
 
 import com.team1.dealerApp.video.Genre;
 import com.team1.dealerApp.video.VideoStatus;
