@@ -2,7 +2,6 @@ package com.team1.dealerApp.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,16 +16,6 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
-
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody CreateUserDTO userDTO) {
-        try {
-            userService.registerUser(userDTO);
-            return ResponseEntity.ok("User registered successfully");
-        } catch (BadRequestException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable("userId") UUID id) {
