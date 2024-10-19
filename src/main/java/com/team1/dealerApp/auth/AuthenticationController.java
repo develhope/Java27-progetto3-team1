@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.NoSuchElementException;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -21,7 +23,7 @@ public class AuthenticationController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<AuthenticationResponse> register ( @RequestBody AuthenticationRequest request ){
+	public ResponseEntity<AuthenticationResponse> register ( @RequestBody AuthenticationRequest request ) throws NoSuchElementException {
 		return ResponseEntity.ok(authService.authenticate(request));
 	}
 

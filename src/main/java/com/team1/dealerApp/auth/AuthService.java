@@ -45,7 +45,7 @@ public class AuthService {
 				.build();
 	}
 
-	public AuthenticationResponse authenticate( AuthenticationRequest request ) {
+	public AuthenticationResponse authenticate( AuthenticationRequest request ) throws NoSuchElementException{
 
 		authenticationManager.authenticate( new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()) );
 
