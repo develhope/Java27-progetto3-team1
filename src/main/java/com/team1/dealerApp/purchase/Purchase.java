@@ -24,6 +24,8 @@ public class Purchase {
     @Column(name = "order_status",nullable = false)
     private OrderStatus orderStatus;
 
+    @Column(name = "purchase_price", nullable = false)
+    private double purchasePrice;
 
     @ManyToMany
     @JoinTable(
