@@ -46,7 +46,7 @@ public class ApplicationConfig {
 	/**
 	 * Crea un bean per ottenere l'istanza di AuthenticationManager utilizzando la configurazione Spring Security.
 	 *
-	 * @param config
+	 * @param config la configurazione per l'autenticazione
 	 * @return l'authenticationManager del config passato in ingresso
 	 * @throws Exception
 	 */
