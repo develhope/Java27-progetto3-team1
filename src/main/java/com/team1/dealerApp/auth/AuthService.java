@@ -2,6 +2,7 @@ package com.team1.dealerApp.auth;
 
 import com.team1.dealerApp.config.JwtService;
 import com.team1.dealerApp.user.Role;
+import com.team1.dealerApp.user.SubscriptionStatus;
 import com.team1.dealerApp.user.User;
 import com.team1.dealerApp.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class AuthService {
 				.email( request.getEmail() )
 				.password(passwordEncoder.encode(request.getPassword()))
 				.phoneNumber(request.getPhoneNumber())
-				.subscriptionStatus(request.getSubscriptionStatus())
+				.subscriptionStatus(SubscriptionStatus.NOT_SUBSCRIBED)
 				.role(Role.USER)
 				.build();
 
