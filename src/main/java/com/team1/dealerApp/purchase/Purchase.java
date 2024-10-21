@@ -45,7 +45,7 @@ public class Purchase {
     private List<TvShow> tvShows;
 
     @ManyToOne
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     private User purchaser;
 
 }

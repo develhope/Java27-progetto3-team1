@@ -2,7 +2,6 @@ package com.team1.dealerApp.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,14 +16,6 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
-
-    @PostMapping("/register")
-    public ResponseEntity<UserDTO> createUser(@RequestBody CreateUserDTO createUserDTO) throws BadRequestException{
-            UserDTO userDTO = userService.createUser(createUserDTO);
-            log.debug("User added in database {}", userDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
-
-    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable("userId") UUID id) throws NoSuchElementException {

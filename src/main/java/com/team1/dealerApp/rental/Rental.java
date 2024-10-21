@@ -52,7 +52,7 @@ public class Rental {
     private List<TvShow> tvShows;
 
     @ManyToOne
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     private User renter;
 
 

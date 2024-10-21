@@ -5,7 +5,12 @@ import com.team1.dealerApp.video.movie.Movie;
 import com.team1.dealerApp.video.tvshow.TvShow;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,10 +20,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuppressWarnings("unused")
-public class User {
+public class User implements UserDetails {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.UUID)
+	@Setter
 	private UUID id;
 
 	@Setter
@@ -39,7 +45,10 @@ public class User {
 
 	@Setter
 	@Column(nullable = false)
-	private String password;//ToDo: integrare Spring Security per non salvare password in chiaro
+	private String password;
+
+	@Enumerated(EnumType.STRING)
+	private Role role;
 
 	@Setter
 	@Column(name = "subscription_status")
@@ -58,7 +67,14 @@ public class User {
 	@OneToMany(mappedBy = "renter")
 	private List<Rental> rentals;
 
-	public void setId(UUID id) {
+	@Override
+	public Collection < ? extends GrantedAuthority > getAuthorities() {
+		return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
+	}
+
+	@Override
+	public String getUsername() {
+		return email;
 	}
 
 }
