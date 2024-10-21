@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,8 @@ public class JwtService {
 	/**
 	 * La chiave segreta a 256bit utilizzata per firmare il token
 	 */
-	private static final String secretKey = "cf0e0500f818df14ba9121585cae3bc9653bd0f3543b5c67d3f218babdb703e7";
+	@Value("${application.security.jwt.secret-key}")
+	private String secretKey;
 
 	/**
 	 * Recupera lo username dell'utente dal token
