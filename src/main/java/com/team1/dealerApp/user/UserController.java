@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -30,9 +31,14 @@ public class UserController {
     }
 
 
-    @DeleteMapping
+    @DeleteMapping("/{userId}")
     public ResponseEntity<Boolean> deleteUser(@PathVariable("userId") UUID id) {
         return ResponseEntity.ok(userService.deleteUser(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAllUser(){
+        return ResponseEntity.ok(userService.getAllUser());
     }
 
 }

@@ -57,18 +57,18 @@ class AdminServiceTest {
     }
 
     @Test
-    void testCreateAdmin_ThrowsBadRequestException() {
+    void testRegisterAdmin_ThrowsBadRequestException() {
         createAdminDTO.setEmail(null);
         createAdminDTO.setPassword(null);
-        assertThrows(BadRequestException.class, () -> adminService.createAdmin(createAdminDTO));
+        assertThrows(BadRequestException.class, () -> adminService.registerAdmin(createAdminDTO));
     }
 
     @Test
-    void testCreateAdmin_Successful() throws BadRequestException {
-        when(adminMapper.fromCreateAdminDTOToAdmin(createAdminDTO)).thenReturn(admin);
+    void testRegisterAdmin_Successful() throws BadRequestException {
+        when(adminMapper.toAdmin(createAdminDTO)).thenReturn(admin);
         when(adminMapper.toAdminDTO(admin)).thenReturn(adminDTO);
 
-        AdminDTO result = adminService.createAdmin(createAdminDTO);
+        AdminDTO result = adminService.registerAdmin(createAdminDTO);
 
         assertEquals("admin@example.com", result.getEmail());
     }
@@ -100,7 +100,7 @@ class AdminServiceTest {
     @Test
     void testUpdateAdmin() {
         when(adminRepository.existsById(adminId)).thenReturn(true);
-        when(adminMapper.fromCreateAdminDTOToAdmin(createAdminDTO)).thenReturn(admin);
+        when(adminMapper.toAdmin(createAdminDTO)).thenReturn(admin);
         when(adminMapper.toAdminDTO(admin)).thenReturn(adminDTO);
 
         AdminDTO result = adminService.updateAdmin(adminId, createAdminDTO);

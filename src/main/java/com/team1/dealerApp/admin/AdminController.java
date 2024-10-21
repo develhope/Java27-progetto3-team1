@@ -18,11 +18,6 @@ public class AdminController {
     private final AdminService adminService;
 
 
-    @PostMapping()
-    public ResponseEntity<AdminDTO> createAdmin(@RequestBody CreateAdminDTO createAdminDTO) throws BadRequestException {
-        log.debug("Admin created: {}", createAdminDTO);
-        return ResponseEntity.ok(adminService.createAdmin(createAdminDTO));
-    }
 
     @GetMapping("/{adminId}")
     public ResponseEntity<AdminDTO> getAdminById(@PathVariable("adminId") UUID adminId) throws NoSuchElementException {

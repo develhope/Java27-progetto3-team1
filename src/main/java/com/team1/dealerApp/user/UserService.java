@@ -1,12 +1,11 @@
 package com.team1.dealerApp.user;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -44,14 +43,15 @@ public class UserService {
     }
 
 
-    public User registerUser(CreateUserDTO userDTO) throws BadRequestException {
+    public UserDTO registerUser(CreateUserDTO userDTO) throws BadRequestException {
         User user = userMapper.toUser(userDTO);
         if(userRepository.existsByEmail(user.getEmail())) {
             throw new BadRequestException("Email already exists");
         }
         // Crittografia della password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+         userRepository.save(user);
+         return userMapper.toUserDTO(user);
     }
 
     public User getUserById(UUID id) throws NoSuchElementException{
@@ -59,4 +59,8 @@ public class UserService {
 
     }
 
+    public List<UserDTO> getAllUser() {
+        List<User> allUser= userRepository.findAll();
+        return allUser.stream().map(u-> userMapper.toUserDTO(u)).toList();
+    }
 }

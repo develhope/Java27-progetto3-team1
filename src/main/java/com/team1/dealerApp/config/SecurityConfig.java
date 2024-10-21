@@ -25,7 +25,7 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 				.csrf(AbstractHttpConfigurer::disable) // Disabilitiamo CSRF poiché gestiamo sessioni stateless
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/register", "/auth/login").permitAll() // Rotte di autenticazione pubbliche
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/user/register", "/auth/login", "/admin/register").permitAll() // Rotte di autenticazione pubbliche
 						.anyRequest().authenticated() // Tutte le altre richiedono autenticazione
 				)
 				.sessionManagement(session -> session.sessionCreationPolicy(STATELESS) // Disabilitare sessioni per gestire il login in maniera stateless tramite token

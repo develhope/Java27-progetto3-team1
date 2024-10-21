@@ -25,7 +25,7 @@ public class AdminMapper {
     }
 
 
-    public Admin fromCreateAdminDTOToAdmin ( CreateAdminDTO createAdminDTO ) {
+    public Admin toAdmin(CreateAdminDTO createAdminDTO ) {
         return Admin.builder()
                 .firstName(createAdminDTO.getFirstName())
                 .lastName(createAdminDTO.getLastName())
