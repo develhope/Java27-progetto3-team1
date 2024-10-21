@@ -5,6 +5,7 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -58,4 +59,8 @@ public class UserService {
 
     }
 
+    public List<UserDTO> getAllUser() {
+        List<User> allUser= userRepository.findAll();
+        return allUser.stream().map(u-> userMapper.toUserDTO(u)).toList();
+    }
 }
