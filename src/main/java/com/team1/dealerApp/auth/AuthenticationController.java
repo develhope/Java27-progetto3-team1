@@ -17,14 +17,20 @@ public class AuthenticationController {
 
 	private final AuthService authService;
 
-	@PostMapping("/register")
+
+	@PostMapping("/user/register")
 	public ResponseEntity< AuthenticationResponse > register ( @RequestBody RegisterRequest request ) throws BadRequestException {
 		return ResponseEntity.ok(authService.register(request));
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<AuthenticationResponse> register ( @RequestBody AuthenticationRequest request ) throws NoSuchElementException {
+	public ResponseEntity<AuthenticationResponse> login ( @RequestBody AuthenticationRequest request ) throws NoSuchElementException {
 		return ResponseEntity.ok(authService.authenticate(request));
+	}
+
+	@PostMapping("/admin/register")
+	public ResponseEntity<AuthenticationResponse> registerAdmin (@RequestBody RegisterRequest request) throws BadRequestException {
+		return ResponseEntity.ok(authService.registerAdmin(request));
 	}
 
 }
