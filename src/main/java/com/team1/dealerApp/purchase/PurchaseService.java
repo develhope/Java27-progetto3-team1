@@ -44,7 +44,7 @@ public class PurchaseService {
 
     public Page<PurchaseDTO> getPurchaseByUserId(UUID userId, int page, int size) throws NoSuchElementException {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Purchase> purchaseFind = purchaseRepository.findByUserId(userId, pageable);
+        Page<Purchase> purchaseFind = purchaseRepository.findByPurchaserId(userId, pageable);
 
         if (purchaseFind.isEmpty()) {
             throw new NoSuchElementException("User with id " + userId + " has no purchases");
