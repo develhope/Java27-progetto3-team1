@@ -61,7 +61,7 @@ public class AuthService {
 					.token( token )
 					.build();
 
-		} else if (adminRepository.existByEmail(request.getEmail())) {
+		} else if (adminRepository.existsByEmail(request.getEmail())) {
 			Admin admin = adminRepository.findByEmail(request.getEmail()).get();
 			token = jwtService.generateToken(admin);
 			return AuthenticationResponse.builder()
@@ -75,7 +75,7 @@ public class AuthService {
 	}
 
 	public AuthenticationResponse registerAdmin(RegisterRequest request) throws BadRequestException{
-		if(adminRepository.existByEmail(request.getEmail())){
+		if(adminRepository.existsByEmail(request.getEmail())){
 			throw new BadRequestException("Email " + request.getEmail() + " is already associated to a admin");
 		}
 		Admin admin = Admin
