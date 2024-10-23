@@ -1,5 +1,8 @@
 package com.team1.dealerApp.purchase;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class PurchaseMapper {
 
     public Purchase toPurchase(CreatePurchaseDTO createPurchaseDTO) {

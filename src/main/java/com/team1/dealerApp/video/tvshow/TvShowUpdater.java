@@ -14,7 +14,7 @@ public class TvShowUpdater <T>{
 	private final TvShowMapper tvShowMapper;
 
 	public TvShow updateShowField( TvShow tvShow, String fieldName, T value) throws NoSuchFieldException, IllegalAccessException {
-		Field field = TvShow.class.getField(fieldName);
+		Field field = TvShow.class.getDeclaredField(fieldName);
 		field.setAccessible(true);
 		field.set(tvShow, value );
 		return tvShow;

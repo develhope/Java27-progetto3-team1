@@ -1,0 +1,22 @@
+application:
+  security:
+    jwt:
+      secret-key: cf0e0500f818df14ba9121585cae3bc9653bd0f3543b5c67d3f218babdb703e7
+      expiration: '86400000'
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    url: jdbc:mysql://localhost:3306/cine_box?useSSL=false&serverTimezone=UTC
+    password: admin
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: 'true'
+        use_sql_comments: 'true'
+    hibernate:
+      ddl-auto: create
+    show-sql: 'true'
+  application:
+    name: cineBox

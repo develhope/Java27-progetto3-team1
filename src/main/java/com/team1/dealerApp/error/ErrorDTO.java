@@ -1,13 +1,13 @@
 package com.team1.dealerApp.error;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class ErrorDTO {
     private String errorMessage;
 }

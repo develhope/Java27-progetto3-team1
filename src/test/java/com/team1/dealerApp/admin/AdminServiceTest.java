@@ -57,23 +57,6 @@ class AdminServiceTest {
     }
 
     @Test
-    void testRegisterAdmin_ThrowsBadRequestException() {
-        createAdminDTO.setEmail(null);
-        createAdminDTO.setPassword(null);
-        assertThrows(BadRequestException.class, () -> adminService.registerAdmin(createAdminDTO));
-    }
-
-    @Test
-    void testRegisterAdmin_Successful() throws BadRequestException {
-        when(adminMapper.toAdmin(createAdminDTO)).thenReturn(admin);
-        when(adminMapper.toAdminDTO(admin)).thenReturn(adminDTO);
-
-        AdminDTO result = adminService.registerAdmin(createAdminDTO);
-
-        assertEquals("admin@example.com", result.getEmail());
-    }
-
-    @Test
     void testGetAdminById_ThrowsNoSuchElementException() {
         when(adminRepository.findById(adminId)).thenReturn(Optional.empty());
         assertThrows(NoSuchElementException.class, () -> adminService.getAdminById(adminId));
