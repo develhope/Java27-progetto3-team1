@@ -11,7 +11,7 @@ public class MovieUpdater <T>{
     private final MovieMapper movieMapper;
 
     public Movie updateMovieField(Movie movie, String fieldName, T value) throws NoSuchFieldException, IllegalAccessException {
-        Field field = Movie.class.getField(fieldName);
+        Field field = Movie.class.getDeclaredField(fieldName);
         field.setAccessible(true);
         field.set(movie, value);
         return movie;
