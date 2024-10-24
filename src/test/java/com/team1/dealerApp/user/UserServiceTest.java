@@ -26,26 +26,78 @@ public class UserServiceTest {
     private UserService userService;
 
     @Mock
-    private UserController userController;
-
-    @Mock
     private UserRepository userRepository;
 
     @Mock
     private UserMapper userMapper;
 
 
-    private User user;
-    private UserDTO userDTO;
-    private CreateUserDTO createUserDTO;
     private UUID userId;
-    private Rental rental;
-    private Long rentalId;
+    private User userCompleteTest;
+    private CreateUserDTO createUserDTOCompleteTest;
+    private UserDTO userDTOCompleteTest;
+    private Rental rentalCompleteTest;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
 
+    //Entities
+    public User defaultUser(List<Movie> defaultMovieList, List<TvShow> defaultTvShowList) {
+
+        userCompleteTest = new User();
+
+        UUID userId = UUID.randomUUID();
+
+        userCompleteTest.setId(userId);
+        userCompleteTest.setFirstName("Mario");
+        userCompleteTest.setLastName("Rossi");
+        userCompleteTest.setEmail("mario.rossi@gmail.com");
+        userCompleteTest.setPhoneNumber("3331234567");
+        userCompleteTest.setSubscriptionStatus(SubscriptionStatus.FULL_SUBSCRIPTION);
+        userCompleteTest.setWatchedMovies(defaultMovieList);
+        userCompleteTest.setWatchedShows(defaultTvShowList);
+
+        List<Rental> rentalList = new ArrayList<>();
+
+        rentalList.add(defaultRental(defaultMovieList, defaultTvShowList));
+        userCompleteTest.setRentals(rentalList);
+
+        return userCompleteTest;
+    }
+
+    public CreateUserDTO defaultCreateUserDTO(List<Movie> defaultMovieList, List<TvShow> defaultTvShowList) {
+
+        createUserDTOCompleteTest = new CreateUserDTO();
+
+        createUserDTOCompleteTest.setFirstName("Mario");
+        createUserDTOCompleteTest.setLastName("Rossi");
+        createUserDTOCompleteTest.setEmail("mario.rossi@gmail.com");
+        createUserDTOCompleteTest.setPhoneNumber("3331234567");
+        createUserDTOCompleteTest.setSubscriptionStatus(SubscriptionStatus.FULL_SUBSCRIPTION);
+        createUserDTOCompleteTest.setWatchedMovies(defaultMovieList);
+        createUserDTOCompleteTest.setWatchedShows(defaultTvShowList);
+
+        return createUserDTOCompleteTest;
+    }
+
+    public Rental defaultRental(List<Movie> defaultMovieList, List<TvShow> defaultTvShowList) {
+
+        Long rentalId = 1L;
+
+        rentalCompleteTest = new Rental();
+
+        rentalCompleteTest.setId(rentalId);
+        rentalCompleteTest.setStartDate(LocalDateTime.now());
+        rentalCompleteTest.setEndDate(LocalDateTime.now().plusDays(14));
+        rentalCompleteTest.setRentalStatus(RentalStatus.ACTIVE);
+        rentalCompleteTest.setMovies(defaultMovieList);
+        rentalCompleteTest.setTvShows(defaultTvShowList);
+        rentalCompleteTest.setRentalPrice(20.00);
+
+        return rentalCompleteTest;
+    }
+
+
+    //Lists
+    public List<Movie> defaultMovieList() {
 
         List<String> castMovie = Arrays.asList("Elijah Wood", "Ian McKellan", "Orlando Bloom");
         List<String> castMovie2 = Arrays.asList("Ed Wynn", "Richard Haydn", "Kathryn Beaumont");
@@ -55,6 +107,11 @@ public class UserServiceTest {
         whatchedMovieList.add(whatchedMovie);
         whatchedMovieList.add(whatchedMovie2);
 
+        return whatchedMovieList;
+    }
+
+    public List<TvShow> defaultTvShowList() {
+
         List<String> castShow = Arrays.asList("Bryan Cranston", "Aaron Paul", "Giancarlo Esposito");
         List<String> castShow2 = Arrays.asList("Antony Starr", "Karl Urban", "Jack Quaid");
         TvShow whatchedTvShow = new TvShow("Breaking bad", Genre.DRAMA, castShow, "Vince Gilligan", Year.of(2006), 50.0, 10.0, "Un prof si ammala e inizia a fare la droga", 5.0f, VideoStatus.RENTABLE, 6, 52);
@@ -63,47 +120,19 @@ public class UserServiceTest {
         whatchedTvShowList.add(whatchedTvShow);
         whatchedTvShowList.add(whatchedTvShow2);
 
+        return whatchedTvShowList;
+    }
 
-        user = new User();
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
 
         userId = UUID.randomUUID();
-
-        user.setId(userId);
-        user.setFirstName("Mario");
-        user.setLastName("Rossi");
-        user.setEmail("mario.rossi@gmail.com");
-        user.setPhoneNumber("3331234567");
-        user.setSubscriptionStatus(SubscriptionStatus.FULL_SUBSCRIPTION);
-        user.setWatchedMovies(whatchedMovieList);
-        user.setWatchedShows(whatchedTvShowList);
-
-
-        createUserDTO = new CreateUserDTO();
-
-        createUserDTO.setFirstName("Mario");
-        createUserDTO.setLastName("Rossi");
-        createUserDTO.setEmail("mario.rossi@gmail.com");
-        createUserDTO.setPhoneNumber("3331234567");
-        createUserDTO.setSubscriptionStatus(SubscriptionStatus.FULL_SUBSCRIPTION);
-        createUserDTO.setWatchedMovies(whatchedMovieList);
-        createUserDTO.setWatchedShows(whatchedTvShowList);
-
-
-        rentalId = 1L;
-
-        rental = new Rental();
-        rental.setId(rentalId);
-        rental.setStartDate(LocalDateTime.now());
-        rental.setEndDate(LocalDateTime.now().plusDays(14));
-        rental.setRentalStatus(RentalStatus.ACTIVE);
-        rental.setMovies(whatchedMovieList);
-        rental.setTvShows(whatchedTvShowList);
-        rental.setRentalPrice(20.00);
-
-        List<Rental> rentalList = new ArrayList<>();
-        rentalList.add(rental);
-
-        user.setRentals(rentalList);
+        userCompleteTest = defaultUser(defaultMovieList(), defaultTvShowList());
+        createUserDTOCompleteTest = defaultCreateUserDTO(defaultMovieList(), defaultTvShowList());
+        userDTOCompleteTest = new UserDTO();
+        userDTOCompleteTest = new UserDTO();
 
     }
 
@@ -122,13 +151,13 @@ public class UserServiceTest {
     //Test per getUserDTOById if-> User Found
     @Test
     void testGetUserDTOById_UserFound() {
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(userCompleteTest));
 
-        when(userMapper.toUserDTO(user)).thenReturn(userDTO);
+        when(userMapper.toUserDTO(userCompleteTest)).thenReturn(userDTOCompleteTest);
 
         UserDTO resultUser = userService.getUserDTOById(userId);
 
-        assertEquals(userDTO, resultUser);
+        assertEquals(userDTOCompleteTest, resultUser);
     }
 
 
@@ -138,7 +167,7 @@ public class UserServiceTest {
         when(userRepository.existsById(userId)).thenReturn(false);
 
         NoSuchElementException exception = assertThrows(NoSuchElementException.class,
-                () -> userService.updateUser(userId, createUserDTO));
+                () -> userService.updateUser(userId, createUserDTOCompleteTest));
 
         assertEquals("This User doesn't exist", exception.getMessage());
     }
@@ -149,28 +178,28 @@ public class UserServiceTest {
         when(userRepository.existsById(userId)).thenReturn(true);
 
         User userToUpdate = new User();
-        when(userMapper.toUser(createUserDTO)).thenReturn(userToUpdate);
+        when(userMapper.toUser(createUserDTOCompleteTest)).thenReturn(userToUpdate);
+
         when(userRepository.save(userToUpdate)).thenReturn(userToUpdate);
+        when(userMapper.toUserDTO(userToUpdate)).thenReturn(userDTOCompleteTest);
 
-        when(userMapper.toUserDTO(user)).thenReturn(userDTO);
+        UserDTO resultUserDTO = userService.updateUser(userId, createUserDTOCompleteTest);
 
-        UserDTO resultUserDTO = userService.updateUser(userId, createUserDTO);
-
-        assertEquals(userDTO, resultUserDTO);
-
+        assertEquals(userDTOCompleteTest, resultUserDTO);
     }
 
 
     //Test per deleteUser
     @Test
     void testDeleteUser() {
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(userCompleteTest));
 
         userRepository.deleteById(userId);
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         Optional<User> deletedUser = userRepository.findById(userId);
+
         assertTrue(deletedUser.isEmpty());
     }
 
