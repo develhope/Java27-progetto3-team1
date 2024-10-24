@@ -18,7 +18,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
 
-    public UserDTO getUserDTOById(UUID id) throws NoSuchElementException{
+    public UserDTO getUserDTOById(UUID id) throws NoSuchElementException {
         User getUser = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User with Id " + id + " not found"));
         return userMapper.toUserDTO(getUser);
@@ -45,7 +45,7 @@ public class UserService {
 
     public UserDTO registerUser(CreateUserDTO userDTO) throws BadRequestException {
         User user = userMapper.toUser(userDTO);
-        if(userRepository.existsByEmail(user.getEmail())) {
+        if (userRepository.existsByEmail(user.getEmail())) {
             throw new BadRequestException("Email already exists");
         }
         // Crittografia della password
@@ -54,8 +54,8 @@ public class UserService {
          return userMapper.toUserDTO(user);
     }
 
-    public User getUserById(UUID id) throws NoSuchElementException{
-        return userRepository.findById(id).orElseThrow(()-> new NoSuchElementException("No User with Id " + id));
+    public User getUserById(UUID id) throws NoSuchElementException {
+        return userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No User with Id " + id));
 
     }
 
