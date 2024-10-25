@@ -9,10 +9,11 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
-import java.util.UUID;
+
 
 @Slf4j
 @Service
@@ -23,7 +24,7 @@ public class PurchaseService {
     private final PurchaseMapper purchaseMapper;
     private final UserService userService;
 
-    public PurchaseDTO addPurchase(UUID userId, CreatePurchaseDTO createPurchaseDTO) throws BadRequestException {
+    public PurchaseDTO addPurchase(UserDetails user, CreatePurchaseDTO createPurchaseDTO) throws BadRequestException {
         if (createPurchaseDTO.getMovies().isEmpty() && createPurchaseDTO.getTvShows().isEmpty()) {
             throw new BadRequestException("Both lists can not be empty");
         }
@@ -36,18 +37,18 @@ public class PurchaseService {
         Double totalPurchasePrice = moviePurchasePrice + tvShowPurchasePrice;
 
         purchaseUser.setPurchasePrice(totalPurchasePrice);
-        purchaseUser.setPurchaser(userService.getUserById(userId));
+        purchaseUser.setPurchaser(userService.getUserByEmail(user));
 
         return purchaseMapper.toDTO(purchaseUser);
     }
 
 
-    public Page<PurchaseDTO> getPurchaseByUserId(UUID userId, int page, int size) throws NoSuchElementException {
+    public Page<PurchaseDTO> getPurchaseByUserId(UserDetails user, int page, int size) throws NoSuchElementException {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Purchase> purchaseFind = purchaseRepository.findByPurchaserId(userId, pageable);
+        Page<Purchase> purchaseFind = purchaseRepository.findByPurchaser_Email(user.getUsername(), pageable);
 
         if (purchaseFind.isEmpty()) {
-            throw new NoSuchElementException("User with id " + userId + " has no purchases");
+            throw new NoSuchElementException("User with email " + user.getUsername() + " has no purchases");
         }
         return purchaseFind.map(purchaseMapper::toDTO);
     }
