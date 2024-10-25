@@ -30,12 +30,17 @@ public class TvShowService {
 		}
 	}
 
-	public TvShowDTO getShowById (Long id) throws BadRequestException {
+	public TvShowDTO getShowDTOById(Long id) throws NoSuchElementException {
 		TvShow tvShow = tvShowRepository
 				.findById(id)
-				.orElseThrow(() -> new BadRequestException("No show with id: " + id));
+				.orElseThrow(() -> new NoSuchElementException("No show with id: " + id));
 		return  tvShowMapper.toTvShowDTO(tvShow);
 	}
+
+	public TvShow getShowById(Long id) throws NoSuchElementException{
+		return tvShowRepository.findById(id).orElseThrow(()-> new NoSuchElementException("No show with id: " + id));
+	}
+
 
 	public TvShowDTO addTvShow (TvShowDTO tvShowDTO) throws BadRequestException {
 		if(!tvShowRepository.existsByTitleAndDirector(tvShowDTO.getTitle(), tvShowDTO.getDirector())){
@@ -75,6 +80,10 @@ public class TvShowService {
 	public boolean deleteShowById ( Long id ){
 		tvShowRepository.deleteById(id);
 		return true;
+	}
+
+	public List<TvShow> getAllTvShowsById(List<Long> idList){
+		return idList.stream().map(this::getShowById).toList();
 	}
 
 }
