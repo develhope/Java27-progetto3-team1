@@ -83,7 +83,7 @@ class TvShowServiceTest {
 	}
 
 	@Test
-	void testGetShowDTOById() throws BadRequestException {
+	void testGetShowDTOById(){
 
 		when(tvShowRepository.findById(anyLong())).thenReturn(Optional.of(purchasableShow));
 		when(tvShowMapperInj.toTvShowDTO(purchasableShow)).thenReturn(purchasableShowDTO);
