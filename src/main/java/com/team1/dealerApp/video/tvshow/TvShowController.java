@@ -27,7 +27,7 @@ public class TvShowController {
 
 	@PreAuthorize( "hasRole('USER')" )
 	@GetMapping( "/u/tvShows/{id}" )
-	public ResponseEntity < TvShowDTO > getShowById( @PathVariable Long id ) throws BadRequestException {
+	public ResponseEntity < TvShowDTO > getShowById( @PathVariable Long id ) {
 		TvShowDTO tvShowDTO = tvShowService.getShowDTOById(id);
 		log.debug("Found user with id: {}", id);
 		return ResponseEntity.ok(tvShowDTO);
