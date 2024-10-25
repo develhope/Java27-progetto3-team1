@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,15 +27,20 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FOUND).body(userDTO);
     }
 
+    @GetMapping("/u/users/details")
+    public ResponseEntity<UserDTO> getUserDetails(@AuthenticationPrincipal UserDetails user){
+        return ResponseEntity.ok(userService.getUserDetails(user));
+    }
+
     @PutMapping("/{userId}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable("userId") UUID id, @RequestBody CreateUserDTO createUserDTO) throws NoSuchElementException{
-            return ResponseEntity.ok(userService.updateUser(id, createUserDTO));
+    public ResponseEntity<UserDTO> updateUser(@AuthenticationPrincipal UserDetails user, @RequestBody CreateUserDTO createUserDTO) throws NoSuchElementException{
+            return ResponseEntity.ok(userService.updateUser(user, createUserDTO));
     }
 
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Boolean> deleteUser(@PathVariable("userId") UUID id) {
-        return ResponseEntity.ok(userService.deleteUser(id));
+    public ResponseEntity<Boolean> deleteUser(@AuthenticationPrincipal UserDetails user) {
+        return ResponseEntity.ok(userService.deleteUser(user));
     }
 
     @GetMapping
