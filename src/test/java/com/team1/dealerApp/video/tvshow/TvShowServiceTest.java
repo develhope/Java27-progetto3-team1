@@ -83,21 +83,21 @@ class TvShowServiceTest {
 	}
 
 	@Test
-	void testGetShowById () throws BadRequestException {
+	void testGetShowDTOById() throws BadRequestException {
 
 		when(tvShowRepository.findById(anyLong())).thenReturn(Optional.of(purchasableShow));
 		when(tvShowMapperInj.toTvShowDTO(purchasableShow)).thenReturn(purchasableShowDTO);
 
-		TvShowDTO found = tvShowService.getShowById(1L);
+		TvShowDTO found = tvShowService.getShowDTOById(1L);
 
 		assertEquals(purchasableShowDTO, found);
 	}
 
 	@Test
-	void testGetShowById_NoShowFound () {
+	void testGetShowById_NoShowDTOFound() {
 		when(tvShowRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-		assertThrows(BadRequestException.class, () -> tvShowService.getShowById(1L));
+		assertThrows(BadRequestException.class, () -> tvShowService.getShowDTOById(1L));
 	}
 
 	@Test
