@@ -11,6 +11,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@SuppressWarnings("unused")
 public class PurchaseMapper {
     private final MovieMapper movieMapper;
     private final TvShowMapper tvShowMapper;
