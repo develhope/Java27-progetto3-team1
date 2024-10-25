@@ -34,7 +34,7 @@ public class PurchaseService {
 
 
     public PurchaseDTO addPurchase(UserDetails user, CreatePurchaseDTO createPurchaseDTO) throws BadRequestException {
-        Double totalPurchasePrice = 0.0;
+        double totalPurchasePrice = 0.0;
         List<Movie> movieList = new ArrayList<>();
         List<TvShow> tvShowList = new ArrayList<>();
         if (createPurchaseDTO.getMovies().isEmpty() && createPurchaseDTO.getTvShows().isEmpty()) {
