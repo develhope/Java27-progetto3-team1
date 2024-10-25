@@ -15,6 +15,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@SuppressWarnings("unused")
 public class SecurityConfig {
 
 	private final JwtAuthenticationFilter jwtAuthFilter;
@@ -26,13 +27,14 @@ public class SecurityConfig {
 		http
 				.csrf(AbstractHttpConfigurer::disable) // Disabilitiamo CSRF poiché gestiamo sessioni stateless
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/user/register", "/auth/login", "/auth/admin/register").permitAll() // Rotte di autenticazione pubbliche
+						.requestMatchers("/a/**").hasRole("ADMIN")
+						.requestMatchers("/u/**").hasAnyRole("USER", "ADMIN")
 						.anyRequest().authenticated() // Tutte le altre richiedono autenticazione
 				)
 				.sessionManagement(session -> session.sessionCreationPolicy(STATELESS) // Disabilitare sessioni per gestire il login in maniera stateless tramite token
 				)
 				.authenticationProvider(authenticationProvider)
-				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-		; // Aggiunge il filtro JWT
+				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); // Aggiunge il filtro JWT
 		return http.build();
 	}
 }
