@@ -37,7 +37,7 @@ public class AuthService {
 				.password(passwordEncoder.encode(request.getPassword()))
 				.phoneNumber(request.getPhoneNumber())
 				.subscriptionStatus(SubscriptionStatus.NOT_SUBSCRIBED)
-				.role(Role.USER)
+				.role(Role.ROLE_USER)
 				.build();
 
 		userRepository.save( user );
@@ -69,25 +69,22 @@ public class AuthService {
 					.build();
 		}
 		throw new NoSuchElementException("User with email " + request.getEmail() + " doesn't exist");
-
-
-
 	}
 
 	public AuthenticationResponse registerAdmin(RegisterRequest request) throws BadRequestException{
 		if(adminRepository.existsByEmail(request.getEmail())){
 			throw new BadRequestException("Email " + request.getEmail() + " is already associated to a admin");
 		}
-		Admin admin = Admin
+		User admin = User
 				.builder()
 				.firstName(request.getFirstName())
 				.lastName(request.getLastName())
 				.email(request.getEmail())
 				.phoneNumber(request.getPhoneNumber())
-				.password(request.getPassword())
-				.role(Role.ADMIN)
+				.password(passwordEncoder.encode(request.getPassword()))
+				.role(Role.ROLE_ADMIN)
 				.build();
-		adminRepository.save(admin);
+		userRepository.save(admin);
 
 		String token = jwtService.generateToken( admin );
 		return AuthenticationResponse.builder()
