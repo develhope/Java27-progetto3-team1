@@ -41,13 +41,17 @@ public class MovieService {
         }
     }
 
-    public MovieDTO getMovieById(Long movieId) {
+    public MovieDTO getMovieDTOById(Long movieId) {
        return movieMapper
                .toMovieDTO(movieRepository
                        .findById(movieId)
                        .orElseThrow(()-> new NoSuchElementException("There is no film with id " + movieId)
                        )
                );
+    }
+
+    public Movie getMovieById(Long movieId){
+        return movieRepository.findById(movieId).orElseThrow(()-> new NoSuchElementException("There is no film with id " + movieId));
     }
 
     public MovieDTO updateMovie(Long movieId, MovieDTO movieDTO) throws NoSuchElementException {
@@ -75,5 +79,9 @@ public class MovieService {
         }
         movieRepository.save(updated);
         return movieMapper.toMovieDTO(updated);
+    }
+
+    public List<Movie> getAllMoviesById(List<Long> idList){
+        return idList.stream().map(this::getMovieById).toList();
     }
 }
