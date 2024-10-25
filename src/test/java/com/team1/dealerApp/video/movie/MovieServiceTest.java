@@ -110,23 +110,23 @@ class MovieServiceTest {
     }
 
     @Test
-    public void testGetMovieById() {
+    public void testGetMovieDTOById() {
         // con anyLong() si assegna un qualsiasi valore Long visto che movie non ha ancora un Id
         when(movieRepository.findById(anyLong())).thenReturn(Optional.of(purchasableMovie));
 
-        MovieDTO result = movieService.getMovieById(1L);
+        MovieDTO result = movieService.getMovieDTOById(1L);
 
         // Verifica che il repository venga chiamato
         verify(movieRepository, times(1)).findById(1L);
     }
 
     @Test
-    public void testGetMovieById_NotFound() {
+    public void testGetMovieDTOById_NotFound() {
 
         when(movieRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
-            movieService.getMovieById(1L);
+            movieService.getMovieDTOById(1L);
         });
 
         assertEquals("There is no film with id 1", exception.getMessage());
