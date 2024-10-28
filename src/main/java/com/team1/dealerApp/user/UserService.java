@@ -45,6 +45,11 @@ public class UserService {
         return true;
     }
 
+    public boolean deleteUser(UUID id){
+        userRepository.deleteById(id);
+        return true;
+    }
+
 
     public UserDTO registerUser(CreateUserDTO userDTO) throws BadRequestException {
         User user = userMapper.toUser(userDTO);
