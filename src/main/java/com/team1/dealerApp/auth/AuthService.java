@@ -1,7 +1,5 @@
 package com.team1.dealerApp.auth;
 
-import com.team1.dealerApp.admin.Admin;
-import com.team1.dealerApp.admin.AdminRepository;
 import com.team1.dealerApp.config.JwtService;
 import com.team1.dealerApp.user.Role;
 import com.team1.dealerApp.user.SubscriptionStatus;
@@ -15,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +23,6 @@ public class AuthService {
 	private final PasswordEncoder passwordEncoder;
 	private final JwtService jwtService;
 	private final AuthenticationManager authenticationManager;
-	private final AdminRepository adminRepository;
 
 	public AuthenticationResponse register( RegisterRequest request ) throws BadRequestException {
 		if(userRepository.existsByEmail(request.getEmail())){
@@ -52,41 +50,37 @@ public class AuthService {
 	public AuthenticationResponse authenticate( AuthenticationRequest request ) throws NoSuchElementException{
 	String token;
 		authenticationManager.authenticate( new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()) );
-
-		if(userRepository.existsByEmail(request.getEmail())){
-			User user = userRepository.findByEmail( request.getEmail() ).get();
+		Optional<User> found = userRepository.findByEmail( request.getEmail() );
+		if(found.isPresent()){
+			User user = found.get();
 
 			 token = jwtService.generateToken( user );
 			return AuthenticationResponse.builder()
 					.token( token )
 					.build();
 
-		} else if (adminRepository.existsByEmail(request.getEmail())) {
-			Admin admin = adminRepository.findByEmail(request.getEmail()).get();
-			token = jwtService.generateToken(admin);
-			return AuthenticationResponse.builder()
-					.token( token )
-					.build();
 		}
 		throw new NoSuchElementException("User with email " + request.getEmail() + " doesn't exist");
 	}
 
 	public AuthenticationResponse registerAdmin(RegisterRequest request) throws BadRequestException{
-		if(adminRepository.existsByEmail(request.getEmail())){
-			throw new BadRequestException("Email " + request.getEmail() + " is already associated to a admin");
+		if(userRepository.existsByEmail(request.getEmail())){
+			throw new BadRequestException("Email " + request.getEmail() + " is already associated to a user");
 		}
-		User admin = User
-				.builder()
-				.firstName(request.getFirstName())
-				.lastName(request.getLastName())
-				.email(request.getEmail())
-				.phoneNumber(request.getPhoneNumber())
+		User user = User.builder()
+				.firstName( request.getFirstName() )
+				.lastName( request.getLastName() )
+				.email( request.getEmail() )
 				.password(passwordEncoder.encode(request.getPassword()))
+				.phoneNumber(request.getPhoneNumber())
+				.subscriptionStatus(SubscriptionStatus.NOT_SUBSCRIBED)
 				.role(Role.ROLE_ADMIN)
 				.build();
-		userRepository.save(admin);
 
-		String token = jwtService.generateToken( admin );
+		userRepository.save( user );
+
+		String token = jwtService.generateToken( user );
+
 		return AuthenticationResponse.builder()
 				.token( token )
 				.build();
