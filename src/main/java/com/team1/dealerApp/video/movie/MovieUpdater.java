@@ -4,9 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
+
 @Component
 @RequiredArgsConstructor
-public class MovieUpdater <T>{
+public class MovieUpdater<T> {
     private final MovieRepository movieRepository;
     private final MovieMapper movieMapper;
 
@@ -16,4 +17,5 @@ public class MovieUpdater <T>{
         field.set(movie, value);
         return movie;
     }
+
 }

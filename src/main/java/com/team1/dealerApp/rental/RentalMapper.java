@@ -5,14 +5,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class RentalMapper {
 
-    public Rental toRental(CreateRentalDTO createRentalDTO){
+    public Rental toRental(CreateRentalDTO createRentalDTO) {
         return Rental.builder()
                 .movies(createRentalDTO.getMovies())
                 .tvShows(createRentalDTO.getTvShows())
                 .build();
     }
 
-    public RentalDTO toDTO(Rental rental){
+    public RentalDTO toDTO(Rental rental) {
         return RentalDTO.builder()
                 .id(rental.getId())
                 .startDate(rental.getStartDate())
@@ -24,4 +24,5 @@ public class RentalMapper {
                 .rentalStatus(rental.getRentalStatus())
                 .build();
     }
+
 }

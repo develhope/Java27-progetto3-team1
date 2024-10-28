@@ -30,9 +30,6 @@ public class PurchaseService {
     private final MovieService movieService;
     private final TvShowService tvShowService;
 
-
-
-
     public PurchaseDTO addPurchase(UserDetails user, CreatePurchaseDTO createPurchaseDTO) throws BadRequestException {
         double totalPurchasePrice = 0.0;
         List<Movie> movieList = new ArrayList<>();
@@ -44,7 +41,7 @@ public class PurchaseService {
             totalPurchasePrice += movieList.stream().mapToDouble(Movie::getPurchasePrice).sum();
         } else if (!createPurchaseDTO.getTvShows().isEmpty()) {
             tvShowList = createPurchaseDTO.getTvShows().stream().map(tvShowService::getShowById).toList();
-            totalPurchasePrice+= tvShowList.stream().mapToDouble(TvShow::getPurchasePrice).sum();
+            totalPurchasePrice += tvShowList.stream().mapToDouble(TvShow::getPurchasePrice).sum();
         }
 
         Purchase purchaseUser = purchaseMapper.toPurchase(createPurchaseDTO, movieList, tvShowList);
@@ -73,8 +70,8 @@ public class PurchaseService {
         purchaseRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Purchase whit " + id + " not found!"));
         List<Movie> purchasedMovies = movieService.getAllMoviesById(createPurchaseDTO.getMovies());
-        List<TvShow> purchasedTvShow =tvShowService.getAllTvShowsById(createPurchaseDTO.getTvShows());
-        Purchase purchaseSelected = purchaseMapper.toPurchase(createPurchaseDTO,purchasedMovies, purchasedTvShow );
+        List<TvShow> purchasedTvShow = tvShowService.getAllTvShowsById(createPurchaseDTO.getTvShows());
+        Purchase purchaseSelected = purchaseMapper.toPurchase(createPurchaseDTO, purchasedMovies, purchasedTvShow);
         purchaseSelected.setId(id);
         purchaseRepository.save(purchaseSelected);
 

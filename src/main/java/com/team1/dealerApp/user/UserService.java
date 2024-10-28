@@ -46,7 +46,7 @@ public class UserService {
         return true;
     }
 
-    public boolean deleteUser(UUID id){
+    public boolean deleteUser(UUID id) {
         userRepository.deleteById(id);
         return true;
     }
@@ -59,8 +59,8 @@ public class UserService {
         }
         // Crittografia della password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-         userRepository.save(user);
-         return userMapper.toUserDTO(user);
+        userRepository.save(user);
+        return userMapper.toUserDTO(user);
     }
 
     public User getUserById(UUID id) throws NoSuchElementException {
@@ -69,16 +69,17 @@ public class UserService {
     }
 
     public List<UserDTO> getAllUser() {
-        List<User> allUser= userRepository.findAll();
+        List<User> allUser = userRepository.findAll();
         return allUser.stream().map(userMapper::toUserDTO).toList();
     }
 
     public UserDTO getUserDetails(UserDetails user) {
-        User userFound = userRepository.findByEmail(user.getUsername()).orElseThrow(()-> new NoSuchElementException("No users with email: " + user.getUsername()));
+        User userFound = userRepository.findByEmail(user.getUsername()).orElseThrow(() -> new NoSuchElementException("No users with email: " + user.getUsername()));
         return userMapper.toUserDTO(userFound);
     }
 
-    public User getUserByEmail(UserDetails user){
-        return userRepository.findByEmail(user.getUsername()).orElseThrow(()-> new NoSuchElementException("No users with email: " + user.getUsername()));
+    public User getUserByEmail(UserDetails user) {
+        return userRepository.findByEmail(user.getUsername()).orElseThrow(() -> new NoSuchElementException("No users with email: " + user.getUsername()));
     }
+
 }

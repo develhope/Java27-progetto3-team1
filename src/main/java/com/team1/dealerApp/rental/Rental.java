@@ -55,5 +55,4 @@ public class Rental {
     @JoinColumn(nullable = false)
     private User renter;
 
-
 }

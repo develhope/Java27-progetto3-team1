@@ -24,7 +24,7 @@ public class Movie extends Video {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="running_time", nullable = false)
+    @Column(name = "running_time", nullable = false)
     private Integer runningTime;
 
     @ManyToMany(mappedBy = "movies")

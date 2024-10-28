@@ -24,5 +24,4 @@ public class RentalDTO {
     private UUID userId;
     private RentalStatus rentalStatus;
 
-
 }

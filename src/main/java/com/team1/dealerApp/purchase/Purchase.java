@@ -21,7 +21,7 @@ public class Purchase {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "order_status",nullable = false)
+    @Column(name = "order_status", nullable = false)
     private OrderStatus orderStatus;
 
     @Column(name = "purchase_price", nullable = false)

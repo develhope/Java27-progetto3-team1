@@ -23,7 +23,7 @@ public class RentalService {
     private final UserService userService;
 
     public RentalDTO addRental(UserDetails user, CreateRentalDTO createRentalDTO) throws BadRequestException {
-        if(createRentalDTO.getMovies().isEmpty() && createRentalDTO.getTvShows().isEmpty()){
+        if (createRentalDTO.getMovies().isEmpty() && createRentalDTO.getTvShows().isEmpty()) {
             throw new BadRequestException("Both lists can not be empty");
         }
         Rental userRental = rentalMapper.toRental(createRentalDTO);
@@ -43,13 +43,14 @@ public class RentalService {
     public Page<RentalDTO> getActiveUserRentals(UserDetails user, int page, int size) throws NoSuchElementException {
         Pageable pageable = PageRequest.of(page, size);
         Page<Rental> rentalsFind = rentalRepository.findByRenter_Email(user.getUsername(), pageable);
-        if(rentalsFind.isEmpty()){
+        if (rentalsFind.isEmpty()) {
             throw new NoSuchElementException("Rental's list is empty");
         }
         return rentalsFind.map(rentalMapper::toDTO);
     }
+
     public RentalDTO updateRentalEndDate(UserDetails user, Long id, LocalDateTime dateTime) {
-        Rental rentalFound = rentalRepository.findByRenter_EmailAndId(user.getUsername(), id).orElseThrow(()-> new NoSuchElementException("There is no rental with id " + id));
+        Rental rentalFound = rentalRepository.findByRenter_EmailAndId(user.getUsername(), id).orElseThrow(() -> new NoSuchElementException("There is no rental with id " + id));
         rentalFound.setEndDate(dateTime);
         rentalRepository.save(rentalFound);
         return rentalMapper.toDTO(rentalFound);
@@ -59,4 +60,5 @@ public class RentalService {
         rentalRepository.deleteById(id);
         return true;
     }
+
 }

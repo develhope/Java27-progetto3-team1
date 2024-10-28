@@ -13,18 +13,18 @@ import java.util.List;
 @NoArgsConstructor
 public class UserDTO {
 
-	private String firstName;
+    private String firstName;
 
-	private String lastName;
+    private String lastName;
 
-	private String email;
+    private String email;
 
-	private String phoneNumber;
+    private String phoneNumber;
 
-	private SubscriptionStatus subsciprionStatus;
+    private SubscriptionStatus subsciprionStatus;
 
-	private List< Movie > watchedMovies;
+    private List<Movie> watchedMovies;
 
-	private List< TvShow > watchedShows;
+    private List<TvShow> watchedShows;
 
 }
