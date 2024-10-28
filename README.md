@@ -12,7 +12,6 @@ Per ogni Utente avremo una serie di attributi:
 - Telefono
 - Email
 - Password
-- Status Abbonamento
 - Lista di film/serie già viste
 - Lista di film/serie da vedere
 
@@ -34,7 +33,7 @@ Per ogni Film avremo una serie di attributi:
 - Prezzo noleggio
 - Trama/Descrizione
 - Suggeriti (?)
-- Rating per età (?)
+- Rating per età
 - Flag che identifichi se è acquistabile o solo noleggiabile o non più disponibile
 
 ## Acquisto
@@ -52,57 +51,48 @@ Per un noleggio avremo:
 
 ## Funzionalità degli utenti
 ### Un Utente Base potrà:
-- Creare un ordine a partire da un film/serie contrassegnato come ordinabile
+- Creare un ordine a partire da un film/serie contrassegnato come acquistabile
 - Vedere i propri ordini
 - Vedere i propri film/serie
-- Cancellare un ordine
-- Creare un acquisto a partire da un film/serie contrassegnato come acquistabile
 - Vedere i propri acquisti
 - Creare un noleggio
 - Vedere i propri noleggi
-- Cancellare un noleggio
 - Cancellare la propria utenza
 - Modificare i dati dell’utente
 - Ricercare un film secondo diversi criteri (titolo, regista, anno di uscita, voto, ecc.)
 - Ottenere i dettagli di un film specifico
-### Un Utente Premium (cioè con lo status abbonamento settato true) potrà:
-- Creare un ordine a partire da un film/serie contrassegnato come ordinabile
+### Un Utente Premium potrà:
+- Creare un ordine a partire da un film/serie contrassegnato come acquistabile
 - Vedere i propri ordini
 - Vedere i propri film/serie
-- Cancellare un ordine
-- Creare un acquisto a partire da un film/serie contrassegnato come acquistabile
+- Cancellare l'abbonamento
 - Vedere i propri acquisti
 - Creare un noleggio
 - Vedere i propri noleggi
-- Cancellare un noleggio
 - Cancellare la propria utenza
 - Modificare i dati dell’utente
 - Ricercare un film secondo diversi criteri (titolo, regista, anno di uscita, voto, ecc.)
 - Ottenere i dettagli di un film specifico
-- Avere accesso ad una lista di titoli premium
 - Accesso a Sconti su nuovi film/serie
 ### Un Admin potrà:
 - Aggiungere un film/serie
 - Modificare un film/serie
 - Cancellare un film/serie
 - Cambiare lo stato di un film/serie
-- Creare un ordine per un utente
-- Cancellare un ordine per un utente
-- Modificare un ordine per un utente
 - Creare un noleggio per un utente
 - Cancellare un noleggio per un utente
 - Modificare un noleggio per un utente
 - Creare un acquisto per un utente
 - Cancellare un acquisto per un utente
 - Modificare un acquisto per un utente
-- Verificare un film/serie quante vendite ha fatto in un determinato periodo di tempo
-- Verificare un film/serie quanti soldi ha generato in un determinato periodo di tempo
+- Verificare un film/serie quante vendite ha fatto
+- Verificare un film/serie quanto guadagno ha generato
 - Verificare il guadagno della piattaforma in un determinato periodo
 - Verificare i film/serie attualmente ordinabili/acquistabili/non disponibili/nuovi
 - Cancellare un utente
 - Modificare un utente
-- Ottenere il film/serie più venduto/visto in un dato periodo
-- Ottenere il film/serie più ricercato/ordinato
+- Ottenere il film/serie più venduto in un dato periodo
+- Ottenere il film/serie più ordinato
 - Ottenere i dettagli di un film/serie specifico
 ## Autenticazione e Registrazione
 Il sistema dovrà inoltre permettere il login e la registrazione degli utenti attraverso due rotte specifiche.
