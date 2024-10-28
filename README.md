@@ -85,8 +85,8 @@ Per un noleggio avremo:
 - Creare un acquisto per un utente
 - Cancellare un acquisto per un utente
 - Modificare un acquisto per un utente
-- Verificare un film/serie quante vendite ha fatto in un determinato periodo di tempo
-- Verificare un film/serie quanto guadagno ha generato in un determinato periodo di tempo
+- Verificare un film/serie quante vendite ha fatto
+- Verificare un film/serie quanto guadagno ha generato
 - Verificare il guadagno della piattaforma in un determinato periodo
 - Verificare i film/serie attualmente ordinabili/acquistabili/non disponibili/nuovi
 - Cancellare un utente
