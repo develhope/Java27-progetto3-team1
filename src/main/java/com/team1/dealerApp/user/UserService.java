@@ -2,15 +2,18 @@ package com.team1.dealerApp.user;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("unused")
 public class UserService {
 
     private final UserRepository userRepository;
@@ -24,20 +27,26 @@ public class UserService {
         return userMapper.toUserDTO(getUser);
     }
 
-    public UserDTO updateUser(UUID id, CreateUserDTO createUserDTO) throws NoSuchElementException {
+    public UserDTO updateUser(UserDetails user, CreateUserDTO createUserDTO) throws NoSuchElementException {
+        Optional<User> userFound = userRepository.findByEmail(user.getUsername());
 
-        if (!userRepository.existsById(id)) {
+        if (userFound.isEmpty()) {
             throw new NoSuchElementException("This User doesn't exist");
         }
 
         User updateUser = userMapper.toUser(createUserDTO);
-        updateUser.setId(id);
+        updateUser.setId(userFound.get().getId());
         userRepository.save(updateUser);
 
         return userMapper.toUserDTO(updateUser);
     }
 
-    public boolean deleteUser(UUID id) {
+    public boolean deleteUser(UserDetails user) {
+        userRepository.deleteByEmail(user.getUsername());
+        return true;
+    }
+
+    public boolean deleteUser(UUID id){
         userRepository.deleteById(id);
         return true;
     }
@@ -61,6 +70,15 @@ public class UserService {
 
     public List<UserDTO> getAllUser() {
         List<User> allUser= userRepository.findAll();
-        return allUser.stream().map(u-> userMapper.toUserDTO(u)).toList();
+        return allUser.stream().map(userMapper::toUserDTO).toList();
+    }
+
+    public UserDTO getUserDetails(UserDetails user) {
+        User userFound = userRepository.findByEmail(user.getUsername()).orElseThrow(()-> new NoSuchElementException("No users with email: " + user.getUsername()));
+        return userMapper.toUserDTO(userFound);
+    }
+
+    public User getUserByEmail(UserDetails user){
+        return userRepository.findByEmail(user.getUsername()).orElseThrow(()-> new NoSuchElementException("No users with email: " + user.getUsername()));
     }
 }

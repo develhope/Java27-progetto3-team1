@@ -11,10 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.Year;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -99,35 +96,31 @@ class MovieServiceTest {
     @Test
     public void testGetAllMovies_NoMoviesFound() {
 
-        when(movieRepository.findAll()).thenReturn(Arrays.asList());
+        when(movieRepository.findAll()).thenReturn(new ArrayList<>());
 
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
-            movieService.getAllMovies();
-        });
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> movieService.getAllMovies());
 
         // Verifica che il messaggio di errore sia corretto
         assertEquals("There are no film!", exception.getMessage());
     }
 
     @Test
-    public void testGetMovieById() {
+    public void testGetMovieDTOById() {
         // con anyLong() si assegna un qualsiasi valore Long visto che movie non ha ancora un Id
         when(movieRepository.findById(anyLong())).thenReturn(Optional.of(purchasableMovie));
 
-        MovieDTO result = movieService.getMovieById(1L);
+         movieService.getMovieDTOById(1L);
 
         // Verifica che il repository venga chiamato
         verify(movieRepository, times(1)).findById(1L);
     }
 
     @Test
-    public void testGetMovieById_NotFound() {
+    public void testGetMovieDTOById_NotFound() {
 
         when(movieRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
-            movieService.getMovieById(1L);
-        });
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> movieService.getMovieDTOById(1L));
 
         assertEquals("There is no film with id 1", exception.getMessage());
     }
@@ -149,9 +142,7 @@ class MovieServiceTest {
     public void testUpdateMovie_NotFound() {
         when(movieRepository.existsById(1L)).thenReturn(false);
 
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
-            movieService.updateMovie(1L, purchasableMovieDTO);
-        });
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> movieService.updateMovie(1L, purchasableMovieDTO));
 
         assertEquals("There is no movie with id 1", exception.getMessage());
     }
@@ -165,7 +156,7 @@ class MovieServiceTest {
         when(movieUpdater.updateMovieField(any(Movie.class), anyString(), any())).thenReturn(updatedMovie);
         when(movieMapperInj.toMovieDTO(updatedMovie)).thenReturn(new MovieDTO());
 
-        MovieDTO result = movieService.updateMovieField(1L, "New Title", "title");
+        movieService.updateMovieField(1L, "New Title", "title");
 
         // Verifica che il film aggiornato sia salvato
         verify(movieRepository, times(1)).save(updatedMovie);
@@ -175,9 +166,7 @@ class MovieServiceTest {
     public void testUpdateMovieField_NoMovieFound() {
         when(movieRepository.findById(1L)).thenReturn(Optional.empty());
 
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
-            movieService.updateMovieField(1L, "New Title", "title");
-        });
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> movieService.updateMovieField(1L, "New Title", "title"));
 
         assertEquals("No movie with id: 1", exception.getMessage());
     }

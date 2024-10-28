@@ -1,7 +1,7 @@
 package com.team1.dealerApp.purchase;
 
-import com.team1.dealerApp.video.movie.Movie;
-import com.team1.dealerApp.video.tvshow.TvShow;
+import com.team1.dealerApp.video.movie.MovieDTO;
+import com.team1.dealerApp.video.tvshow.TvShowDTO;
 import lombok.*;
 
 import java.util.List;
@@ -18,8 +18,8 @@ public class PurchaseDTO {
     private OrderStatus orderStatus;
     private Double purchasePrice;
 
-    private List<Movie> movies;
-    private List<TvShow> tvShows;
+    private List<MovieDTO> movies;
+    private List<TvShowDTO> tvShows;
 
     private UUID userId;
 }

@@ -40,7 +40,7 @@ public class MovieController {
 	@PreAuthorize( "hasRole('USER')" )
 	@GetMapping( "/u/movies/{movieId}" )
 	public ResponseEntity < MovieDTO > getMovieById( @PathVariable( "movieId" ) Long movieId ) throws NoSuchElementException {
-		return ResponseEntity.ok(movieService.getMovieById(movieId));
+		return ResponseEntity.ok(movieService.getMovieDTOById(movieId));
 	}
 
 	@PreAuthorize( "hasRole('ADMIN')" )

@@ -164,10 +164,10 @@ public class UserServiceTest {
     //Test per updateUser if-> NoSuchElementException
     @Test
     void testUpdateUser_NoSuchElementException() {
-        when(userRepository.existsById(userId)).thenReturn(false);
+        when(userRepository.findByEmail(userCompleteTest.getEmail())).thenReturn(Optional.empty());
 
         NoSuchElementException exception = assertThrows(NoSuchElementException.class,
-                () -> userService.updateUser(userId, createUserDTOCompleteTest));
+                () -> userService.updateUser(userCompleteTest, createUserDTOCompleteTest));
 
         assertEquals("This User doesn't exist", exception.getMessage());
     }
@@ -175,7 +175,7 @@ public class UserServiceTest {
     //Test per updateUser if-> Done Updated
     @Test
     void testUpdateUser_DoneUpdated() {
-        when(userRepository.existsById(userId)).thenReturn(true);
+        when(userRepository.findByEmail(userCompleteTest.getEmail())).thenReturn(Optional.of(userCompleteTest));
 
         User userToUpdate = new User();
         when(userMapper.toUser(createUserDTOCompleteTest)).thenReturn(userToUpdate);
@@ -183,7 +183,7 @@ public class UserServiceTest {
         when(userRepository.save(userToUpdate)).thenReturn(userToUpdate);
         when(userMapper.toUserDTO(userToUpdate)).thenReturn(userDTOCompleteTest);
 
-        UserDTO resultUserDTO = userService.updateUser(userId, createUserDTOCompleteTest);
+        UserDTO resultUserDTO = userService.updateUser(userCompleteTest, createUserDTOCompleteTest);
 
         assertEquals(userDTOCompleteTest, resultUserDTO);
     }
