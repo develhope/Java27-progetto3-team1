@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MovieMapper {
 
-    public Movie toMovie(MovieDTO movieDTO){
+    public Movie toMovie(MovieDTO movieDTO) {
         return Movie.builder()
                 .videoStatus(movieDTO.getVideoStatus())
                 .plot(movieDTO.getPlot())
@@ -21,7 +21,7 @@ public class MovieMapper {
                 .build();
     }
 
-    public MovieDTO toMovieDTO(Movie movie){
+    public MovieDTO toMovieDTO(Movie movie) {
         return MovieDTO.builder()
                 .videoStatus(movie.getVideoStatus())
                 .cast(movie.getCast())
@@ -36,4 +36,5 @@ public class MovieMapper {
                 .rentalPrice(movie.getRentalPrice())
                 .build();
     }
+
 }

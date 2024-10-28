@@ -22,59 +22,59 @@ import java.util.UUID;
 @SuppressWarnings("unused")
 public class User implements UserDetails {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	@Setter
-	private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Setter
+    private UUID id;
 
-	@Setter
-	@Column(name = "first_name", nullable = false)
-	private String firstName;
+    @Setter
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
 
-	@Setter
-	@Column(name = "last_name", nullable = false)
-	private String lastName;
+    @Setter
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
 
-	@Setter
-	@Column(nullable = false, unique = true)
-	private String email;
+    @Setter
+    @Column(nullable = false, unique = true)
+    private String email;
 
-	@Setter
-	@Column(name = "phone_number", length = 10)
-	private String phoneNumber;
+    @Setter
+    @Column(name = "phone_number", length = 10)
+    private String phoneNumber;
 
-	@Setter
-	@Column(nullable = false)
-	private String password;
+    @Setter
+    @Column(nullable = false)
+    private String password;
 
-	@Enumerated(EnumType.STRING)
-	private Role role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-	@Setter
-	@Column(name = "subscription_status")
-	@Enumerated(EnumType.STRING)
-	private SubscriptionStatus subscriptionStatus;
+    @Setter
+    @Column(name = "subscription_status")
+    @Enumerated(EnumType.STRING)
+    private SubscriptionStatus subscriptionStatus;
 
-	@Setter
-	@OneToMany()
-	private List< Movie > watchedMovies;
+    @Setter
+    @OneToMany()
+    private List<Movie> watchedMovies;
 
-	@Setter
-	@OneToMany
-	private List< TvShow > watchedShows;
+    @Setter
+    @OneToMany
+    private List<TvShow> watchedShows;
 
-	@Setter
-	@OneToMany(mappedBy = "renter")
-	private List<Rental> rentals;
+    @Setter
+    @OneToMany(mappedBy = "renter")
+    private List<Rental> rentals;
 
-	@Override
-	public Collection < ? extends GrantedAuthority > getAuthorities() {
-		return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
-	}
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
+    }
 
-	@Override
-	public String getUsername() {
-		return email;
-	}
+    @Override
+    public String getUsername() {
+        return email;
+    }
 
 }

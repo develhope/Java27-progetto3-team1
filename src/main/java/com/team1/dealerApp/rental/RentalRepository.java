@@ -19,5 +19,4 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
     @Query("select r from Rental r where r.renter.email = ?1 and r.id = ?2")
     Optional<Rental> findByRenter_EmailAndId(String email, Long id);
 
-
 }

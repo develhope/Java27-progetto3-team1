@@ -17,8 +17,6 @@ public class AdminController {
 
     private final AdminService adminService;
 
-
-
     @GetMapping("/{adminId}")
     public ResponseEntity<AdminDTO> getAdminById(@PathVariable("adminId") UUID adminId) throws NoSuchElementException {
         log.debug("Getting admin with Id {}", adminId);
@@ -36,6 +34,5 @@ public class AdminController {
         log.debug("Updated with Id {}", adminId);
         return ResponseEntity.ok(adminService.updateAdmin(adminId, createAdminDTO));
     }
-
 
 }
