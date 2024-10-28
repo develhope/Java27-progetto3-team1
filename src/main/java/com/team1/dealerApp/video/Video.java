@@ -21,6 +21,10 @@ import java.util.List;
 @MappedSuperclass
 public class Video {
 
+    // ToDo: Rating per età
+
+    // ToDo : Numero Vendite
+
     @Column(nullable = false)
     private String title;
 
@@ -52,7 +56,5 @@ public class Video {
     @Enumerated(EnumType.STRING)
     @Column(name = "video_status", nullable = false)
     private VideoStatus videoStatus;
-
-
 
 }
