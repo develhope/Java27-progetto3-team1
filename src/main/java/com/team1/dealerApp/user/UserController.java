@@ -14,13 +14,12 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/{userId}")
+    @GetMapping("/a/users/{userId}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable("userId") UUID id) throws NoSuchElementException {
             UserDTO userDTO = userService.getUserDTOById(id);
             log.debug("User with id: {} found", id);
@@ -32,18 +31,23 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserDetails(user));
     }
 
-    @PutMapping("/{userId}")
+    @PutMapping("/u/users/")
     public ResponseEntity<UserDTO> updateUser(@AuthenticationPrincipal UserDetails user, @RequestBody CreateUserDTO createUserDTO) throws NoSuchElementException{
             return ResponseEntity.ok(userService.updateUser(user, createUserDTO));
     }
 
 
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/u/users/")
     public ResponseEntity<Boolean> deleteUser(@AuthenticationPrincipal UserDetails user) {
         return ResponseEntity.ok(userService.deleteUser(user));
     }
 
-    @GetMapping
+    @DeleteMapping("/a/users/{userId}")
+    public ResponseEntity<Boolean> deleteUser(@PathVariable ("userId") UUID id){
+        return ResponseEntity.ok(userService.deleteUser(id));
+    }
+
+    @GetMapping("/a/users")
     public ResponseEntity<List<UserDTO>> getAllUser(){
         return ResponseEntity.ok(userService.getAllUser());
     }
