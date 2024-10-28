@@ -38,7 +38,6 @@ public class PurchaseService {
 		List < TvShow > tvShowList = fetchTvShows(createPurchaseDTO);
 
 		User purchaser = userService.getUserByEmail(user);
-		// Handle purchaser-specific roles or additional business logic here if needed.
 
 		double totalPurchasePrice = calculateTotalPrice(movieList, tvShowList, purchaser.getRole());
 
