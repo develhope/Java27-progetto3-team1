@@ -13,6 +13,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("unused")
 public class UserService {
 
     private final UserRepository userRepository;
@@ -69,7 +70,7 @@ public class UserService {
 
     public List<UserDTO> getAllUser() {
         List<User> allUser= userRepository.findAll();
-        return allUser.stream().map(u-> userMapper.toUserDTO(u)).toList();
+        return allUser.stream().map(userMapper::toUserDTO).toList();
     }
 
     public UserDTO getUserDetails(UserDetails user) {
