@@ -11,7 +11,6 @@ public class UserMapper {
                 .lastName(userDTO.getLastName())
                 .email(userDTO.getEmail())
                 .phoneNumber(userDTO.getPhoneNumber())
-                .subscriptionStatus(userDTO.getSubsciprionStatus())
                 .watchedMovies(userDTO.getWatchedMovies())
                 .watchedShows(userDTO.getWatchedShows())
                 .build();
@@ -23,7 +22,6 @@ public class UserMapper {
                 .lastName(user.getLastName())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
-                .subsciprionStatus(user.getSubscriptionStatus())
                 .watchedMovies(user.getWatchedMovies())
                 .watchedShows(user.getWatchedShows())
                 .build();
@@ -36,7 +34,6 @@ public class UserMapper {
                 .lastName(createUserDTO.getLastName())
                 .email(createUserDTO.getEmail())
                 .phoneNumber(createUserDTO.getPhoneNumber())
-                .subscriptionStatus(createUserDTO.getSubscriptionStatus())
                 .watchedMovies(createUserDTO.getWatchedMovies())
                 .watchedShows(createUserDTO.getWatchedShows())
                 .password(createUserDTO.getPassword())
