@@ -9,6 +9,7 @@ import java.util.UUID;
 
 @Repository
 public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
+
     Page<Purchase> findByPurchaserId(UUID userId, Pageable pageable);
 
     Page<Purchase> findByPurchaser_Email(String email, Pageable pageable);
