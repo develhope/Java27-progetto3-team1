@@ -1,6 +1,7 @@
 package com.team1.dealerApp.video.movie;
 
 
+import com.team1.dealerApp.video.AgeRating;
 import com.team1.dealerApp.video.Genre;
 import com.team1.dealerApp.video.VideoStatus;
 import org.apache.coyote.BadRequestException;
@@ -38,7 +39,6 @@ class MovieServiceTest {
 
 
     private MovieDTO purchasableMovieDTO;
-    private MovieDTO rentableMovieDTO;
     private Movie purchasableMovie;
     private Movie rentableMovie;
 
@@ -49,11 +49,11 @@ class MovieServiceTest {
         List<String> castMovie = Arrays.asList("Elijah Wood", "Ian McKellan", "Orlando Bloom");
         List<String> castMovie2 = Arrays.asList("Ed Wynn", "Richard Haydn", "Kathryn Beaumont");
 
-        purchasableMovie = new Movie("Il signore degli anelli: il ritorno del Re", Genre.FANTASY, castMovie, "Peter Jackson", Year.of(2003), 30.00, 10.00, "Il ritorno del Re", 4.0f, VideoStatus.PURCHASABLE, 110);
-        rentableMovie = new Movie("Alice nel paese delle Meraviglie", Genre.ANIMATION, castMovie2,"Clyde Geronimi", Year.of(1951), 30.00, 10.00, "Alice nel paese delle meraviglie", 2.0f, VideoStatus.RENTABLE, 110);
+        purchasableMovie = new Movie("Il signore degli anelli: il ritorno del Re", Genre.FANTASY, castMovie, "Peter Jackson", Year.of(2003), 30.00, 10.00, "Il ritorno del Re", 4.0f, VideoStatus.PURCHASABLE, 0, 0.0, AgeRating.PG, 110);
+        rentableMovie = new Movie("Alice nel paese delle Meraviglie", Genre.ANIMATION, castMovie2,"Clyde Geronimi", Year.of(1951), 30.00, 10.00, "Alice nel paese delle meraviglie", 2.0f, VideoStatus.RENTABLE, 0, 0.0, AgeRating.NC17, 110);
 
         purchasableMovieDTO = movieMapper.toMovieDTO(purchasableMovie);
-        rentableMovieDTO = movieMapper.toMovieDTO(rentableMovie);
+
 
     }
 

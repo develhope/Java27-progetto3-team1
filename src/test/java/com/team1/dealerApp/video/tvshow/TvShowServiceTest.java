@@ -1,5 +1,6 @@
 package com.team1.dealerApp.video.tvshow;
 
+import com.team1.dealerApp.video.AgeRating;
 import com.team1.dealerApp.video.Genre;
 import com.team1.dealerApp.video.VideoStatus;
 import org.apache.coyote.BadRequestException;
@@ -46,8 +47,8 @@ class TvShowServiceTest {
 	void setUp() {
 		MockitoAnnotations.openMocks(this);
 
-		purchasableShow = new TvShow("Breaking bad", Genre.DRAMA, cast1, "Vince Gilligan", Year.of(2006), 50.0, 15.0, "Un prof si ammala e inizia a fare la droga", 5.0f, VideoStatus.PURCHASABLE, 6, 52);
-		rentableShow = new TvShow("The boys", Genre.ACTION, cast2, "Erik Kripke", Year.of(2019), 60.0, 20.0, "Patriota impazzisce", 4.6f, VideoStatus.RENTABLE, 5, 40);
+		purchasableShow = new TvShow("Breaking bad", Genre.DRAMA, cast1, "Vince Gilligan", Year.of(2006), 50.0, 15.0, "Un prof si ammala e inizia a fare la droga", 5.0f, VideoStatus.PURCHASABLE, 0, 0.0, AgeRating.NC17, 6, 52);
+		rentableShow = new TvShow("The boys", Genre.ACTION, cast2, "Erik Kripke", Year.of(2019), 60.0, 20.0, "Patriota impazzisce", 4.6f, VideoStatus.RENTABLE, 0, 0.0, AgeRating.R,  5, 40);
 
 		purchasableShowDTO = tvShowMapper.toTvShowDTO(purchasableShow);
 	}
@@ -97,7 +98,7 @@ class TvShowServiceTest {
 	void testGetShowById_NoShowDTOFound() {
 		when(tvShowRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-		assertThrows(BadRequestException.class, () -> tvShowService.getShowDTOById(1L));
+		assertThrows(NoSuchElementException.class, () -> tvShowService.getShowDTOById(1L));
 	}
 
 	@Test
@@ -124,7 +125,7 @@ class TvShowServiceTest {
 	void testUpdateShowField () throws NoSuchFieldException, IllegalAccessException, NoSuchElementException {
 		when(tvShowRepository.findById(anyLong())).thenReturn(Optional.of(rentableShow));
 
-		TvShow updatedShow = new TvShow("The boys", Genre.DRAMA, cast2, "Erik Kripke", Year.of(2019), 60.0, 20.0, "Patriota impazzisce", 4.6f, VideoStatus.RENTABLE, 5, 40);
+		TvShow updatedShow = new TvShow("The boys", Genre.DRAMA, cast2, "Erik Kripke", Year.of(2019), 60.0, 20.0, "Patriota impazzisce", 4.6f, VideoStatus.RENTABLE, 0, 0.0, AgeRating.PG, 5, 40);
 
 		when(tvShowUpdater.updateShowField(rentableShow, "genre", Genre.DRAMA)).thenReturn(updatedShow);
 		when(tvShowMapperInj.toTvShowDTO(updatedShow)).thenReturn(tvShowMapper.toTvShowDTO(updatedShow));
