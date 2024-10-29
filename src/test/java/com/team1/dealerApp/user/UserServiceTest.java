@@ -132,7 +132,6 @@ public class UserServiceTest {
         userCompleteTest = defaultUser(defaultMovieList(), defaultTvShowList());
         createUserDTOCompleteTest = defaultCreateUserDTO(defaultMovieList(), defaultTvShowList());
         userDTOCompleteTest = new UserDTO();
-        userDTOCompleteTest = new UserDTO();
 
     }
 
