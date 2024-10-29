@@ -31,9 +31,8 @@ public class Movie extends Video {
     @ManyToMany(mappedBy = "movies")
     private List<Rental> rentals;
 
-    public Movie(String title, Genre genre, List<String> cast, String director, Year releaseYear, Double purchasePrice, Double rentalPrice, String plot, Float rating, VideoStatus videoStatus, int orderCount, Double videoProfit, AgeRating ageRating, Long id, Integer runningTime) {
+    public Movie(String title, Genre genre, List<String> cast, String director, Year releaseYear, Double purchasePrice, Double rentalPrice, String plot, Float rating, VideoStatus videoStatus, int orderCount, Double videoProfit, AgeRating ageRating, Integer runningTime) {
         super(title, genre, cast, director, releaseYear, purchasePrice, rentalPrice, plot, rating, videoStatus, orderCount, videoProfit, ageRating);
-        this.id = id;
         this.runningTime = runningTime;
     }
 }
