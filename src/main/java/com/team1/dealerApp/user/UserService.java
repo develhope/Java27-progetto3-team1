@@ -82,4 +82,17 @@ public class UserService {
         return userRepository.findByEmail(user.getUsername()).orElseThrow(() -> new NoSuchElementException("No users with email: " + user.getUsername()));
     }
 
+	public UserDTO updateSubscriptionPlan( UserDetails user, String subscription ) throws BadRequestException {
+        String email = user.getUsername();
+        User updatable = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("No user with email " + email));
+        switch (subscription.toLowerCase().trim()){
+            case "tvshow" -> updatable.setRole(Role.ROLE_TVSHOWS);
+            case "movie" -> updatable.setRole(Role.ROLE_MOVIES);
+            case "none" -> updatable.setRole(Role.ROLE_USER);
+            default -> throw new BadRequestException("No such plan: " + subscription );
+        }
+        userRepository.save(updatable);
+        return userMapper.toUserDTO(updatable);
+    }
 }

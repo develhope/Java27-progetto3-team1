@@ -47,6 +47,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     private Role role;
 
