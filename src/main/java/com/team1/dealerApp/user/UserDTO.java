@@ -25,4 +25,6 @@ public class UserDTO {
 
     private List<TvShow> watchedShows;
 
+    private Role role;
+
 }
