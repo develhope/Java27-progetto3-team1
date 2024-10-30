@@ -39,7 +39,7 @@ public class TvShowMapper {
                 .build();
     }
 
-    public AdminTvShowDTO toAdminDTO(TvShow tvShow){
+    public AdminTvShowDTO toAdminShowDTO(TvShow tvShow){
         return AdminTvShowDTO.builder()
                 .id(tvShow.getId())
                 .title(tvShow.getTitle())
