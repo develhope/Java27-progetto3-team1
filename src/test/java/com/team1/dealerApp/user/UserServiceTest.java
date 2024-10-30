@@ -131,12 +131,11 @@ public class UserServiceTest {
         userCompleteTest = defaultUser(defaultMovieList(), defaultTvShowList());
         createUserDTOCompleteTest = defaultCreateUserDTO(defaultMovieList(), defaultTvShowList());
         userDTOCompleteTest = new UserDTO();
-        userDTOCompleteTest = new UserDTO();
 
     }
 
 
-    //Test per getUserDTOById if-> NoSuchElementException
+    //Test for getUserDTOById if-> NoSuchElementException
     @Test
     void testGetUserDTOById_NoSuchElementException() {
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
@@ -147,7 +146,7 @@ public class UserServiceTest {
         assertEquals("User with Id " + userId + " not found", exception.getMessage());
     }
 
-    //Test per getUserDTOById if-> User Found
+    //Test for getUserDTOById if-> User Found
     @Test
     void testGetUserDTOById_UserFound() {
         when(userRepository.findById(userId)).thenReturn(Optional.of(userCompleteTest));
@@ -160,7 +159,7 @@ public class UserServiceTest {
     }
 
 
-    //Test per updateUser if-> NoSuchElementException
+    //Test for updateUser if-> NoSuchElementException
     @Test
     void testUpdateUser_NoSuchElementException() {
         when(userRepository.findByEmail(userCompleteTest.getEmail())).thenReturn(Optional.empty());
@@ -171,7 +170,7 @@ public class UserServiceTest {
         assertEquals("This User doesn't exist", exception.getMessage());
     }
 
-    //Test per updateUser if-> Done Updated
+    //Test for updateUser if-> Done Updated
     @Test
     void testUpdateUser_DoneUpdated() {
         when(userRepository.findByEmail(userCompleteTest.getEmail())).thenReturn(Optional.of(userCompleteTest));
@@ -188,7 +187,7 @@ public class UserServiceTest {
     }
 
 
-    //Test per deleteUser
+    //Test for deleteUser
     @Test
     void testDeleteUser() {
         when(userRepository.findById(userId)).thenReturn(Optional.of(userCompleteTest));
