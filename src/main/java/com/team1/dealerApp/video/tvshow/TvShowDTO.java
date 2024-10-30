@@ -1,5 +1,6 @@
 package com.team1.dealerApp.video.tvshow;
 
+import com.team1.dealerApp.video.AgeRating;
 import com.team1.dealerApp.video.Genre;
 import com.team1.dealerApp.video.VideoStatus;
 import lombok.*;
@@ -37,5 +38,7 @@ public class TvShowDTO {
     private int episode;
 
     private VideoStatus videoStatus;
+
+    private AgeRating ageRating;
 
 }

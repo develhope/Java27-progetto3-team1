@@ -37,4 +37,16 @@ public class MovieMapper {
                 .build();
     }
 
+    public AdminMovieDTO toAdminMovieDTO(Movie movie){
+        return AdminMovieDTO.builder()
+                .id(movie.getId())
+                .title(movie.getTitle())
+                .orderCount(movie.getOrderCount())
+                .director(movie.getDirector())
+                .videoProfit(movie.getVideoProfit())
+                .rentalPrice(movie.getRentalPrice())
+                .purchasePrice(movie.getPurchasePrice())
+                .build();
+    }
+
 }

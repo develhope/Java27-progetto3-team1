@@ -40,17 +40,42 @@ public class PurchaseService {
 
         double totalPurchasePrice = calculateTotalPrice(movieList, tvShowList, purchaser.getRole());
 
-        Purchase purchase = createPurchase(createPurchaseDTO, movieList, tvShowList, totalPurchasePrice, purchaser);
-        purchaseRepository.save(purchase);
+		Purchase purchase = createPurchase(createPurchaseDTO, movieList, tvShowList, totalPurchasePrice, purchaser);
+		updateMovieProfit(movieList, purchaser.getRole());
+		updateShowProfit(tvShowList, purchaser.getRole());
+		purchaseRepository.save(purchase);
 
         return purchaseMapper.toDTO(purchase);
     }
 
-    private void validatePurchaseRequest(CreatePurchaseDTO createPurchaseDTO) throws BadRequestException {
-        if (createPurchaseDTO.getMovies().isEmpty() && createPurchaseDTO.getTvShows().isEmpty()) {
-            throw new BadRequestException("Both lists cannot be empty");
-        }
-    }
+
+	private void updateMovieProfit(List<Movie> movies, Role role){
+		if(role.equals(Role.ROLE_MOVIES)){
+			movies.forEach(m-> m.setOrderCount(m.getOrderCount() +1));
+		}else{
+			movies.forEach(movie -> {
+				movie.setVideoProfit(movie.getVideoProfit() + movie.getRentalPrice());
+				movie.setOrderCount(movie.getOrderCount() + 1);
+			});
+		}
+	}
+
+	private void updateShowProfit(List<TvShow> shows, Role role){
+		if(role.equals(Role.ROLE_TVSHOWS)){
+			shows.forEach(s->s.setOrderCount(s.getOrderCount() + 1));
+		} else{
+			shows.forEach(show-> {
+				show.setVideoProfit(show.getVideoProfit() + show.getRentalPrice());
+				show.setOrderCount(show.getOrderCount() + 1);
+			});
+		}
+	}
+
+	private void validatePurchaseRequest( CreatePurchaseDTO createPurchaseDTO ) throws BadRequestException {
+		if ( createPurchaseDTO.getMovies().isEmpty() && createPurchaseDTO.getTvShows().isEmpty() ) {
+			throw new BadRequestException("Both lists cannot be empty");
+		}
+	}
 
     private List<Movie> fetchMovies(CreatePurchaseDTO createPurchaseDTO) {
         return createPurchaseDTO.getMovies().isEmpty() ? List.of() : createPurchaseDTO.getMovies().stream().map(movieService::getMovieById).toList();

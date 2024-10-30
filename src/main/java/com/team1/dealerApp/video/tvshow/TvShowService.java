@@ -86,4 +86,13 @@ public class TvShowService {
 		return idList.stream().map(this::getShowById).toList();
 	}
 
+    public AdminTvShowDTO getSalesById(Long id) throws NoSuchElementException {
+		TvShow tvShowFound = tvShowRepository.findById(id).orElseThrow(()-> new NoSuchElementException("There is no tv show with id " + id));
+		return tvShowMapper.toAdminShowDTO(tvShowFound);
+    }
+
+	public List<AdminTvShowDTO> getSales() {
+		List<TvShow> shows = tvShowRepository.findAll();
+		return shows.stream().map(tvShowMapper::toAdminShowDTO).toList();
+	}
 }

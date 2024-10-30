@@ -1,9 +1,10 @@
 package com.team1.dealerApp.rental;
 
 
-import com.team1.dealerApp.user.SubscriptionStatus;
+import com.team1.dealerApp.user.Role;
 import com.team1.dealerApp.user.User;
 import com.team1.dealerApp.user.UserService;
+import com.team1.dealerApp.video.AgeRating;
 import com.team1.dealerApp.video.Genre;
 import com.team1.dealerApp.video.VideoStatus;
 import com.team1.dealerApp.video.movie.Movie;
@@ -24,14 +25,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
@@ -53,7 +51,6 @@ class RentalServiceTest {
     private Rental rental;
     private RentalDTO rentalDTO;
     private CreateRentalDTO createRentalDTO;
-    private UUID userId;
     private Long rentalId;
     private User userCompleteTest;
 
@@ -63,8 +60,8 @@ class RentalServiceTest {
 
         List<String> castMovie = Arrays.asList("Elijah Wood", "Ian McKellan", "Orlando Bloom");
         List<String> castMovie2 = Arrays.asList("Ed Wynn", "Richard Haydn", "Kathryn Beaumont");
-        Movie rentableMovie = new Movie("Il signore degli anelli: il ritorno del Re", Genre.FANTASY, castMovie, "Peter Jackson", Year.of(2003), 30.00, 10.00, "Il ritorno del Re", 4.0f, VideoStatus.RENTABLE, 110);
-        Movie rentableMovie2 = new Movie("Alice nel paese delle Meraviglie", Genre.ANIMATION, castMovie2,"Clyde Geronimi", Year.of(1951), 30.00, 10.00, "Alice nel paese delle meraviglie", 2.0f, VideoStatus.RENTABLE, 110);
+        Movie rentableMovie = new Movie("Il signore degli anelli: il ritorno del Re", Genre.FANTASY, castMovie, "Peter Jackson", Year.of(2003), 30.00, 10.00, "Il ritorno del Re", 4.0f, VideoStatus.RENTABLE, 0, 0.0, AgeRating.R, 110);
+        Movie rentableMovie2 = new Movie("Alice nel paese delle Meraviglie", Genre.ANIMATION, castMovie2,"Clyde Geronimi", Year.of(1951), 30.00, 10.00, "Alice nel paese delle meraviglie", 2.0f, VideoStatus.RENTABLE, 0, 0.0, AgeRating.G, 110);
         List<Movie> movieList = new ArrayList<>();
         movieList.add(rentableMovie);
         movieList.add(rentableMovie2);
@@ -72,14 +69,13 @@ class RentalServiceTest {
 
         List <String> castShow= Arrays.asList("Bryan Cranston", "Aaron Paul", "Giancarlo Esposito");
         List <String> castShow2= Arrays.asList("Antony Starr", "Karl Urban", "Jack Quaid");
-        TvShow rentableShow = new TvShow("Breaking bad", Genre.DRAMA, castShow, "Vince Gilligan", Year.of(2006), 50.0, 10.0, "Un prof si ammala e inizia a fare la droga", 5.0f, VideoStatus.RENTABLE, 6, 52);
-        TvShow rentableShow2 = new TvShow("The Boys", Genre.ACTION, castShow2, "Erik Kripke", Year.of(2019), 60.0, 10.0, "Patriota impazzisce", 4.6f, VideoStatus.RENTABLE, 5, 40);
+        TvShow rentableShow = new TvShow("Breaking bad", Genre.DRAMA, castShow, "Vince Gilligan", Year.of(2006), 50.0, 10.0, "Un prof si ammala e inizia a fare la droga", 5.0f, VideoStatus.RENTABLE, 0, 0.0, AgeRating.NC17, 6, 52);
+        TvShow rentableShow2 = new TvShow("The Boys", Genre.ACTION, castShow2, "Erik Kripke", Year.of(2019), 60.0, 10.0, "Patriota impazzisce", 4.6f, VideoStatus.RENTABLE,0, 0.0, AgeRating.PG, 5, 40);
         List<TvShow> tvShowList =  new ArrayList<>();
         tvShowList.add(rentableShow);
         tvShowList.add(rentableShow2);
 
 
-        userId = UUID.randomUUID();
         rentalId = 1L;
 
         rental = new Rental();
@@ -105,7 +101,7 @@ class RentalServiceTest {
         rentalDTO.setEndDate(LocalDateTime.now().plusDays(14));
     }
 
-    public UserDetails defaultUser(List<Movie> defaultMovieList, List<TvShow> defaultTvShowList) {
+    public User defaultUser(List<Movie> defaultMovieList, List<TvShow> defaultTvShowList) {
 
         userCompleteTest = new User();
 
@@ -116,9 +112,9 @@ class RentalServiceTest {
         userCompleteTest.setLastName("Rossi");
         userCompleteTest.setEmail("mario.rossi@gmail.com");
         userCompleteTest.setPhoneNumber("3331234567");
-        userCompleteTest.setSubscriptionStatus(SubscriptionStatus.FULL_SUBSCRIPTION);
         userCompleteTest.setWatchedMovies(defaultMovieList);
         userCompleteTest.setWatchedShows(defaultTvShowList);
+        userCompleteTest.setRole(Role.ROLE_USER);
 
         List<Rental> rentalList = new ArrayList<>();
 
@@ -127,8 +123,8 @@ class RentalServiceTest {
 
         //return userCompleteTest;
 
-         UserDetails user = userCompleteTest;
-         return  user;
+
+         return  userCompleteTest;
     }
 
     @Test
@@ -141,10 +137,11 @@ class RentalServiceTest {
     }
     @Test
     void testAddRental() throws BadRequestException {
-        UserDetails user = defaultUser(new ArrayList<>(), new ArrayList<>());
+        User user = defaultUser(new ArrayList<>(), new ArrayList<>());
         when(rentalMapper.toRental(createRentalDTO)).thenReturn(rental);
         when(rentalMapper.toDTO(rental)).thenReturn(rentalDTO);
-        RentalDTO result = rentalService.addRental(user, createRentalDTO);
+        when(userService.getUserByEmail(user)).thenReturn(user);
+        rentalService.addRental(user, createRentalDTO);
 
         assertEquals(40.0, rental.getRentalPrice());  // Assert the rental price is correct
     }
@@ -179,7 +176,7 @@ class RentalServiceTest {
                         .thenReturn(Optional.of(rental));
         when(rentalMapper.toDTO(rental)).thenReturn(rentalDTO);
 
-        RentalDTO result = rentalService.updateRentalEndDate(user, rentalId, LocalDateTime.now().plusDays(30));
+        rentalService.updateRentalEndDate(user, rentalId, LocalDateTime.now().plusDays(30));
 
         assertEquals(newEndDate.truncatedTo(ChronoUnit.MINUTES), rental.getEndDate().truncatedTo(ChronoUnit.MINUTES));
     }

@@ -85,4 +85,14 @@ public class MovieService {
     public List<Movie> getAllMoviesById(List<Long> idList) {
         return idList.stream().map(this::getMovieById).toList();
     }
+
+    public AdminMovieDTO getSalesById(Long movieId) throws NoSuchElementException {
+        Movie moviefound = movieRepository.findById(movieId).orElseThrow(()-> new NoSuchElementException("There is no movie with id " + movieId));
+        return movieMapper.toAdminMovieDTO(moviefound);
+    }
+
+    public List<AdminMovieDTO> getSales() {
+        List<Movie> movies = movieRepository.findAll();
+        return movies.stream().map(movieMapper::toAdminMovieDTO).toList();
+    }
 }

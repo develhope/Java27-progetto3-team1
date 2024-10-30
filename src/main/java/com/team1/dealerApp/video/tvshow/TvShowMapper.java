@@ -37,6 +37,17 @@ public class TvShowMapper {
                 .releaseYear(tvShow.getReleaseYear())
                 .videoStatus(tvShow.getVideoStatus())
                 .build();
+    }
 
+    public AdminTvShowDTO toAdminShowDTO(TvShow tvShow){
+        return AdminTvShowDTO.builder()
+                .id(tvShow.getId())
+                .title(tvShow.getTitle())
+                .director(tvShow.getDirector())
+                .videoProfit(tvShow.getVideoProfit())
+                .purchasePrice(tvShow.getPurchasePrice())
+                .rentalPrice(tvShow.getRentalPrice())
+                .orderCount(tvShow.getOrderCount())
+                .build();
     }
 }

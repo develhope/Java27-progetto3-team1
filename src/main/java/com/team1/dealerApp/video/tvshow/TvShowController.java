@@ -60,4 +60,14 @@ public class TvShowController {
 	public ResponseEntity < Boolean > deleteShowById( @PathVariable Long id ) {
 		return ResponseEntity.ok(tvShowService.deleteShowById(id));
 	}
+
+	@GetMapping("/a/tvShows/sales/{id}")
+	public ResponseEntity<AdminTvShowDTO> getSalesById(@PathVariable("id") Long id) throws NoSuchElementException{
+		return ResponseEntity.ok(tvShowService.getSalesById(id));
+	}
+
+	@GetMapping("/a/tvShows/sales")
+	public ResponseEntity<List<AdminTvShowDTO>> getSales(){
+		return ResponseEntity.ok(tvShowService.getSales());
+	}
 }

@@ -55,4 +55,14 @@ public class MovieController {
         return ResponseEntity.ok(movieService.updateMovieField(movieId, value, fieldName));
     }
 
+    @GetMapping("/a/movies/sales/{movieId}")
+    public ResponseEntity<AdminMovieDTO> getSalesById(@PathVariable("movieId") Long movieId) throws NoSuchElementException{
+        return ResponseEntity.ok(movieService.getSalesById(movieId));
+    }
+
+    @GetMapping("/a/movies/sales")
+    public ResponseEntity<List<AdminMovieDTO>> getSales(){
+        return ResponseEntity.ok(movieService.getSales());
+    }
+
 }

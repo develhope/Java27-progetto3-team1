@@ -1,6 +1,7 @@
 package com.team1.dealerApp.video.movie;
 
 import com.team1.dealerApp.rental.Rental;
+import com.team1.dealerApp.video.AgeRating;
 import com.team1.dealerApp.video.Genre;
 import com.team1.dealerApp.video.Video;
 import com.team1.dealerApp.video.VideoStatus;
@@ -30,9 +31,8 @@ public class Movie extends Video {
     @ManyToMany(mappedBy = "movies")
     private List<Rental> rentals;
 
-
-    public Movie(String title, Genre genre, List<String> cast, String director, Year releaseYear, double purchasePrice, double rentalPrice, String plot, float rating, VideoStatus videoStatus, int runningTime) {
-        super(title, genre, cast, director, releaseYear, purchasePrice, rentalPrice, plot, rating, videoStatus);
+    public Movie(String title, Genre genre, List<String> cast, String director, Year releaseYear, Double purchasePrice, Double rentalPrice, String plot, Float rating, VideoStatus videoStatus, int orderCount, Double videoProfit, AgeRating ageRating, Integer runningTime) {
+        super(title, genre, cast, director, releaseYear, purchasePrice, rentalPrice, plot, rating, videoStatus, orderCount, videoProfit, ageRating);
         this.runningTime = runningTime;
     }
 }

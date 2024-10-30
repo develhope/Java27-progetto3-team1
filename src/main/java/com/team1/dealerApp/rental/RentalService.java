@@ -33,9 +33,33 @@ public class RentalService {
 		double totalPrice = calculateTotalRentalPrice(movies, tvShows, renter.getRole());
 
 		Rental rental = createRental(user, createRentalDTO, totalPrice);
+		updateMovieProfit(movies, renter.getRole());
+		updateShowProfit(tvShows, renter.getRole());
 		rentalRepository.save(rental);
 
 		return rentalMapper.toDTO(rental);
+	}
+
+	private void updateMovieProfit(List<Movie> movies, Role role){
+		if(role.equals(Role.ROLE_MOVIES)){
+			movies.forEach(m-> m.setOrderCount(m.getOrderCount() +1));
+		}else{
+			movies.forEach(movie -> {
+				movie.setVideoProfit(movie.getVideoProfit() + movie.getRentalPrice());
+				movie.setOrderCount(movie.getOrderCount() + 1);
+			});
+		}
+	}
+
+	private void updateShowProfit(List<TvShow> shows, Role role){
+		if(role.equals(Role.ROLE_TVSHOWS)){
+			shows.forEach(s->s.setOrderCount(s.getOrderCount() + 1));
+		} else{
+			shows.forEach(show-> {
+				show.setVideoProfit(show.getVideoProfit() + show.getRentalPrice());
+				show.setOrderCount(show.getOrderCount() + 1);
+			});
+		}
 	}
 
 	private void validateRentalRequest( CreateRentalDTO createRentalDTO ) throws BadRequestException {

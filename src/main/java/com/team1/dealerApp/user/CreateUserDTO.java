@@ -23,8 +23,6 @@ public class CreateUserDTO {
 
     private String password;
 
-    private SubscriptionStatus subscriptionStatus;
-
     private List<Movie> watchedMovies;
 
     private List<TvShow> watchedShows;
