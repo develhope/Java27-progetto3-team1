@@ -88,11 +88,11 @@ public class MovieService {
 
     public AdminMovieDTO getSalesById(Long movieId) throws NoSuchElementException {
         Movie moviefound = movieRepository.findById(movieId).orElseThrow(()-> new NoSuchElementException("There is no movie with id " + movieId));
-        return movieMapper.toAdminDTO(moviefound);
+        return movieMapper.toAdminMovieDTO(moviefound);
     }
 
     public List<AdminMovieDTO> getSales() {
         List<Movie> movies = movieRepository.findAll();
-        return movies.stream().map(movieMapper::toAdminDTO).toList();
+        return movies.stream().map(movieMapper::toAdminMovieDTO).toList();
     }
 }
