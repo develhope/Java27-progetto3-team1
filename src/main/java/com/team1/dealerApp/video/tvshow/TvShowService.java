@@ -88,11 +88,11 @@ public class TvShowService {
 
     public AdminTvShowDTO getSalesById(Long id) throws NoSuchElementException {
 		TvShow tvShowFound = tvShowRepository.findById(id).orElseThrow(()-> new NoSuchElementException("There is no tv show with id " + id));
-		return tvShowMapper.toAdminDTO(tvShowFound);
+		return tvShowMapper.toAdminShowDTO(tvShowFound);
     }
 
 	public List<AdminTvShowDTO> getSales() {
 		List<TvShow> shows = tvShowRepository.findAll();
-		return shows.stream().map(tvShowMapper::toAdminDTO).toList();
+		return shows.stream().map(tvShowMapper::toAdminShowDTO).toList();
 	}
 }
