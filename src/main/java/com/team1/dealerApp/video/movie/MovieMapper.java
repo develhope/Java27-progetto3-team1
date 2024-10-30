@@ -37,7 +37,7 @@ public class MovieMapper {
                 .build();
     }
 
-    public AdminMovieDTO toAdminDTO(Movie movie){
+    public AdminMovieDTO toAdminMovieDTO(Movie movie){
         return AdminMovieDTO.builder()
                 .id(movie.getId())
                 .title(movie.getTitle())
