@@ -14,8 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-@Setter
 @Entity
+@Setter
 @Getter
 @Builder
 @AllArgsConstructor
