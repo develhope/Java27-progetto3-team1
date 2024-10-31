@@ -25,6 +25,7 @@ public class Subscription {
     @Column(name = "start_date")
     private LocalDate startDate;
 
+    @Column(name = "end_date")
     private LocalDate endDate;
 
     private boolean status;
