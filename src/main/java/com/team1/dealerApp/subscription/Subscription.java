@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Setter
@@ -24,13 +25,16 @@ public class Subscription {
     @Column(name = "start_date")
     private LocalDate startDate;
 
-    @Column(name = "end_date")
     private LocalDate endDate;
 
-    @Column(name = "status")
     private boolean status;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @ManyToMany
+    @JoinTable(
+            name = "user_subscription",
+            joinColumns = @JoinColumn(name = "subscription_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> users;
+
 }
