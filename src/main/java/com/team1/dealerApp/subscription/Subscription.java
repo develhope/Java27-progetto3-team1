@@ -15,10 +15,10 @@ import java.time.LocalDate;
 public class Subscription {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "price", nullable = false)
+    @Column(nullable = false)
     private Double price;
 
     @Column(name = "start_date")
