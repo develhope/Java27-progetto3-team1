@@ -46,6 +46,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(name = "is_active")
+    private Boolean isActive = true;
+
     @OneToMany()
     private List<Movie> watchedMovies;
 
