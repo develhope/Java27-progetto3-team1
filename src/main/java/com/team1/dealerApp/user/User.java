@@ -1,6 +1,7 @@
 package com.team1.dealerApp.user;
 
 import com.team1.dealerApp.rental.Rental;
+import com.team1.dealerApp.subscription.Subscription;
 import com.team1.dealerApp.video.movie.Movie;
 import com.team1.dealerApp.video.tvshow.TvShow;
 import jakarta.persistence.*;
@@ -14,8 +15,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-@Setter
 @Entity
+@Setter
 @Getter
 @Builder
 @AllArgsConstructor
@@ -53,6 +54,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "renter")
     private List<Rental> rentals;
+
+    @ManyToMany(mappedBy = "users")
+    private List<Subscription> subscriptions;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
