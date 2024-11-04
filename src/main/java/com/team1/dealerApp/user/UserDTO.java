@@ -1,5 +1,6 @@
 package com.team1.dealerApp.user;
 
+import com.team1.dealerApp.subscription.SubscriptionDTO;
 import com.team1.dealerApp.video.movie.Movie;
 import com.team1.dealerApp.video.tvshow.TvShow;
 import lombok.*;
@@ -26,5 +27,7 @@ public class UserDTO {
     private List<TvShow> watchedShows;
 
     private Role role;
+
+    private List<SubscriptionDTO> subscriptions;
 
 }
