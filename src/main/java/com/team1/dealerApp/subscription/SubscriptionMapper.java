@@ -2,6 +2,7 @@ package com.team1.dealerApp.subscription;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class SubscriptionMapper {
 
     public SubscriptionDTO toDTO(Subscription subscription){

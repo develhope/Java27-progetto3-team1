@@ -17,6 +17,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@SuppressWarnings("unused")
 public class UserController {
 
     private final UserService userService;

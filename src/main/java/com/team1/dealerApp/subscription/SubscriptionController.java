@@ -11,6 +11,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
+@SuppressWarnings("unused")
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
