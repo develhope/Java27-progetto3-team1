@@ -1,5 +1,6 @@
 package com.team1.dealerApp.purchase;
 
+import com.team1.dealerApp.subscription.Subscription;
 import com.team1.dealerApp.user.Role;
 import com.team1.dealerApp.user.User;
 import com.team1.dealerApp.user.UserService;
@@ -38,37 +39,41 @@ public class PurchaseService {
 
         User purchaser = userService.getUserByEmail(user);
 
-        double totalPurchasePrice = calculateTotalPrice(movieList, tvShowList, purchaser.getRole());
+        double totalPurchasePrice = calculateTotalPrice(movieList, tvShowList, purchaser.getSubscriptions());
 
 		Purchase purchase = createPurchase(createPurchaseDTO, movieList, tvShowList, totalPurchasePrice, purchaser);
-		updateMovieProfit(movieList, purchaser.getRole());
-		updateShowProfit(tvShowList, purchaser.getRole());
+		updateMovieProfit(movieList, purchaser.getSubscriptions());
+		updateShowProfit(tvShowList, purchaser.getSubscriptions());
 		purchaseRepository.save(purchase);
 
         return purchaseMapper.toDTO(purchase);
     }
 
 
-	private void updateMovieProfit(List<Movie> movies, Role role){
-		if(role.equals(Role.ROLE_MOVIES)){
-			movies.forEach(m-> m.setOrderCount(m.getOrderCount() +1));
-		}else{
-			movies.forEach(movie -> {
-				movie.setVideoProfit(movie.getVideoProfit() + movie.getRentalPrice());
-				movie.setOrderCount(movie.getOrderCount() + 1);
-			});
-		}
+	private void updateMovieProfit(List<Movie> movies, List<Subscription> subscriptions){
+        subscriptions.forEach(subscription -> {
+            if ("MOVIE".equals(subscription.getSubscriptionType().toString())) {
+                movies.forEach(movie -> movie.setOrderCount(movie.getOrderCount() + 1));
+            } else {
+                movies.forEach(movie -> {
+                    movie.setVideoProfit(movie.getVideoProfit() + movie.getPurchasePrice());
+                    movie.setOrderCount(movie.getOrderCount() + 1);
+                });
+            }
+        });
 	}
 
-	private void updateShowProfit(List<TvShow> shows, Role role){
-		if(role.equals(Role.ROLE_TVSHOWS)){
-			shows.forEach(s->s.setOrderCount(s.getOrderCount() + 1));
-		} else{
-			shows.forEach(show-> {
-				show.setVideoProfit(show.getVideoProfit() + show.getRentalPrice());
-				show.setOrderCount(show.getOrderCount() + 1);
-			});
-		}
+	private void updateShowProfit(List<TvShow> shows, List<Subscription> subscriptions){
+        subscriptions.forEach(subscription -> {
+            if ("TV_SHOW".equals(subscription.getSubscriptionType().toString())) {
+                shows.forEach(show -> show.setOrderCount(show.getOrderCount() + 1));
+            } else {
+                shows.forEach(show-> {
+                    show.setVideoProfit(show.getVideoProfit() + show.getPurchasePrice());
+                    show.setOrderCount(show.getOrderCount() + 1);
+                });
+            }
+        });
 	}
 
 	private void validatePurchaseRequest( CreatePurchaseDTO createPurchaseDTO ) throws BadRequestException {
@@ -85,11 +90,11 @@ public class PurchaseService {
         return createPurchaseDTO.getTvShows().isEmpty() ? List.of() : createPurchaseDTO.getTvShows().stream().map(tvShowService::getShowById).toList();
     }
 
-    private double calculateTotalPrice(List<Movie> movies, List<TvShow> tvShows, Role role) {
+    private double calculateTotalPrice(List<Movie> movies, List<TvShow> tvShows, List<Subscription> subscriptions) {
         double movieTotal = movies.stream().mapToDouble(Movie::getPurchasePrice).sum();
         double tvShowTotal = tvShows.stream().mapToDouble(TvShow::getPurchasePrice).sum();
-        if (role.equals(Role.ROLE_MOVIES)) movieTotal -= movieTotal * 0.4;
-        if (role.equals(Role.ROLE_TVSHOWS)) tvShowTotal -= tvShowTotal * 0.4;
+        if ( subscriptions.stream().anyMatch(s-> "MOVIE".equals(s.getSubscriptionType().toString()))) movieTotal -= movieTotal * 0.4;
+        if ( subscriptions.stream().anyMatch(s->"TV_SHOW".equals(s.getSubscriptionType().toString()))) tvShowTotal -= tvShowTotal * 0.4;
         return movieTotal + tvShowTotal;
     }
 
