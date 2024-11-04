@@ -1,11 +1,13 @@
 package com.team1.dealerApp.user;
 
+import com.team1.dealerApp.subscription.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -15,10 +17,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
 public class UserService {
+    private static final String USER_EMAIL_ERROR = "There is no user with email ";
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final SubscriptionService subscriptionService;
+    private final SubscriptionMapper subscriptionMapper;
 
 
     public UserDTO getUserDTOById(UUID id) throws NoSuchElementException {
@@ -42,12 +47,20 @@ public class UserService {
     }
 
     public boolean deleteUser(UserDetails user) {
-        userRepository.deleteByEmail(user.getUsername());
+        Boolean isActive = false;
+        User userToDelete = userRepository.findByEmail(user.getUsername()).orElseThrow(()-> new NoSuchElementException("There is no user with email " + user.getUsername()));
+        userToDelete.setIsActive(isActive);
+        userToDelete.getSubscriptions().forEach(s->s.setStatus(isActive));
+        userRepository.save(userToDelete);
         return true;
     }
 
     public boolean deleteUser(UUID id) {
-        userRepository.deleteById(id);
+        Boolean isActive = false;
+        User userToDelete = userRepository.findById(id).orElseThrow(()-> new NoSuchElementException("There is no user with id " + id ));
+        userToDelete.setIsActive(isActive);
+        userToDelete.getSubscriptions().forEach(s-> s.setStatus(isActive));
+        userRepository.save(userToDelete);
         return true;
     }
 
@@ -74,25 +87,42 @@ public class UserService {
     }
 
     public UserDTO getUserDetails(UserDetails user) {
-        User userFound = userRepository.findByEmail(user.getUsername()).orElseThrow(() -> new NoSuchElementException("No users with email: " + user.getUsername()));
+        User userFound = userRepository.findByEmail(user.getUsername()).orElseThrow(() -> new NoSuchElementException(USER_EMAIL_ERROR + user.getUsername()));
         return userMapper.toUserDTO(userFound);
     }
 
     public User getUserByEmail(UserDetails user) {
-        return userRepository.findByEmail(user.getUsername()).orElseThrow(() -> new NoSuchElementException("No users with email: " + user.getUsername()));
+        return userRepository.findByEmail(user.getUsername()).orElseThrow(() -> new NoSuchElementException(USER_EMAIL_ERROR + user.getUsername()));
     }
 
-	public UserDTO updateSubscriptionPlan( UserDetails user, String subscription ) throws BadRequestException {
+	public UserDTO updateSubscriptionPlan( UserDetails user, SubscriptionDTO subscription ) throws NoSuchElementException {
         String email = user.getUsername();
         User updatable = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NoSuchElementException("No user with email " + email));
-        switch (subscription.toLowerCase().trim()){
-            case "tvshow" -> updatable.setRole(Role.ROLE_TVSHOWS);
-            case "movie" -> updatable.setRole(Role.ROLE_MOVIES);
-            case "none" -> updatable.setRole(Role.ROLE_USER);
-            default -> throw new BadRequestException("No such plan: " + subscription );
-        }
+                .orElseThrow(() -> new NoSuchElementException(USER_EMAIL_ERROR + email));
+
+        SubscriptionType subscriptionType = subscription.getSubscriptionType();
+
+        updatable.getSubscriptions().removeIf(s -> s.getSubscriptionType().equals(subscriptionType));
+
+        updatable.getSubscriptions().add(subscriptionMapper.toEntity(subscription));
+
         userRepository.save(updatable);
+
         return userMapper.toUserDTO(updatable);
     }
+
+    public UserDTO updateSubscriptionEndDate(UserDetails user, Long subscriptionId, LocalDate date) throws NoSuchElementException{
+        subscriptionService.updateSubscriptionEndDate(subscriptionId, date);
+        User userFound = userRepository.findByEmail(user.getUsername()).orElseThrow(()-> new NoSuchElementException(USER_EMAIL_ERROR + user.getUsername()));
+        return userMapper.toUserDTO(userFound);
+    }
+
+    public UserDTO deleteSubscription(UserDetails user, Long subscriptionId){
+        subscriptionService.getSubscriptionDetails(subscriptionId);
+        User userFound = userRepository.findByEmail(user.getUsername()).orElseThrow(()-> new NoSuchElementException(USER_EMAIL_ERROR + user.getUsername()));
+        return userMapper.toUserDTO(userFound);
+    }
+
+
+
 }
