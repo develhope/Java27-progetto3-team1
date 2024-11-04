@@ -19,6 +19,10 @@ public class Subscription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column( name = "subscription_type", nullable = false)
+    @Enumerated
+    private SubscriptionType subscriptionType;
+
     @Column(nullable = false)
     private Double price;
 
@@ -28,7 +32,7 @@ public class Subscription {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    private boolean status;
+    private Boolean status = true;
 
     @ManyToMany
     @JoinTable(
