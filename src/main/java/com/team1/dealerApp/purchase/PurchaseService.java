@@ -1,7 +1,6 @@
 package com.team1.dealerApp.purchase;
 
 import com.team1.dealerApp.subscription.Subscription;
-import com.team1.dealerApp.user.Role;
 import com.team1.dealerApp.user.User;
 import com.team1.dealerApp.user.UserService;
 import com.team1.dealerApp.video.movie.Movie;
