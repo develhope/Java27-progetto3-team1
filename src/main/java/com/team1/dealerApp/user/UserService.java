@@ -1,6 +1,13 @@
 package com.team1.dealerApp.user;
 
-import com.team1.dealerApp.subscription.*;
+import com.paypal.api.payments.Links;
+import com.paypal.api.payments.Payment;
+import com.paypal.base.rest.PayPalRESTException;
+import com.team1.dealerApp.paypal.PayPalService;
+import com.team1.dealerApp.subscription.Subscription;
+import com.team1.dealerApp.subscription.SubscriptionMapper;
+import com.team1.dealerApp.subscription.SubscriptionService;
+import com.team1.dealerApp.subscription.SubscriptionType;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +31,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final SubscriptionService subscriptionService;
     private final SubscriptionMapper subscriptionMapper;
+    private final PayPalService payPalService;
 
 
     public UserDTO getUserDTOById(UUID id) throws NoSuchElementException {
@@ -95,7 +103,7 @@ public class UserService {
         return userRepository.findByEmail(user.getUsername()).orElseThrow(() -> new NoSuchElementException(USER_EMAIL_ERROR + user.getUsername()));
     }
 
-	public UserDTO updateSubscriptionPlan( UserDetails user, String subscription ) throws NoSuchElementException {
+	public String updateSubscriptionPlan( UserDetails user, String subscription ) throws NoSuchElementException, PayPalRESTException {
         String email = user.getUsername();
         User updatable = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException(USER_EMAIL_ERROR + email));
@@ -111,9 +119,15 @@ public class UserService {
         subscriptionService.addSubscription(subscriptionMapper.toDTO(newSubscription));
         updatable.getSubscriptions().add(newSubscription);
 
+        Payment payment = payPalService.createPayment(newSubscription.getPrice(), "EUR", "paypal", "sale", "Subscription");
+
         userRepository.save(updatable);
 
-        return userMapper.toUserDTO(updatable);
+        return payment.getLinks().stream()
+                .filter(link -> "approval_url".equals(link.getRel()))
+                .findFirst()
+                .map(Links::getHref)
+                .orElse(null);
     }
 
     public UserDTO updateSubscriptionEndDate(UserDetails user, Long subscriptionId, LocalDate date) throws NoSuchElementException{
