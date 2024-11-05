@@ -1,5 +1,7 @@
 package com.team1.dealerApp.error;
 
+import com.paypal.base.exception.PayPalException;
+import com.paypal.core.rest.PayPalRESTException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,5 +26,11 @@ public class ErrorControllerAdvice extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorDTO> handleNoSuchElementException (NoSuchElementException e){
         ErrorDTO errorDTO = ErrorDTO.builder().errorMessage(e.getMessage()).build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(errorDTO);
+    }
+
+    @ExceptionHandler( PayPalException.class)
+    public ResponseEntity<ErrorDTO> handlePayPalRestException ( PayPalRESTException e ){
+        ErrorDTO errorDTO = ErrorDTO.builder().errorMessage(e.getMessage()).build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body(errorDTO);
     }
 }
