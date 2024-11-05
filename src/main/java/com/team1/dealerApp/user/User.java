@@ -55,7 +55,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "renter")
     private List<Rental> rentals;
 
-    @ManyToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "users")
     private List<Subscription> subscriptions = new ArrayList<>();
 
     @Override

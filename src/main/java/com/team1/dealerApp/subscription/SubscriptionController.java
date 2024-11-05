@@ -1,7 +1,10 @@
 package com.team1.dealerApp.subscription;
 
+import com.team1.dealerApp.user.UserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -15,7 +18,6 @@ import java.util.NoSuchElementException;
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
-
 
     @DeleteMapping("/a/{subscriptionId}")
     public ResponseEntity<Boolean> deleteSubscription(@PathVariable Long subscriptionId) {

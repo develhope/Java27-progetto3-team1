@@ -34,12 +34,7 @@ public class Subscription {
 
     private Boolean status = true;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_subscription",
-            joinColumns = @JoinColumn(name = "subscription_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<User> users;
+    @ManyToOne()
+    private User users;
 
 }
