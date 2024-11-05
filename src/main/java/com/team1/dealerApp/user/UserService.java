@@ -95,16 +95,21 @@ public class UserService {
         return userRepository.findByEmail(user.getUsername()).orElseThrow(() -> new NoSuchElementException(USER_EMAIL_ERROR + user.getUsername()));
     }
 
-	public UserDTO updateSubscriptionPlan( UserDetails user, SubscriptionDTO subscription ) throws NoSuchElementException {
+	public UserDTO updateSubscriptionPlan( UserDetails user, String subscription ) throws NoSuchElementException {
         String email = user.getUsername();
         User updatable = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException(USER_EMAIL_ERROR + email));
 
-        SubscriptionType subscriptionType = subscription.getSubscriptionType();
-
+        SubscriptionType subscriptionType = SubscriptionType.valueOf(subscription.toUpperCase());
         updatable.getSubscriptions().removeIf(s -> s.getSubscriptionType().equals(subscriptionType));
-
-        updatable.getSubscriptions().add(subscriptionMapper.toEntity(subscription));
+        Subscription newSubscription = new Subscription();
+        newSubscription.setSubscriptionType(subscriptionType);
+        newSubscription.setUsers(updatable);
+        newSubscription.setPrice(20.00);
+        newSubscription.setStartDate(LocalDate.now());
+        newSubscription.setEndDate(LocalDate.now().plusDays(30));
+        subscriptionService.addSubscription(subscriptionMapper.toDTO(newSubscription));
+        updatable.getSubscriptions().add(newSubscription);
 
         userRepository.save(updatable);
 

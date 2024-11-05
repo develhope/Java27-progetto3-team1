@@ -56,9 +56,10 @@ public class UserController {
     }
 
     @PutMapping("/u/users/update_Plan")
-    public ResponseEntity<UserDTO> updateUserSubscription (@AuthenticationPrincipal UserDetails user, @RequestParam SubscriptionDTO subscription) throws NoSuchElementException {
+    public ResponseEntity<UserDTO> updateUserSubscription (@AuthenticationPrincipal UserDetails user, @RequestParam String subscription) throws NoSuchElementException {
         return ResponseEntity.ok(userService.updateSubscriptionPlan(user, subscription));
     }
+
 
     @PatchMapping("/u/users/update_PlanDate")
     public ResponseEntity<UserDTO> updateSubscriptionEndDate(@AuthenticationPrincipal UserDetails user,@RequestParam Long subscriptionId, @RequestParam LocalDate date) throws NoSuchElementException{
