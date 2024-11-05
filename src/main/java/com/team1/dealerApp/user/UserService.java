@@ -116,7 +116,7 @@ public class UserService {
         newSubscription.setPrice(20.00);
         newSubscription.setStartDate(LocalDate.now());
         newSubscription.setEndDate(LocalDate.now().plusDays(30));
-        subscriptionService.addSubscription(subscriptionMapper.toDTO(newSubscription));
+        subscriptionService.addSubscription(newSubscription);
         updatable.getSubscriptions().add(newSubscription);
 
         Payment payment = payPalService.createPayment(newSubscription.getPrice(), "EUR", "paypal", "sale", "Subscription");

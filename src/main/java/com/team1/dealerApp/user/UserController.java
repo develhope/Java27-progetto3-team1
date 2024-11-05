@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @PutMapping("/u/users/update_Plan")
-    public ResponseEntity< String> updateUserSubscription ( @AuthenticationPrincipal UserDetails user, @RequestParam String subscription) throws NoSuchElementException, PayPalRESTException {
+    public ResponseEntity< String> updateUserSubscription ( @AuthenticationPrincipal UserDetails user, @RequestParam("subscription") String subscription) throws NoSuchElementException, PayPalRESTException {
         return ResponseEntity.ok(userService.updateSubscriptionPlan(user, subscription));
     }
 

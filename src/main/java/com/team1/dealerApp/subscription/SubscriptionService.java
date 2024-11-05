@@ -57,8 +57,8 @@ public class SubscriptionService {
         return subscriptionMapper.toDTO(subscription);
     }
 
-    public SubscriptionDTO addSubscription(SubscriptionDTO subscriptionDTO){
-        subscriptionRepository.save(subscriptionMapper.toEntity(subscriptionDTO));
-        return subscriptionDTO;
+    public SubscriptionDTO addSubscription(Subscription subscription){
+        subscriptionRepository.save(subscription);
+        return subscriptionMapper.toDTO(subscription);
     }
 }
