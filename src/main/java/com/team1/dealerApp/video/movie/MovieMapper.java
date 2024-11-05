@@ -18,6 +18,7 @@ public class MovieMapper {
                 .releaseYear(movieDTO.getYear())
                 .runningTime(movieDTO.getRunningTime())
                 .rating(movieDTO.getRating())
+                .ageRating(movieDTO.getAgeRating())
                 .build();
     }
 
@@ -34,6 +35,7 @@ public class MovieMapper {
                 .title(movie.getTitle())
                 .purchasePrice(movie.getPurchasePrice())
                 .rentalPrice(movie.getRentalPrice())
+                .ageRating(movie.getAgeRating())
                 .build();
     }
 

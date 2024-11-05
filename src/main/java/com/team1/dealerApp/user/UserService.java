@@ -49,7 +49,7 @@ public class UserService {
     public boolean deleteUser(UserDetails user) {
         Boolean isActive = false;
         User userToDelete = userRepository.findByEmail(user.getUsername()).orElseThrow(()-> new NoSuchElementException("There is no user with email " + user.getUsername()));
-        userToDelete.setIsActive(isActive);
+        userToDelete.setActive(isActive);
         userToDelete.getSubscriptions().forEach(s->s.setStatus(isActive));
         userRepository.save(userToDelete);
         return true;
@@ -58,7 +58,7 @@ public class UserService {
     public boolean deleteUser(UUID id) {
         Boolean isActive = false;
         User userToDelete = userRepository.findById(id).orElseThrow(()-> new NoSuchElementException("There is no user with id " + id ));
-        userToDelete.setIsActive(isActive);
+        userToDelete.setActive(isActive);
         userToDelete.getSubscriptions().forEach(s-> s.setStatus(isActive));
         userRepository.save(userToDelete);
         return true;
@@ -122,12 +122,10 @@ public class UserService {
         return userMapper.toUserDTO(userFound);
     }
 
-    public UserDTO deleteSubscription(UserDetails user, Long subscriptionId){
+    public UserDTO deleteSubscription(UserDetails user, Long subscriptionId) {
         subscriptionService.getSubscriptionDetails(subscriptionId);
-        User userFound = userRepository.findByEmail(user.getUsername()).orElseThrow(()-> new NoSuchElementException(USER_EMAIL_ERROR + user.getUsername()));
+        User userFound = userRepository.findByEmail(user.getUsername()).orElseThrow(() -> new NoSuchElementException(USER_EMAIL_ERROR + user.getUsername()));
         return userMapper.toUserDTO(userFound);
     }
-
-
 
 }
