@@ -26,7 +26,7 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 				.csrf(AbstractHttpConfigurer::disable) // Disabilitiamo CSRF poiché gestiamo sessioni stateless
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/user/register", "/auth/login", "/auth/admin/register").permitAll() // Rotte di autenticazione pubbliche
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/user/register", "/auth/login", "/auth/admin/register", "/api/paypal/**").permitAll() // Rotte di autenticazione pubbliche
 						.requestMatchers("/a/**").hasRole("ADMIN")
 						.requestMatchers("/u/**").hasAnyRole("USER", "ADMIN")
 						.anyRequest().authenticated() // Tutte le altre richiedono autenticazione
