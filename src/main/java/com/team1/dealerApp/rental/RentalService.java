@@ -1,5 +1,9 @@
 package com.team1.dealerApp.rental;
 
+import com.paypal.api.payments.Links;
+import com.paypal.api.payments.Payment;
+import com.paypal.base.rest.PayPalRESTException;
+import com.team1.dealerApp.paypal.PayPalService;
 import com.team1.dealerApp.subscription.Subscription;
 import com.team1.dealerApp.user.User;
 import com.team1.dealerApp.user.UserService;
@@ -23,8 +27,9 @@ public class RentalService {
 	private final RentalRepository rentalRepository;
 	private final RentalMapper rentalMapper;
 	private final UserService userService;
+	private final PayPalService payPalService;
 
-	public RentalDTO addRental( UserDetails user, CreateRentalDTO createRentalDTO ) throws BadRequestException {
+	public String addRental( UserDetails user, CreateRentalDTO createRentalDTO ) throws BadRequestException, PayPalRESTException {
 		validateRentalRequest(createRentalDTO);
 
 		List < Movie > movies = fetchMovies(createRentalDTO);
@@ -37,7 +42,13 @@ public class RentalService {
 		updateShowProfit(tvShows, renter.getSubscriptions());
 		rentalRepository.save(rental);
 
-		return rentalMapper.toDTO(rental);
+		Payment payment = payPalService.createPayment(totalPrice, "EUR", "paypal", "sale", "New rental");
+
+		return payment.getLinks().stream()
+				.filter(link -> "approval_url".equals(link.getRel()))
+				.findFirst()
+				.map(Links::getHref)
+				.orElse(null);
 	}
 
 	private void updateMovieProfit(List<Movie> movies, List<Subscription> subscriptions){
