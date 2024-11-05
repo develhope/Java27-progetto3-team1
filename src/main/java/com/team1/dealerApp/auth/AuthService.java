@@ -34,6 +34,7 @@ public class AuthService {
 				.password(passwordEncoder.encode(request.getPassword()))
 				.phoneNumber(request.getPhoneNumber())
 				.role(Role.ROLE_USER)
+				.isActive(true)
 				.build();
 
 		userRepository.save( user );
@@ -72,6 +73,7 @@ public class AuthService {
 				.password(passwordEncoder.encode(request.getPassword()))
 				.phoneNumber(request.getPhoneNumber())
 				.role(Role.ROLE_ADMIN)
+				.isActive(true)
 				.build();
 
 		userRepository.save( user );

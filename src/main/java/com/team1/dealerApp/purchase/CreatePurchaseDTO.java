@@ -2,6 +2,7 @@ package com.team1.dealerApp.purchase;
 
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -11,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CreatePurchaseDTO {
 
-    private List<Long> movies;
-    private List<Long> tvShows;
+    private List<Long> movies = new ArrayList<>();
+    private List<Long> tvShows = new ArrayList <>();
 
 }
