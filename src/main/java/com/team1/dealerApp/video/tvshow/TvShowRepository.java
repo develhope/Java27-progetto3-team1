@@ -1,6 +1,5 @@
 package com.team1.dealerApp.video.tvshow;
 
-import com.team1.dealerApp.video.movie.Movie;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
