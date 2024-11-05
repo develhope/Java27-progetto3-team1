@@ -11,12 +11,14 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class SubscriptionDTO {
 
+    private SubscriptionType subscriptionType;
+
     private Double price;
 
     private LocalDate startDate;
 
     private LocalDate endDate;
 
-    private boolean status;
+    private Boolean status;
 
 }

@@ -1,9 +1,13 @@
 package com.team1.dealerApp.user;
 
+import com.team1.dealerApp.subscription.SubscriptionMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class UserMapper {
+    private final SubscriptionMapper subscriptionMapper;
 
     public UserDTO toUserDTO(User user) {
         return UserDTO.builder()
@@ -12,6 +16,7 @@ public class UserMapper {
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .role(user.getRole())
+                .subscriptions(subscriptionMapper.toDTOList(user.getSubscriptions()))
                 .watchedMovies(user.getWatchedMovies())
                 .watchedShows(user.getWatchedShows())
                 .build();

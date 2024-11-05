@@ -1,6 +1,6 @@
 package com.team1.dealerApp.rental;
 
-import com.team1.dealerApp.user.Role;
+import com.team1.dealerApp.subscription.Subscription;
 import com.team1.dealerApp.user.User;
 import com.team1.dealerApp.user.UserService;
 import com.team1.dealerApp.video.movie.Movie;
@@ -30,36 +30,40 @@ public class RentalService {
 		List < Movie > movies = fetchMovies(createRentalDTO);
 		List < TvShow > tvShows = fetchTvShows(createRentalDTO);
 		User renter = userService.getUserByEmail(user);
-		double totalPrice = calculateTotalRentalPrice(movies, tvShows, renter.getRole());
+		double totalPrice = calculateTotalRentalPrice(movies, tvShows, renter.getSubscriptions());
 
 		Rental rental = createRental(user, createRentalDTO, totalPrice);
-		updateMovieProfit(movies, renter.getRole());
-		updateShowProfit(tvShows, renter.getRole());
+		updateMovieProfit(movies, renter.getSubscriptions());
+		updateShowProfit(tvShows, renter.getSubscriptions());
 		rentalRepository.save(rental);
 
 		return rentalMapper.toDTO(rental);
 	}
 
-	private void updateMovieProfit(List<Movie> movies, Role role){
-		if(role.equals(Role.ROLE_MOVIES)){
-			movies.forEach(m-> m.setOrderCount(m.getOrderCount() +1));
-		}else{
-			movies.forEach(movie -> {
-				movie.setVideoProfit(movie.getVideoProfit() + movie.getRentalPrice());
-				movie.setOrderCount(movie.getOrderCount() + 1);
-			});
-		}
+	private void updateMovieProfit(List<Movie> movies, List<Subscription> subscriptions){
+		subscriptions.forEach(subscription -> {
+					if ("MOVIE".equals(subscription.getSubscriptionType().toString())) {
+						movies.forEach(movie -> movie.setOrderCount(movie.getOrderCount() + 1));
+					} else {
+						movies.forEach(movie -> {
+							movie.setVideoProfit(movie.getVideoProfit() + movie.getRentalPrice());
+							movie.setOrderCount(movie.getOrderCount() + 1);
+						});
+					}
+				});
 	}
 
-	private void updateShowProfit(List<TvShow> shows, Role role){
-		if(role.equals(Role.ROLE_TVSHOWS)){
-			shows.forEach(s->s.setOrderCount(s.getOrderCount() + 1));
-		} else{
-			shows.forEach(show-> {
-				show.setVideoProfit(show.getVideoProfit() + show.getRentalPrice());
-				show.setOrderCount(show.getOrderCount() + 1);
-			});
-		}
+	private void updateShowProfit(List<TvShow> shows, List<Subscription> subscriptions){
+		subscriptions.forEach(subscription -> {
+			if ("TV_SHOW".equals(subscription.getSubscriptionType().toString())) {
+				shows.forEach(show -> show.setOrderCount(show.getOrderCount() + 1));
+			} else {
+				shows.forEach(show-> {
+					show.setVideoProfit(show.getVideoProfit() + show.getRentalPrice());
+					show.setOrderCount(show.getOrderCount() + 1);
+				});
+			}
+		});
 	}
 
 	private void validateRentalRequest( CreateRentalDTO createRentalDTO ) throws BadRequestException {
@@ -76,11 +80,11 @@ public class RentalService {
 		return createRentalDTO.getTvShows().isEmpty()? List.of(): createRentalDTO.getTvShows();
 	}
 
-	private double calculateTotalRentalPrice( List < Movie > movies, List < TvShow > tvShows, Role role ) {
+	private double calculateTotalRentalPrice( List < Movie > movies, List < TvShow > tvShows, List<Subscription> subscriptions ) {
 		double movieRentalPrice = movies.stream().mapToDouble(Movie::getRentalPrice).sum();
 		double tvShowRentalPrice = tvShows.stream().mapToDouble(TvShow::getRentalPrice).sum();
-		if ( role.equals(Role.ROLE_TVSHOWS) ) tvShowRentalPrice = 0;
-		if ( role.equals(Role.ROLE_MOVIES) ) movieRentalPrice = 0;
+		if ( subscriptions.stream().anyMatch(s-> "MOVIE".equals(s.getSubscriptionType().toString()))) tvShowRentalPrice = 0;
+		if ( subscriptions.stream().anyMatch(s->"TV_SHOW".equals(s.getSubscriptionType().toString()))) movieRentalPrice = 0;
 		return movieRentalPrice + tvShowRentalPrice;
 	}
 

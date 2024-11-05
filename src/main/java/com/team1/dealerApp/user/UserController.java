@@ -1,14 +1,15 @@
 package com.team1.dealerApp.user;
 
+import com.team1.dealerApp.subscription.SubscriptionDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -16,9 +17,8 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@SuppressWarnings("unused")
 public class UserController {
-
-    // ToDo: Cancellare Abbonamento
 
     private final UserService userService;
 
@@ -55,9 +55,19 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUser());
     }
 
-    @PatchMapping("/u/users/update_Plan")
-    public ResponseEntity<UserDTO> updateUserSubscription (@AuthenticationPrincipal UserDetails user, @RequestParam(name = "subscription", defaultValue = "none") String subscription) throws BadRequestException {
-        return ResponseEntity.ok(userService.updateSubscriptionPlan( user, subscription ));
+    @PutMapping("/u/users/update_Plan")
+    public ResponseEntity<UserDTO> updateUserSubscription (@AuthenticationPrincipal UserDetails user, @RequestParam SubscriptionDTO subscription) throws NoSuchElementException {
+        return ResponseEntity.ok(userService.updateSubscriptionPlan(user, subscription));
+    }
+
+    @PatchMapping("/u/users/update_PlanDate")
+    public ResponseEntity<UserDTO> updateSubscriptionEndDate(@AuthenticationPrincipal UserDetails user,@RequestParam Long subscriptionId, @RequestParam LocalDate date) throws NoSuchElementException{
+        return ResponseEntity.ok(userService.updateSubscriptionEndDate(user, subscriptionId,date));
+    }
+
+    @DeleteMapping("/u/users/{subscriptionId}")
+    public ResponseEntity<UserDTO> deleteSubscription(@AuthenticationPrincipal UserDetails user, @PathVariable ("subscriptionId") Long subscriptionId){
+        return ResponseEntity.ok(userService.deleteSubscription(user, subscriptionId));
     }
 
 }
