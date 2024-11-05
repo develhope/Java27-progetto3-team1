@@ -1,5 +1,9 @@
 package com.team1.dealerApp.purchase;
 
+import com.paypal.api.payments.Links;
+import com.paypal.api.payments.Payment;
+import com.paypal.base.rest.PayPalRESTException;
+import com.team1.dealerApp.paypal.PayPalService;
 import com.team1.dealerApp.subscription.Subscription;
 import com.team1.dealerApp.user.User;
 import com.team1.dealerApp.user.UserService;
@@ -29,8 +33,9 @@ public class PurchaseService {
     private final UserService userService;
     private final MovieService movieService;
     private final TvShowService tvShowService;
+    private final PayPalService payPalService;
 
-    public PurchaseDTO addPurchase(UserDetails user, CreatePurchaseDTO createPurchaseDTO) throws BadRequestException {
+    public String addPurchase(UserDetails user, CreatePurchaseDTO createPurchaseDTO) throws BadRequestException, PayPalRESTException {
         validatePurchaseRequest(createPurchaseDTO);
 
         List<Movie> movieList = fetchMovies(createPurchaseDTO);
@@ -43,9 +48,16 @@ public class PurchaseService {
 		Purchase purchase = createPurchase(createPurchaseDTO, movieList, tvShowList, totalPurchasePrice, purchaser);
 		updateMovieProfit(movieList, purchaser.getSubscriptions());
 		updateShowProfit(tvShowList, purchaser.getSubscriptions());
+
+        Payment payment = payPalService.createPayment(totalPurchasePrice, "EUR", "paypal", "sale", "Movie Purchase");
+
 		purchaseRepository.save(purchase);
 
-        return purchaseMapper.toDTO(purchase);
+        return payment.getLinks().stream()
+                .filter(link -> "approval_url".equals(link.getRel()))
+                .findFirst()
+                .map(Links::getHref)
+                .orElse(null);
     }
 
 
