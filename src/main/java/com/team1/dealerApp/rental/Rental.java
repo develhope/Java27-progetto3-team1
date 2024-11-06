@@ -22,10 +22,10 @@ public class Rental {
     private Long id;
 
     @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+    private LocalDate startDate = LocalDate.now();
 
     @Column(name = "end_date", nullable = false)
-    private LocalDate endDate;
+    private LocalDate endDate= LocalDate.now();
 
     @Column(name = "rental_price", nullable = false)
     private double rentalPrice;
