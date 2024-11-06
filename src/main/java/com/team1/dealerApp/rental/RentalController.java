@@ -11,7 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.NoSuchElementException;
 
 
@@ -37,8 +37,8 @@ public class RentalController {
 
     @PreAuthorize( "hasRole('USER')" )
     @PatchMapping( "/u/rentals/{rentalId}" )
-    public ResponseEntity<RentalDTO> updateRentalEndDate(@AuthenticationPrincipal UserDetails user, @PathVariable ("rentalId") Long id, @RequestBody LocalDateTime dateTime) throws NoSuchElementException{
-            return ResponseEntity.ok(rentalService.updateRentalEndDate(user, id, dateTime));
+    public ResponseEntity<RentalDTO> updateRentalEndDate(@AuthenticationPrincipal UserDetails user, @PathVariable ("rentalId") Long id, @RequestBody LocalDate date) throws NoSuchElementException, BadRequestException {
+            return ResponseEntity.ok(rentalService.updateRentalEndDate(user, id, date));
     }
 
 	@PreAuthorize( "hasRole('USER')" )
