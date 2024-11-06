@@ -3,6 +3,7 @@ package com.team1.dealerApp.user;
 import com.paypal.base.rest.PayPalRESTException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -51,8 +52,8 @@ public class UserController {
     }
 
     @GetMapping("/a/users")
-    public ResponseEntity<List<UserDTO>> getAllUser() {
-        return ResponseEntity.ok(userService.getAllUser());
+    public ResponseEntity< Page <UserDTO> > getAllUser(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10")int size){
+        return ResponseEntity.ok(userService.getAllUser(page, size));
     }
 
     @PutMapping("/u/users/update_Plan")

@@ -3,6 +3,7 @@ package com.team1.dealerApp.video.movie;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -33,8 +34,8 @@ public class MovieController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/u/movies")
-    public ResponseEntity<List<MovieDTO>> getAllMovies() throws NoSuchElementException {
-        return ResponseEntity.ok(movieService.getAllMovies());
+    public ResponseEntity< Page <MovieDTO> > getAllMovies( @RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) throws NoSuchElementException {
+        return ResponseEntity.ok(movieService.getAllMovies(page,size));
     }
 
     @PreAuthorize("hasRole('USER')")
@@ -61,8 +62,8 @@ public class MovieController {
     }
 
     @GetMapping("/a/movies/sales")
-    public ResponseEntity<List<AdminMovieDTO>> getSales(){
-        return ResponseEntity.ok(movieService.getSales());
+    public ResponseEntity<Page<AdminMovieDTO>> getSales(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size){
+        return ResponseEntity.ok(movieService.getSales(page,size));
     }
 
 }
