@@ -23,6 +23,8 @@ public class MovieService {
             throw new BadRequestException("This movie already exists");
         }
         Movie added = movieRepository.save(movieMapper.toMovie(movieDTO));
+        added.setOrderCount(0);
+        added.setVideoProfit(0.0);
         return movieMapper.toMovieDTO(added);
     }
 
@@ -52,10 +54,11 @@ public class MovieService {
         return movieRepository.findById(movieId).orElseThrow(() -> new NoSuchElementException("There is no film with id " + movieId));
     }
 
-    public MovieDTO updateMovie(Long movieId, MovieDTO movieDTO) throws NoSuchElementException {
+    public MovieDTO updateMovie(Long movieId, CreateMovieDTO movieDTO) throws NoSuchElementException {
         if (movieRepository.existsById(movieId)) {
             Movie movieToUpdate = movieMapper.toMovie(movieDTO);
             movieToUpdate.setId(movieId);
+
             movieRepository.save(movieToUpdate);
             return movieMapper.toMovieDTO(movieToUpdate);
         }
