@@ -2,6 +2,9 @@ package com.team1.dealerApp.subscription;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -38,16 +41,22 @@ public class SubscriptionService {
                 .status(subscriptionFound.getStatus()).build();
     }
 
-    public List<SubscriptionDTO> getAllSubscription() {
-        return subscriptionMapper.toDTOList(subscriptionRepository.findAll());
+    public Page<SubscriptionDTO> getAllSubscription(int pageNumber, int size) {
+        return subscriptionRepository
+                .findAll(createPageable(pageNumber, size))
+                .map(subscriptionMapper::toDTO);
     }
 
-    public List<SubscriptionDTO> getAllActiveSubscriptions() {
-        return subscriptionMapper.toDTOList(subscriptionRepository.findByStatus(true));
+    public Page <SubscriptionDTO> getAllActiveSubscriptions( int pageNumber, int size) {
+        return subscriptionRepository
+                .findByStatusOrderByStatusAsc(true, createPageable(pageNumber, size))
+                .map(subscriptionMapper::toDTO);
     }
 
-    public List<SubscriptionDTO> getAlleSubscriptionsByType(SubscriptionType type) {
-       return subscriptionMapper.toDTOList(subscriptionRepository.findBySubscriptionType(type));
+    public Page<SubscriptionDTO> getAlleSubscriptionsByType(SubscriptionType type, int pageNumber, int size) {
+       return subscriptionRepository
+               .findBySubscriptionType(type, createPageable(pageNumber, size))
+               .map(subscriptionMapper::toDTO);
     }
 
     public SubscriptionDTO adminUpdateSubscriptionEndDate(Long subscriptionId, LocalDate date) throws NoSuchElementException{
@@ -60,5 +69,9 @@ public class SubscriptionService {
     public SubscriptionDTO addSubscription(Subscription subscription){
         subscriptionRepository.save(subscription);
         return subscriptionMapper.toDTO(subscription);
+    }
+
+    public Pageable createPageable(int pageNumber, int size){
+        return PageRequest.of(pageNumber, size);
     }
 }
