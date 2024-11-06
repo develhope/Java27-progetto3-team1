@@ -10,6 +10,9 @@ import com.team1.dealerApp.subscription.SubscriptionService;
 import com.team1.dealerApp.subscription.SubscriptionType;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -55,7 +58,7 @@ public class UserService {
     }
 
     public boolean deleteUser(UserDetails user) {
-        Boolean isActive = false;
+        boolean isActive = false;
         User userToDelete = userRepository.findByEmail(user.getUsername()).orElseThrow(()-> new NoSuchElementException("There is no user with email " + user.getUsername()));
         userToDelete.setActive(isActive);
         userToDelete.getSubscriptions().forEach(s->s.setStatus(isActive));
@@ -89,9 +92,9 @@ public class UserService {
 
     }
 
-    public List<UserDTO> getAllUser() {
-        List<User> allUser = userRepository.findAll();
-        return allUser.stream().map(userMapper::toUserDTO).toList();
+    public Page <UserDTO> getAllUser(int page, int size) {
+        Page<User> allUser = userRepository.findAll(createPageable(page,size));
+        return allUser.map(userMapper::toUserDTO);
     }
 
     public UserDTO getUserDetails(UserDetails user) {
@@ -140,6 +143,10 @@ public class UserService {
         subscriptionService.getSubscriptionDetails(subscriptionId);
         User userFound = userRepository.findByEmail(user.getUsername()).orElseThrow(() -> new NoSuchElementException(USER_EMAIL_ERROR + user.getUsername()));
         return userMapper.toUserDTO(userFound);
+    }
+
+    public Pageable createPageable( int pageNumber, int size){
+        return PageRequest.of(pageNumber, size);
     }
 
 }
