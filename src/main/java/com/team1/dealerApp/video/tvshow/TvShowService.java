@@ -42,10 +42,10 @@ public class TvShowService {
 	}
 
 
-	public TvShowDTO addTvShow (TvShowDTO tvShowDTO) throws BadRequestException {
+	public TvShowDTO addTvShow (CreateShowDTO tvShowDTO) throws BadRequestException {
 		if(!tvShowRepository.existsByTitleAndDirector(tvShowDTO.getTitle(), tvShowDTO.getDirector())){
-			tvShowRepository.save(tvShowMapper.toTvShow(tvShowDTO));
-			return tvShowDTO;
+			TvShow added = tvShowRepository.save(tvShowMapper.toTvShow(tvShowDTO));
+			return tvShowMapper.toTvShowDTO(added);
 		}
 		throw new BadRequestException("This Show already exists");
 	}
