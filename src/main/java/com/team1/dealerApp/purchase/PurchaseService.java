@@ -62,29 +62,33 @@ public class PurchaseService {
 
 
 	private void updateMovieProfit(List<Movie> movies, List<Subscription> subscriptions){
-        subscriptions.forEach(subscription -> {
-            if ("MOVIE".equals(subscription.getSubscriptionType().toString())) {
-                movies.forEach(movie -> movie.setOrderCount(movie.getOrderCount() + 1));
-            } else {
-                movies.forEach(movie -> {
-                    movie.setVideoProfit(movie.getVideoProfit() + movie.getPurchasePrice());
-                    movie.setOrderCount(movie.getOrderCount() + 1);
-                });
-            }
-        });
+        if( subscriptions.isEmpty() ){
+            movies.forEach(movie -> {
+                movie.setVideoProfit(movie.getVideoProfit() + movie.getPurchasePrice());
+                movie.setOrderCount(movie.getOrderCount() + 1);
+            });
+        }else {
+            subscriptions.forEach(subscription -> {
+                if ( "MOVIE".equals(subscription.getSubscriptionType().toString()) ) {
+                    movies.forEach(movie -> movie.setOrderCount(movie.getOrderCount() + 1));
+                }
+            });
+        }
 	}
 
 	private void updateShowProfit(List<TvShow> shows, List<Subscription> subscriptions){
-        subscriptions.forEach(subscription -> {
-            if ("TV_SHOW".equals(subscription.getSubscriptionType().toString())) {
-                shows.forEach(show -> show.setOrderCount(show.getOrderCount() + 1));
-            } else {
-                shows.forEach(show-> {
-                    show.setVideoProfit(show.getVideoProfit() + show.getPurchasePrice());
-                    show.setOrderCount(show.getOrderCount() + 1);
-                });
-            }
-        });
+        if (subscriptions.isEmpty()){
+            shows.forEach(show-> {
+                show.setVideoProfit(show.getVideoProfit() + show.getPurchasePrice());
+                show.setOrderCount(show.getOrderCount() + 1);
+            });
+        }else {
+            subscriptions.forEach(subscription -> {
+                if ( "TV_SHOW".equals(subscription.getSubscriptionType().toString()) ) {
+                    shows.forEach(show -> show.setOrderCount(show.getOrderCount() + 1));
+                }
+            });
+        }
 	}
 
 	private void validatePurchaseRequest( CreatePurchaseDTO createPurchaseDTO ) throws BadRequestException {
