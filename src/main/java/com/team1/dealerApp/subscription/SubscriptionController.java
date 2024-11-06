@@ -1,6 +1,7 @@
 package com.team1.dealerApp.subscription;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,18 +28,18 @@ public class SubscriptionController {
     }
 
     @GetMapping("/a/all-subscription")
-    public ResponseEntity<List<SubscriptionDTO>> getAllSubscriptions(){
-        return ResponseEntity.ok(subscriptionService.getAllSubscription());
+    public ResponseEntity< Page <SubscriptionDTO> > getAllSubscriptions(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size){
+        return ResponseEntity.ok(subscriptionService.getAllSubscription(page, size));
     }
 
     @GetMapping("/a/active-subscriptions")
-    public ResponseEntity<List<SubscriptionDTO>> getAllActiveSubscriptions(){
-        return ResponseEntity.ok(subscriptionService.getAllActiveSubscriptions());
+    public ResponseEntity<Page<SubscriptionDTO>> getAllActiveSubscriptions(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size){
+        return ResponseEntity.ok(subscriptionService.getAllActiveSubscriptions(page, size));
     }
 
     @GetMapping("/a/subscriptions-by-type")
-    public ResponseEntity<List<SubscriptionDTO>> getAllSubscriptionsByType(@RequestParam SubscriptionType type){
-        return ResponseEntity.ok(subscriptionService.getAlleSubscriptionsByType(type));
+    public ResponseEntity<Page<SubscriptionDTO>> getAllSubscriptionsByType(@RequestParam SubscriptionType type, @RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size){
+        return ResponseEntity.ok(subscriptionService.getAlleSubscriptionsByType(type, page, size));
     }
 
     @PatchMapping("/a/{subscriptionId}")

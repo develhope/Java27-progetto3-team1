@@ -8,8 +8,12 @@ import com.team1.dealerApp.subscription.Subscription;
 import com.team1.dealerApp.subscription.SubscriptionMapper;
 import com.team1.dealerApp.subscription.SubscriptionService;
 import com.team1.dealerApp.subscription.SubscriptionType;
+import com.team1.dealerApp.utils.Pager;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,6 +36,7 @@ public class UserService {
     private final SubscriptionService subscriptionService;
     private final SubscriptionMapper subscriptionMapper;
     private final PayPalService payPalService;
+    private final Pager pager;
 
 
     public UserDTO getUserDTOById(UUID id) throws NoSuchElementException {
@@ -55,7 +60,7 @@ public class UserService {
     }
 
     public boolean deleteUser(UserDetails user) {
-        Boolean isActive = false;
+        boolean isActive = false;
         User userToDelete = userRepository.findByEmail(user.getUsername()).orElseThrow(()-> new NoSuchElementException("There is no user with email " + user.getUsername()));
         userToDelete.setActive(isActive);
         userToDelete.getSubscriptions().forEach(s->s.setStatus(isActive));
@@ -89,9 +94,9 @@ public class UserService {
 
     }
 
-    public List<UserDTO> getAllUser() {
-        List<User> allUser = userRepository.findAll();
-        return allUser.stream().map(userMapper::toUserDTO).toList();
+    public Page <UserDTO> getAllUser(int page, int size) {
+        Page<User> allUser = userRepository.findAll(pager.createPageable(page,size));
+        return allUser.map(userMapper::toUserDTO);
     }
 
     public UserDTO getUserDetails(UserDetails user) {
@@ -141,5 +146,4 @@ public class UserService {
         User userFound = userRepository.findByEmail(user.getUsername()).orElseThrow(() -> new NoSuchElementException(USER_EMAIL_ERROR + user.getUsername()));
         return userMapper.toUserDTO(userFound);
     }
-
 }

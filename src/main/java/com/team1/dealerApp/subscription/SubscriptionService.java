@@ -1,7 +1,11 @@
 package com.team1.dealerApp.subscription;
 
 
+import com.team1.dealerApp.utils.Pager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -14,6 +18,7 @@ public class SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
     private final SubscriptionMapper subscriptionMapper;
+    private final Pager pager;
 
     public void updateSubscriptionEndDate(Long subscriptionId, LocalDate newEndDate) throws NoSuchElementException {
         Subscription subscription = subscriptionRepository.findById(subscriptionId).orElseThrow(()-> new NoSuchElementException("There is no subscription with id " + subscriptionId));
@@ -38,16 +43,22 @@ public class SubscriptionService {
                 .status(subscriptionFound.getStatus()).build();
     }
 
-    public List<SubscriptionDTO> getAllSubscription() {
-        return subscriptionMapper.toDTOList(subscriptionRepository.findAll());
+    public Page<SubscriptionDTO> getAllSubscription(int pageNumber, int size) {
+        return subscriptionRepository
+                .findAll(pager.createPageable(pageNumber, size))
+                .map(subscriptionMapper::toDTO);
     }
 
-    public List<SubscriptionDTO> getAllActiveSubscriptions() {
-        return subscriptionMapper.toDTOList(subscriptionRepository.findByStatus(true));
+    public Page <SubscriptionDTO> getAllActiveSubscriptions( int pageNumber, int size) {
+        return subscriptionRepository
+                .findByStatusOrderByStatusAsc(true, pager.createPageable(pageNumber, size))
+                .map(subscriptionMapper::toDTO);
     }
 
-    public List<SubscriptionDTO> getAlleSubscriptionsByType(SubscriptionType type) {
-       return subscriptionMapper.toDTOList(subscriptionRepository.findBySubscriptionType(type));
+    public Page<SubscriptionDTO> getAlleSubscriptionsByType(SubscriptionType type, int pageNumber, int size) {
+       return subscriptionRepository
+               .findBySubscriptionType(type, pager.createPageable(pageNumber, size))
+               .map(subscriptionMapper::toDTO);
     }
 
     public SubscriptionDTO adminUpdateSubscriptionEndDate(Long subscriptionId, LocalDate date) throws NoSuchElementException{

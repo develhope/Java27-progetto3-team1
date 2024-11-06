@@ -7,6 +7,7 @@ import com.team1.dealerApp.paypal.PayPalService;
 import com.team1.dealerApp.subscription.Subscription;
 import com.team1.dealerApp.user.User;
 import com.team1.dealerApp.user.UserService;
+import com.team1.dealerApp.utils.Pager;
 import com.team1.dealerApp.video.movie.Movie;
 import com.team1.dealerApp.video.movie.MovieService;
 import com.team1.dealerApp.video.tvshow.TvShow;
@@ -34,6 +35,7 @@ public class PurchaseService {
     private final MovieService movieService;
     private final TvShowService tvShowService;
     private final PayPalService payPalService;
+    private final Pager pager;
 
     public String addPurchase(UserDetails user, CreatePurchaseDTO createPurchaseDTO) throws BadRequestException, PayPalRESTException {
         validatePurchaseRequest(createPurchaseDTO);
@@ -124,8 +126,7 @@ public class PurchaseService {
 
 
     public Page<PurchaseDTO> getPurchaseByUserId(UserDetails user, int page, int size) throws NoSuchElementException {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Purchase> purchaseFind = purchaseRepository.findByPurchaser_Email(user.getUsername(), pageable);
+        Page<Purchase> purchaseFind = purchaseRepository.findByPurchaser_Email(user.getUsername(), pager.createPageable(page, size));
 
         if (purchaseFind.isEmpty()) {
             throw new NoSuchElementException("User with email " + user.getUsername() + " has no purchases");
