@@ -124,6 +124,10 @@ public class RentalService {
 
 	public RentalDTO updateRentalEndDate( UserDetails user, Long id, LocalDate date ) throws BadRequestException {
 		Rental rentalFound = rentalRepository.findByRenter_EmailAndId(user.getUsername(), id).orElseThrow(() -> new NoSuchElementException("There is no rental with id " + id));
+		LocalDate rentalEndDate = rentalFound.getEndDate();
+		if(rentalEndDate.isAfter(date)){
+			throw new BadRequestException("Error: " + date + " is before the rental's end date");
+		}
 		rentalFound.setEndDate(date);
 		rentalRepository.save(rentalFound);
 		return rentalMapper.toDTO(rentalFound);
