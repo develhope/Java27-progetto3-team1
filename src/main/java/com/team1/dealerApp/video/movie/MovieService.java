@@ -1,6 +1,7 @@
 package com.team1.dealerApp.video.movie;
 
 
+import com.team1.dealerApp.utils.Pager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -20,6 +21,7 @@ public class MovieService {
     private final MovieRepository movieRepository;
     private final MovieMapper movieMapper;
     private final MovieUpdater<Object> movieUpdater;
+    private final Pager pager;
 
     public MovieDTO addMovie(CreateMovieDTO movieDTO) throws BadRequestException {
         if (movieRepository.existsByTitleAndDirector(movieDTO.getTitle(), movieDTO.getDirector())) {
@@ -37,7 +39,7 @@ public class MovieService {
 
     public Page <MovieDTO> getAllMovies(int page, int size) throws NoSuchElementException {
 
-        Page<Movie> movies = movieRepository.findAll(createPageable(page, size));
+        Page<Movie> movies = movieRepository.findAll(pager.createPageable(page, size));
         if (!movies.isEmpty()) {
             return movies.map(movieMapper::toMovieDTO);
         } else {
@@ -97,11 +99,7 @@ public class MovieService {
     }
 
     public Page<AdminMovieDTO> getSales(int page, int size) {
-        Page<Movie> movies = movieRepository.findAll(createPageable(page, size));
+        Page<Movie> movies = movieRepository.findAll(pager.createPageable(page, size));
         return movies.map(movieMapper::toAdminMovieDTO);
-    }
-
-    public Pageable createPageable(int pageNumber, int size){
-        return PageRequest.of(pageNumber, size);
     }
 }
