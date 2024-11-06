@@ -8,7 +8,9 @@ import com.team1.dealerApp.subscription.Subscription;
 import com.team1.dealerApp.user.User;
 import com.team1.dealerApp.user.UserService;
 import com.team1.dealerApp.video.movie.Movie;
+import com.team1.dealerApp.video.movie.MovieService;
 import com.team1.dealerApp.video.tvshow.TvShow;
+import com.team1.dealerApp.video.tvshow.TvShowService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
@@ -17,7 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -28,6 +30,8 @@ public class RentalService {
 	private final RentalMapper rentalMapper;
 	private final UserService userService;
 	private final PayPalService payPalService;
+	private final MovieService movieService;
+	private final TvShowService tvShowService;
 
 	public String addRental( UserDetails user, CreateRentalDTO createRentalDTO ) throws BadRequestException, PayPalRESTException {
 		validateRentalRequest(createRentalDTO);
@@ -37,7 +41,7 @@ public class RentalService {
 		User renter = userService.getUserByEmail(user);
 		double totalPrice = calculateTotalRentalPrice(movies, tvShows, renter.getSubscriptions());
 
-		Rental rental = createRental(user, createRentalDTO, totalPrice);
+		Rental rental = createRental(user, createRentalDTO, movies, tvShows, totalPrice);
 		updateMovieProfit(movies, renter.getSubscriptions());
 		updateShowProfit(tvShows, renter.getSubscriptions());
 		rentalRepository.save(rental);
@@ -84,11 +88,11 @@ public class RentalService {
 	}
 
 	private List < Movie > fetchMovies( CreateRentalDTO createRentalDTO ) {
-		return createRentalDTO.getMovies().isEmpty()? List.of(): createRentalDTO.getMovies();
+		return createRentalDTO.getMovies().isEmpty()? List.of(): createRentalDTO.getMovies().stream().map(movieService::getMovieById).toList();
 	}
 
 	private List < TvShow > fetchTvShows( CreateRentalDTO createRentalDTO ) {
-		return createRentalDTO.getTvShows().isEmpty()? List.of(): createRentalDTO.getTvShows();
+		return createRentalDTO.getTvShows().isEmpty()? List.of(): createRentalDTO.getTvShows().stream().map(tvShowService::getShowById).toList();
 	}
 
 	private double calculateTotalRentalPrice( List < Movie > movies, List < TvShow > tvShows, List<Subscription> subscriptions ) {
@@ -99,11 +103,11 @@ public class RentalService {
 		return movieRentalPrice + tvShowRentalPrice;
 	}
 
-	private Rental createRental( UserDetails user, CreateRentalDTO createRentalDTO, double totalPrice ) {
-		Rental rental = rentalMapper.toRental(createRentalDTO);
+	private Rental createRental( UserDetails user, CreateRentalDTO createRentalDTO, List<Movie> movieList, List<TvShow> tvShowsList, double totalPrice ) {
+		Rental rental = rentalMapper.toRental(createRentalDTO, movieList,tvShowsList);
 		rental.setRentalPrice(totalPrice);
-		rental.setStartDate(LocalDateTime.now());
-		rental.setEndDate(LocalDateTime.now().plusDays(14));
+		rental.setStartDate(LocalDate.now());
+		rental.setEndDate(LocalDate.now().plusDays(14));
 		rental.setRenter(userService.getUserByEmail(user));
 		rental.setRentalStatus(RentalStatus.ACTIVE);
 		return rental;
@@ -118,9 +122,9 @@ public class RentalService {
 		return rentalsFind.map(rentalMapper::toDTO);
 	}
 
-	public RentalDTO updateRentalEndDate( UserDetails user, Long id, LocalDateTime dateTime ) {
+	public RentalDTO updateRentalEndDate( UserDetails user, Long id, LocalDate date ) throws BadRequestException {
 		Rental rentalFound = rentalRepository.findByRenter_EmailAndId(user.getUsername(), id).orElseThrow(() -> new NoSuchElementException("There is no rental with id " + id));
-		rentalFound.setEndDate(dateTime);
+		rentalFound.setEndDate(date);
 		rentalRepository.save(rentalFound);
 		return rentalMapper.toDTO(rentalFound);
 	}
