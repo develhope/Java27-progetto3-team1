@@ -1,10 +1,8 @@
 package com.team1.dealerApp.rental;
 
-
-import com.team1.dealerApp.video.movie.Movie;
-import com.team1.dealerApp.video.tvshow.TvShow;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -14,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateRentalDTO {
 
-    private List<Movie> movies;
-    private List<TvShow> tvShows;
+    private List<Long> movies = new ArrayList<>();
+    private List<Long> tvShows = new ArrayList<>();
 
 }

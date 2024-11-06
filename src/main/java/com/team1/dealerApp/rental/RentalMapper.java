@@ -1,14 +1,23 @@
 package com.team1.dealerApp.rental;
 
+import com.team1.dealerApp.video.movie.Movie;
+import com.team1.dealerApp.video.movie.MovieMapper;
+import com.team1.dealerApp.video.tvshow.TvShow;
+import com.team1.dealerApp.video.tvshow.TvShowMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+@RequiredArgsConstructor
 @Component
 public class RentalMapper {
+    private final MovieMapper movieMapper;
+    private final TvShowMapper tvShowMapper;
 
-    public Rental toRental(CreateRentalDTO createRentalDTO) {
+    public Rental toRental(CreateRentalDTO createRentalDTO, List<Movie> movieList, List<TvShow> tvShowsList) {
         return Rental.builder()
-                .movies(createRentalDTO.getMovies())
-                .tvShows(createRentalDTO.getTvShows())
+                .movies(movieList)
+                .tvShows(tvShowsList)
                 .build();
     }
 
@@ -19,8 +28,8 @@ public class RentalMapper {
                 .endDate(rental.getEndDate())
                 .rentalPrice(rental.getRentalPrice())
                 .userId(rental.getRenter().getId())
-                .movies(rental.getMovies())
-                .tvShows(rental.getTvShows())
+                .movies(rental.getMovies().stream().map(movieMapper::toMovieDTO).toList())
+                .tvShows(rental.getTvShows().stream().map(tvShowMapper::toTvShowDTO).toList())
                 .rentalStatus(rental.getRentalStatus())
                 .build();
     }

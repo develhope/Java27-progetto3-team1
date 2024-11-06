@@ -6,7 +6,7 @@ import com.team1.dealerApp.video.tvshow.TvShow;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -22,10 +22,10 @@ public class Rental {
     private Long id;
 
     @Column(name = "start_date", nullable = false)
-    private LocalDateTime startDate;
+    private LocalDate startDate = LocalDate.now();
 
     @Column(name = "end_date", nullable = false)
-    private LocalDateTime endDate;
+    private LocalDate endDate= LocalDate.now();
 
     @Column(name = "rental_price", nullable = false)
     private double rentalPrice;

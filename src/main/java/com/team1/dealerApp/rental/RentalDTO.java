@@ -1,10 +1,10 @@
 package com.team1.dealerApp.rental;
 
-import com.team1.dealerApp.video.movie.Movie;
-import com.team1.dealerApp.video.tvshow.TvShow;
+import com.team1.dealerApp.video.movie.MovieDTO;
+import com.team1.dealerApp.video.tvshow.TvShowDTO;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,11 +16,11 @@ import java.util.UUID;
 public class RentalDTO {
 
     private Long id;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private double rentalPrice;
-    private List<Movie> movies;
-    private List<TvShow> tvShows;
+    private List<MovieDTO> movies;
+    private List<TvShowDTO> tvShows;
     private UUID userId;
     private RentalStatus rentalStatus;
 
