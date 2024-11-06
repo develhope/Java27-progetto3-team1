@@ -1,9 +1,13 @@
 package com.team1.dealerApp.video.movie;
 
 
+import com.team1.dealerApp.utils.Pager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +21,7 @@ public class MovieService {
     private final MovieRepository movieRepository;
     private final MovieMapper movieMapper;
     private final MovieUpdater<Object> movieUpdater;
+    private final Pager pager;
 
     public MovieDTO addMovie(CreateMovieDTO movieDTO) throws BadRequestException {
         if (movieRepository.existsByTitleAndDirector(movieDTO.getTitle(), movieDTO.getDirector())) {
@@ -32,10 +37,11 @@ public class MovieService {
         movieRepository.deleteById(id);
     }
 
-    public List<MovieDTO> getAllMovies() throws NoSuchElementException {
-        List<Movie> movies = movieRepository.findAll();
+    public Page <MovieDTO> getAllMovies(int page, int size) throws NoSuchElementException {
+
+        Page<Movie> movies = movieRepository.findAll(pager.createPageable(page, size));
         if (!movies.isEmpty()) {
-            return movies.stream().map(movieMapper::toMovieDTO).toList();
+            return movies.map(movieMapper::toMovieDTO);
         } else {
             throw new NoSuchElementException("There are no film!");
         }
@@ -88,12 +94,12 @@ public class MovieService {
     }
 
     public AdminMovieDTO getSalesById(Long movieId) throws NoSuchElementException {
-        Movie moviefound = movieRepository.findById(movieId).orElseThrow(()-> new NoSuchElementException("There is no movie with id " + movieId));
-        return movieMapper.toAdminMovieDTO(moviefound);
+        Movie movieFound = movieRepository.findById(movieId).orElseThrow(()-> new NoSuchElementException("There is no movie with id " + movieId));
+        return movieMapper.toAdminMovieDTO(movieFound);
     }
 
-    public List<AdminMovieDTO> getSales() {
-        List<Movie> movies = movieRepository.findAll();
-        return movies.stream().map(movieMapper::toAdminMovieDTO).toList();
+    public Page<AdminMovieDTO> getSales(int page, int size) {
+        Page<Movie> movies = movieRepository.findAll(pager.createPageable(page, size));
+        return movies.map(movieMapper::toAdminMovieDTO);
     }
 }

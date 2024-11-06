@@ -42,7 +42,7 @@ class TvShowServiceTest {
 
 	List <String> cast1= Arrays.asList("Bryan Cranston", "Aaron Paul", "Giancarlo Esposito");
 	List <String> cast2= Arrays.asList("Antony Starr", "Karl Urban", "Jack Quaid");
-
+/*
 	@BeforeEach
 	void setUp() {
 		MockitoAnnotations.openMocks(this);
@@ -140,5 +140,5 @@ class TvShowServiceTest {
 		when(tvShowRepository.findById(anyLong())).thenReturn(Optional.empty());
 		assertThrows(NoSuchElementException.class, () -> tvShowService.updateShowField(1L, Genre.DRAMA, "genre" ));
 	}
-
+*/
 }

@@ -3,6 +3,7 @@ package com.team1.dealerApp.video.tvshow;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,8 +22,8 @@ public class TvShowController {
 
 	@PreAuthorize( "hasRole('USER')" )
 	@GetMapping( "/u/tvShows" )
-	public ResponseEntity < List < TvShowDTO > > getAllShows() throws BadRequestException {
-		return ResponseEntity.ok(tvShowService.getAllShows());
+	public ResponseEntity < Page < TvShowDTO > > getAllShows(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) throws BadRequestException {
+		return ResponseEntity.ok(tvShowService.getAllShows(page,size));
 	}
 
 	@PreAuthorize( "hasRole('USER')" )
@@ -67,7 +68,7 @@ public class TvShowController {
 	}
 
 	@GetMapping("/a/tvShows/sales")
-	public ResponseEntity<List<AdminTvShowDTO>> getSales(){
-		return ResponseEntity.ok(tvShowService.getSales());
+	public ResponseEntity<Page<AdminTvShowDTO>> getSales(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size){
+		return ResponseEntity.ok(tvShowService.getSales(page, size));
 	}
 }

@@ -1,9 +1,11 @@
 package com.team1.dealerApp.video.tvshow;
 
 
+import com.team1.dealerApp.utils.Pager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,14 +19,13 @@ public class TvShowService {
 	private final TvShowRepository tvShowRepository;
 	private final TvShowMapper tvShowMapper;
 	private final TvShowUpdater<Object> tvShowUpdater;
+	private final Pager pager;
 
-	public List <TvShowDTO> getAllShows () throws BadRequestException {
-		List <TvShow> tvShows = tvShowRepository.findAll();
+	public Page <TvShowDTO> getAllShows (int page, int size) throws BadRequestException {
+		Page <TvShow> tvShows = tvShowRepository.findAll(pager.createPageable(page,size));
 		if (!tvShows.isEmpty()){
 			return tvShows
-					.stream()
-					.map(tvShowMapper::toTvShowDTO)
-					.toList();
+					.map(tvShowMapper::toTvShowDTO);
 		}else{
 			throw new BadRequestException("There are no shows!");
 		}
@@ -40,7 +41,6 @@ public class TvShowService {
 	public TvShow getShowById(Long id) throws NoSuchElementException{
 		return tvShowRepository.findById(id).orElseThrow(()-> new NoSuchElementException("No show with id: " + id));
 	}
-
 
 	public TvShowDTO addTvShow (CreateShowDTO tvShowDTO) throws BadRequestException {
 		if(!tvShowRepository.existsByTitleAndDirector(tvShowDTO.getTitle(), tvShowDTO.getDirector())){
@@ -91,8 +91,8 @@ public class TvShowService {
 		return tvShowMapper.toAdminShowDTO(tvShowFound);
     }
 
-	public List<AdminTvShowDTO> getSales() {
-		List<TvShow> shows = tvShowRepository.findAll();
-		return shows.stream().map(tvShowMapper::toAdminShowDTO).toList();
+	public Page<AdminTvShowDTO> getSales(int page, int size) {
+		Page<TvShow> shows = tvShowRepository.findAll(pager.createPageable(page, size));
+		return shows.map(tvShowMapper::toAdminShowDTO);
 	}
 }
