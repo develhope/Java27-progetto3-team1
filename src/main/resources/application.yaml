@@ -16,7 +16,12 @@ spring:
         format_sql: 'true'
         use_sql_comments: 'true'
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
     show-sql: 'true'
   application:
     name: cineBox
+
+paypal:
+  clientId:
+  secret:
+  mode: sandbox
