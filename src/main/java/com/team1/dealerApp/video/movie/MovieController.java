@@ -45,7 +45,7 @@ public class MovieController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("a/movies/{movieId}")
-    public ResponseEntity<MovieDTO> updateMovie(@PathVariable("movieId") Long movieId, @RequestBody MovieDTO movieDTO) throws NoSuchElementException {
+    public ResponseEntity<MovieDTO> updateMovie(@PathVariable("movieId") Long movieId, @RequestBody CreateMovieDTO movieDTO) throws NoSuchElementException {
         return ResponseEntity.ok(movieService.updateMovie(movieId, movieDTO));
     }
 
