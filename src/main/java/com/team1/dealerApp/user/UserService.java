@@ -8,6 +8,7 @@ import com.team1.dealerApp.subscription.Subscription;
 import com.team1.dealerApp.subscription.SubscriptionMapper;
 import com.team1.dealerApp.subscription.SubscriptionService;
 import com.team1.dealerApp.subscription.SubscriptionType;
+import com.team1.dealerApp.utils.Pager;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
@@ -35,6 +36,7 @@ public class UserService {
     private final SubscriptionService subscriptionService;
     private final SubscriptionMapper subscriptionMapper;
     private final PayPalService payPalService;
+    private final Pager pager;
 
 
     public UserDTO getUserDTOById(UUID id) throws NoSuchElementException {
@@ -93,7 +95,7 @@ public class UserService {
     }
 
     public Page <UserDTO> getAllUser(int page, int size) {
-        Page<User> allUser = userRepository.findAll(createPageable(page,size));
+        Page<User> allUser = userRepository.findAll(pager.createPageable(page,size));
         return allUser.map(userMapper::toUserDTO);
     }
 
@@ -144,9 +146,4 @@ public class UserService {
         User userFound = userRepository.findByEmail(user.getUsername()).orElseThrow(() -> new NoSuchElementException(USER_EMAIL_ERROR + user.getUsername()));
         return userMapper.toUserDTO(userFound);
     }
-
-    public Pageable createPageable( int pageNumber, int size){
-        return PageRequest.of(pageNumber, size);
-    }
-
 }

@@ -4,6 +4,7 @@ package com.team1.dealerApp.video.tvshow;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,8 +19,8 @@ public class TvShowService {
 	private final TvShowMapper tvShowMapper;
 	private final TvShowUpdater<Object> tvShowUpdater;
 
-	public List <TvShowDTO> getAllShows () throws BadRequestException {
-		List <TvShow> tvShows = tvShowRepository.findAll();
+	public Page <TvShowDTO> getAllShows (int page, int size) throws BadRequestException {
+		Page <TvShow> tvShows = tvShowRepository.findAll();
 		if (!tvShows.isEmpty()){
 			return tvShows
 					.stream()

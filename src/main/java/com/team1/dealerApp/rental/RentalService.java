@@ -7,6 +7,7 @@ import com.team1.dealerApp.paypal.PayPalService;
 import com.team1.dealerApp.subscription.Subscription;
 import com.team1.dealerApp.user.User;
 import com.team1.dealerApp.user.UserService;
+import com.team1.dealerApp.utils.Pager;
 import com.team1.dealerApp.video.movie.Movie;
 import com.team1.dealerApp.video.tvshow.TvShow;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class RentalService {
 	private final RentalMapper rentalMapper;
 	private final UserService userService;
 	private final PayPalService payPalService;
+	private final Pager pager;
 
 	public String addRental( UserDetails user, CreateRentalDTO createRentalDTO ) throws BadRequestException, PayPalRESTException {
 		validateRentalRequest(createRentalDTO);
@@ -110,8 +112,7 @@ public class RentalService {
 	}
 
 	public Page < RentalDTO > getActiveUserRentals( UserDetails user, int page, int size ) throws NoSuchElementException {
-		Pageable pageable = PageRequest.of(page, size);
-		Page < Rental > rentalsFind = rentalRepository.findByRenter_Email(user.getUsername(), pageable);
+		Page < Rental > rentalsFind = rentalRepository.findByRenter_Email(user.getUsername(), pager.createPageable(page, size));
 		if ( rentalsFind.isEmpty() ) {
 			throw new NoSuchElementException("Rental's list is empty");
 		}
