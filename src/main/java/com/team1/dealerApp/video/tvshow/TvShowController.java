@@ -43,7 +43,7 @@ public class TvShowController {
 
 	@PreAuthorize( "hasRole('ADMIN')" )
 	@PutMapping( "/a/tvShows/{id}" )
-	public ResponseEntity < TvShowDTO > updateShow( @RequestBody TvShowDTO tvShowDTO, @PathVariable Long id ) throws NoSuchElementException {
+	public ResponseEntity < TvShowDTO > updateShow( @RequestBody CreateShowDTO tvShowDTO, @PathVariable Long id ) throws NoSuchElementException {
 		TvShowDTO updated = tvShowService.updateShow(tvShowDTO, id);
 		log.debug("Show updated successfully");
 		return ResponseEntity.ok(updated);

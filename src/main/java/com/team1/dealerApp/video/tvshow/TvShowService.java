@@ -50,7 +50,7 @@ public class TvShowService {
 		throw new BadRequestException("This Show already exists");
 	}
 
-	public TvShowDTO updateShow (TvShowDTO tvShowDTO, Long id) throws NoSuchElementException {
+	public TvShowDTO updateShow (CreateShowDTO tvShowDTO, Long id) throws NoSuchElementException {
 		if(tvShowRepository.existsById(id)) {
 			TvShow found = tvShowMapper.toTvShow(tvShowDTO);
 			found.setId(id);
