@@ -4,7 +4,6 @@ import com.team1.dealerApp.video.AgeRating;
 import com.team1.dealerApp.video.Genre;
 import com.team1.dealerApp.video.VideoStatus;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import java.time.Year;
 import java.util.List;

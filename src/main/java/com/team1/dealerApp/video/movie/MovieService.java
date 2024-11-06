@@ -18,14 +18,12 @@ public class MovieService {
     private final MovieMapper movieMapper;
     private final MovieUpdater<Object> movieUpdater;
 
-    public MovieDTO addMovie(MovieDTO movieDTO) throws BadRequestException {
-        Movie movieFound = movieRepository.findMovieByTitleAndDirector(movieDTO.getTitle(), movieDTO.getDirector());
-        if (movieFound == null) {
-            movieRepository.save(movieMapper.toMovie(movieDTO));
-        } else {
+    public MovieDTO addMovie(CreateMovieDTO movieDTO) throws BadRequestException {
+        if (movieRepository.existsByTitleAndDirector(movieDTO.getTitle(), movieDTO.getDirector())) {
             throw new BadRequestException("This movie already exists");
         }
-        return movieDTO;
+        Movie added = movieRepository.save(movieMapper.toMovie(movieDTO));
+        return movieMapper.toMovieDTO(added);
     }
 
     public void deleteMovieById(Long id) {

@@ -35,7 +35,7 @@ public class TvShowController {
 
 	@PreAuthorize( "hasRole('ADMIN')" )
 	@PostMapping( "/a/tvShows" )
-	public ResponseEntity < TvShowDTO > addTvShow( @RequestBody TvShowDTO tvShowDTO ) throws BadRequestException {
+	public ResponseEntity < TvShowDTO > addTvShow( @RequestBody CreateShowDTO tvShowDTO ) throws BadRequestException {
 		TvShowDTO added = tvShowService.addTvShow(tvShowDTO);
 		log.debug("TvShow added successfully in db");
 		return ResponseEntity.status(HttpStatus.CREATED).body(added);
@@ -43,7 +43,7 @@ public class TvShowController {
 
 	@PreAuthorize( "hasRole('ADMIN')" )
 	@PutMapping( "/a/tvShows/{id}" )
-	public ResponseEntity < TvShowDTO > updateShow( @RequestBody TvShowDTO tvShowDTO, @PathVariable Long id ) throws NoSuchElementException {
+	public ResponseEntity < TvShowDTO > updateShow( @RequestBody CreateShowDTO tvShowDTO, @PathVariable Long id ) throws NoSuchElementException {
 		TvShowDTO updated = tvShowService.updateShow(tvShowDTO, id);
 		log.debug("Show updated successfully");
 		return ResponseEntity.ok(updated);

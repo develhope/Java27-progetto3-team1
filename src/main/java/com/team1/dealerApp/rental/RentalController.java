@@ -1,13 +1,14 @@
 package com.team1.dealerApp.rental;
 
+import com.paypal.base.rest.PayPalRESTException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -24,12 +25,12 @@ public class RentalController {
 
     @PreAuthorize( "hasRole('USER')" )
     @PostMapping( "/u/rentals" )
-  public ResponseEntity<RentalDTO> addRental(@AuthenticationPrincipal UserDetails user, @RequestBody CreateRentalDTO createRentalDTO) throws BadRequestException{
+  public ResponseEntity< String> addRental( @AuthenticationPrincipal UserDetails user, @RequestBody CreateRentalDTO createRentalDTO) throws BadRequestException, PayPalRESTException {
         return ResponseEntity.ok(rentalService.addRental(user, createRentalDTO));
   }
 
     @PreAuthorize( "hasRole('USER')" )
-    @GetMapping( "/u/rentals/{userId}" )
+    @GetMapping( "/u/rentals" )
     public ResponseEntity<Page<RentalDTO>> getActiveUserRentals(@AuthenticationPrincipal UserDetails user, @RequestParam (defaultValue = "0") int page, @RequestParam (defaultValue = "10") int size) throws NoSuchElementException{
             return ResponseEntity.ok(rentalService.getActiveUserRentals(user, page, size));
     }

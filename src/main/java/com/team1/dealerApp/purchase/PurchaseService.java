@@ -1,5 +1,9 @@
 package com.team1.dealerApp.purchase;
 
+import com.paypal.api.payments.Links;
+import com.paypal.api.payments.Payment;
+import com.paypal.base.rest.PayPalRESTException;
+import com.team1.dealerApp.paypal.PayPalService;
 import com.team1.dealerApp.subscription.Subscription;
 import com.team1.dealerApp.user.User;
 import com.team1.dealerApp.user.UserService;
@@ -29,8 +33,9 @@ public class PurchaseService {
     private final UserService userService;
     private final MovieService movieService;
     private final TvShowService tvShowService;
+    private final PayPalService payPalService;
 
-    public PurchaseDTO addPurchase(UserDetails user, CreatePurchaseDTO createPurchaseDTO) throws BadRequestException {
+    public String addPurchase(UserDetails user, CreatePurchaseDTO createPurchaseDTO) throws BadRequestException, PayPalRESTException {
         validatePurchaseRequest(createPurchaseDTO);
 
         List<Movie> movieList = fetchMovies(createPurchaseDTO);
@@ -43,36 +48,47 @@ public class PurchaseService {
 		Purchase purchase = createPurchase(createPurchaseDTO, movieList, tvShowList, totalPurchasePrice, purchaser);
 		updateMovieProfit(movieList, purchaser.getSubscriptions());
 		updateShowProfit(tvShowList, purchaser.getSubscriptions());
+
+        Payment payment = payPalService.createPayment(totalPurchasePrice, "EUR", "paypal", "sale", "Movie Purchase");
+
 		purchaseRepository.save(purchase);
 
-        return purchaseMapper.toDTO(purchase);
+        return payment.getLinks().stream()
+                .filter(link -> "approval_url".equals(link.getRel()))
+                .findFirst()
+                .map(Links::getHref)
+                .orElse(null);
     }
 
 
 	private void updateMovieProfit(List<Movie> movies, List<Subscription> subscriptions){
-        subscriptions.forEach(subscription -> {
-            if ("MOVIE".equals(subscription.getSubscriptionType().toString())) {
-                movies.forEach(movie -> movie.setOrderCount(movie.getOrderCount() + 1));
-            } else {
-                movies.forEach(movie -> {
-                    movie.setVideoProfit(movie.getVideoProfit() + movie.getPurchasePrice());
-                    movie.setOrderCount(movie.getOrderCount() + 1);
-                });
-            }
-        });
+        if( subscriptions.isEmpty() ){
+            movies.forEach(movie -> {
+                movie.setVideoProfit(movie.getVideoProfit() + movie.getPurchasePrice());
+                movie.setOrderCount(movie.getOrderCount() + 1);
+            });
+        }else {
+            subscriptions.forEach(subscription -> {
+                if ( "MOVIE".equals(subscription.getSubscriptionType().toString()) ) {
+                    movies.forEach(movie -> movie.setOrderCount(movie.getOrderCount() + 1));
+                }
+            });
+        }
 	}
 
 	private void updateShowProfit(List<TvShow> shows, List<Subscription> subscriptions){
-        subscriptions.forEach(subscription -> {
-            if ("TV_SHOW".equals(subscription.getSubscriptionType().toString())) {
-                shows.forEach(show -> show.setOrderCount(show.getOrderCount() + 1));
-            } else {
-                shows.forEach(show-> {
-                    show.setVideoProfit(show.getVideoProfit() + show.getPurchasePrice());
-                    show.setOrderCount(show.getOrderCount() + 1);
-                });
-            }
-        });
+        if (subscriptions.isEmpty()){
+            shows.forEach(show-> {
+                show.setVideoProfit(show.getVideoProfit() + show.getPurchasePrice());
+                show.setOrderCount(show.getOrderCount() + 1);
+            });
+        }else {
+            subscriptions.forEach(subscription -> {
+                if ( "TV_SHOW".equals(subscription.getSubscriptionType().toString()) ) {
+                    shows.forEach(show -> show.setOrderCount(show.getOrderCount() + 1));
+                }
+            });
+        }
 	}
 
 	private void validatePurchaseRequest( CreatePurchaseDTO createPurchaseDTO ) throws BadRequestException {

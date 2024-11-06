@@ -1,6 +1,6 @@
 package com.team1.dealerApp.user;
 
-import com.team1.dealerApp.subscription.SubscriptionDTO;
+import com.paypal.base.rest.PayPalRESTException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @PutMapping("/u/users/update_Plan")
-    public ResponseEntity<UserDTO> updateUserSubscription (@AuthenticationPrincipal UserDetails user, @RequestParam String subscription) throws NoSuchElementException {
+    public ResponseEntity< String> updateUserSubscription ( @AuthenticationPrincipal UserDetails user, @RequestParam("subscription") String subscription) throws NoSuchElementException, PayPalRESTException {
         return ResponseEntity.ok(userService.updateSubscriptionPlan(user, subscription));
     }
 

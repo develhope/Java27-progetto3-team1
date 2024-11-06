@@ -19,6 +19,7 @@ public class TvShowMapper {
                 .rentalPrice(tvShowDTO.getRentalPrice())
                 .releaseYear(tvShowDTO.getReleaseYear())
                 .videoStatus(tvShowDTO.getVideoStatus())
+                .ageRating(tvShowDTO.getAgeRating())
                 .build();
     }
 
@@ -36,6 +37,7 @@ public class TvShowMapper {
                 .rentalPrice(tvShow.getRentalPrice())
                 .releaseYear(tvShow.getReleaseYear())
                 .videoStatus(tvShow.getVideoStatus())
+                .ageRating(tvShow.getAgeRating())
                 .build();
     }
 
@@ -49,5 +51,26 @@ public class TvShowMapper {
                 .rentalPrice(tvShow.getRentalPrice())
                 .orderCount(tvShow.getOrderCount())
                 .build();
+    }
+
+    public TvShow toTvShow ( CreateShowDTO createShowDTO){
+        return TvShow.builder()
+                .episode(createShowDTO.getEpisode())
+                .season(createShowDTO.getSeason())
+                .genre(createShowDTO.getGenre())
+                .cast(createShowDTO.getCast())
+                .plot(createShowDTO.getPlot())
+                .director(createShowDTO.getDirector())
+                .rating(createShowDTO.getRating())
+                .title(createShowDTO.getTitle())
+                .purchasePrice(createShowDTO.getPurchasePrice())
+                .rentalPrice(createShowDTO.getRentalPrice())
+                .releaseYear(createShowDTO.getReleaseYear())
+                .videoStatus(createShowDTO.getVideoStatus())
+                .ageRating(createShowDTO.getAgeRating())
+                .videoProfit(createShowDTO.getVideoProfit())
+                .orderCount(createShowDTO.getOrderCount())
+                .build();
+
     }
 }

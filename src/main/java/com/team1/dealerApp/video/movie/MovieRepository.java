@@ -8,4 +8,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     Movie findMovieByTitleAndDirector(String title, String director);
 
+    boolean existsByTitleAndDirector( String title, String director );
+
+
 }
