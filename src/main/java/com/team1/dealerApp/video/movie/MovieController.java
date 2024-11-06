@@ -20,13 +20,13 @@ public class MovieController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/a/movies")
-    public ResponseEntity<MovieDTO> addMovie(@RequestBody MovieDTO movieDTO) throws BadRequestException {
+    public ResponseEntity<MovieDTO> addMovie(@RequestBody CreateMovieDTO movieDTO) throws BadRequestException {
         return ResponseEntity.status(200).body(movieService.addMovie(movieDTO));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/a/movies/{movieId}")
-    public ResponseEntity<MovieDTO> deleteMovieById(@RequestParam("movieId") Long movieId) {
+    public ResponseEntity<MovieDTO> deleteMovieById(@PathVariable("movieId") Long movieId) {
         movieService.deleteMovieById(movieId);
         return ResponseEntity.ok().build();
     }

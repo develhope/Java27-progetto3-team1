@@ -35,7 +35,7 @@ public class TvShowController {
 
 	@PreAuthorize( "hasRole('ADMIN')" )
 	@PostMapping( "/a/tvShows" )
-	public ResponseEntity < TvShowDTO > addTvShow( @RequestBody TvShowDTO tvShowDTO ) throws BadRequestException {
+	public ResponseEntity < TvShowDTO > addTvShow( @RequestBody CreateShowDTO tvShowDTO ) throws BadRequestException {
 		TvShowDTO added = tvShowService.addTvShow(tvShowDTO);
 		log.debug("TvShow added successfully in db");
 		return ResponseEntity.status(HttpStatus.CREATED).body(added);
