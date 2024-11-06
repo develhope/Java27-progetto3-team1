@@ -51,4 +51,24 @@ public class MovieMapper {
                 .build();
     }
 
+    public Movie toMovie (CreateMovieDTO movieDTO){
+       return Movie.builder()
+                .videoStatus(movieDTO.getVideoStatus())
+                .plot(movieDTO.getPlot())
+                .cast(movieDTO.getCast())
+                .genre(movieDTO.getGenre())
+                .title(movieDTO.getTitle())
+                .director(movieDTO.getDirector())
+                .purchasePrice(movieDTO.getPurchasePrice())
+                .rentalPrice(movieDTO.getRentalPrice())
+                .releaseYear(movieDTO.getReleaseYear())
+                .runningTime(movieDTO.getRunningTime())
+                .rating(movieDTO.getRating())
+                .ageRating(movieDTO.getAgeRating())
+                .ageRating(movieDTO.getAgeRating())
+               .videoProfit(movieDTO.getVideoProfit())
+               .orderCount(movieDTO.getOrderCount())
+                .build();
+    }
+
 }
