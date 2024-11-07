@@ -16,8 +16,8 @@ public class PayPalService {
 
 	private final APIContext apiContext;
 
-	public Payment createPayment( Double total, String currency, String method, String intent, String description ) throws PayPalRESTException {
-		Amount amount = new Amount();
+	public Payment createPayment( Double total, String currency, String method, String intent, String description, String returnUrl ) throws PayPalRESTException {
+		Amount amount = new Amount(); //Totale acquisto
 		amount.setCurrency(currency);
 		amount.setTotal(String.format(Locale.US, "%.2f", total));
 
@@ -32,13 +32,13 @@ public class PayPalService {
 		payer.setPaymentMethod(method);
 
 		Payment payment = new Payment();
-		payment.setIntent(intent);
+		payment.setIntent(intent); //Scopo del pagamento(sale-> pagamento immediato / authorize-> crea autorizzazione che effetua pagamento posticipato / order-> crea order
 		payment.setPayer(payer);
 		payment.setTransactions(transactions);
 
-		RedirectUrls redirectUrls = new RedirectUrls();
+		RedirectUrls redirectUrls = new RedirectUrls(); //Link a cui ti reindizza paypal (possono essere sia statici che dinamici)
 		redirectUrls.setCancelUrl("http://localhost:8080/api/paypal/cancel");
-		redirectUrls.setReturnUrl("http://localhost:8080/api/paypal/success");
+		redirectUrls.setReturnUrl(returnUrl);
 		payment.setRedirectUrls(redirectUrls);
 
 		return payment.create(apiContext);
