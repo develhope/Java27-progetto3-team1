@@ -52,6 +52,12 @@ public class User implements UserDetails {
     @OneToMany
     private List<TvShow> watchedShows;
 
+    @OneToMany
+    private List<Movie> movieWishList;
+
+    @OneToMany
+    private List<TvShow> showWishList;
+
     @OneToMany(mappedBy = "renter")
     private List<Rental> rentals;
 
