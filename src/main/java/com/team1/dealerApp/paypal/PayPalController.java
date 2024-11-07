@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping( "/api/paypal" )
+@SuppressWarnings("unused")
 public class PayPalController {
 
 	private final PayPalService payPalService;
