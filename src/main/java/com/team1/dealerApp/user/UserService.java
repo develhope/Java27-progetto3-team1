@@ -6,6 +6,12 @@ import com.paypal.base.rest.PayPalRESTException;
 import com.team1.dealerApp.paypal.PayPalService;
 import com.team1.dealerApp.subscription.*;
 import com.team1.dealerApp.utils.Pager;
+import com.team1.dealerApp.video.movie.Movie;
+import com.team1.dealerApp.video.movie.MovieMapper;
+import com.team1.dealerApp.video.movie.MovieService;
+import com.team1.dealerApp.video.tvshow.TvShow;
+import com.team1.dealerApp.video.tvshow.TvShowMapper;
+import com.team1.dealerApp.video.tvshow.TvShowService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
@@ -13,10 +19,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.TabableView;
 import java.time.LocalDate;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +36,10 @@ public class UserService {
     private final SubscriptionMapper subscriptionMapper;
     private final PayPalService payPalService;
     private final Pager pager;
+    private final MovieService movieService;
+    private final TvShowService tvShowService;
+    private final MovieMapper movieMapper;
+    private final TvShowMapper tvShowMapper;
 
 
     public UserDTO getUserDTOById(UUID id) throws NoSuchElementException {
@@ -140,5 +149,48 @@ public class UserService {
         subscriptionService.getSubscriptionDetails(subscriptionId);
         User userFound = userRepository.findByEmail(user.getUsername()).orElseThrow(() -> new NoSuchElementException(USER_EMAIL_ERROR + user.getUsername()));
         return userMapper.toUserDTO(userFound);
+    }
+
+	public WatchedVideosDTO updateWatchedVideos( UserDetails user, UpdateWatchedVideoList videoList ) throws BadRequestException {
+
+        if(videoList.getMovieList().isEmpty() && videoList.getShowList().isEmpty()){
+            throw new BadRequestException("Both list cannot be empty");
+        }        
+        
+        User loggedIn = userRepository.findByEmail(user.getUsername()).orElseThrow(() -> new NoSuchElementException("No user with email " + user.getUsername()));
+        
+       List<Movie>watchedMovies = updateMovieList(loggedIn, videoList.getMovieList());
+
+        List < TvShow > watchedShows = getTvShows(videoList, loggedIn);
+
+        return new WatchedVideosDTO(
+                watchedMovies.stream().map(movieMapper::toMovieDTO).toList(),
+                watchedShows.stream().map(tvShowMapper::toTvShowDTO).toList()
+        );
+    }
+
+    private List < TvShow > getTvShows( UpdateWatchedVideoList videoList, User loggedIn ) {
+        List< TvShow > showToAdd = videoList
+                .getShowList()
+                .stream()
+                .map(tvShowService::getShowById)
+                .toList();
+
+        List<TvShow> watchedShows = loggedIn.getWatchedShows();
+        watchedShows.addAll(showToAdd);
+        loggedIn.setWatchedShows(watchedShows);
+        return watchedShows;
+    }
+
+    public List<Movie> updateMovieList(User loggedIn, List<Long> movieList){
+        List< Movie > movieToAdd = movieList
+                .stream()
+                .map(movieService::getMovieById)
+                .toList();
+
+        List<Movie> watchedMovies = loggedIn.getWatchedMovies();
+        watchedMovies.addAll(movieToAdd);
+        loggedIn.setWatchedMovies(watchedMovies);
+        return  watchedMovies;
     }
 }
