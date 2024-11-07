@@ -47,7 +47,7 @@ public class RentalService {
 		updateShowProfit(tvShows, renter.getSubscriptions());
 		rental.setRentalStatus(RentalStatus.SUSPENDED);
 		Rental rental1 = rentalRepository.save(rental);
-		String url = "http://localhost:8080/api/paypal/success/rental?orderId=" + rental1.getId();;
+		String url = "http://localhost:8080/api/paypal/success/rental?orderId=" + rental1.getId();
 		Payment payment = payPalService.createPayment(totalPrice, "EUR", "paypal", "sale", "New rental", url);
 
 		return payment.getLinks().stream()
