@@ -160,6 +160,7 @@ public class UserService {
 
 		List < TvShow > watchedShows = getTvShows(videoList, loggedIn);
 		loggedIn.setWatchedShows(watchedShows);
+		userRepository.save(loggedIn);
 
 		return new WatchedVideosDTO(watchedMovies.stream().map(movieMapper::toMovieDTO).toList(), watchedShows.stream().map(tvShowMapper::toTvShowDTO).toList());
 	}
@@ -173,7 +174,7 @@ public class UserService {
 		return watchedShows;
 	}
 
-	public List < Movie > getMovies ( User loggedIn, List < Long > movieList ) {
+	public List < Movie > getMovies( User loggedIn, List < Long > movieList ) {
 		List < Movie > movieToAdd = movieList.stream().map(movieService::getMovieById).toList();
 
 		List < Movie > watchedMovies = loggedIn.getWatchedMovies();
@@ -195,6 +196,7 @@ public class UserService {
 
 		List < TvShow > showWishList = getTvShows(videoList, loggedIn);
 		loggedIn.setShowWishList(showWishList);
+		userRepository.save(loggedIn);
 
 		return new WatchedVideosDTO(moviesWishList.stream().map(movieMapper::toMovieDTO).toList(), showWishList.stream().map(tvShowMapper::toTvShowDTO).toList());
 	}
