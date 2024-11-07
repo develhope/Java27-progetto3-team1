@@ -78,7 +78,7 @@ public class UserController {
     }
 
     @PatchMapping("/u/users/updateVideoWishList")
-    public ResponseEntity<WatchedVideosDTO> updateWishlist (@AuthenticationPrincipal UserDetails user, @RequestBody UpdateWatchedVideoList videoList){
+    public ResponseEntity<WatchedVideosDTO> updateWishlist (@AuthenticationPrincipal UserDetails user, @RequestBody UpdateWatchedVideoList videoList) throws BadRequestException {
         return ResponseEntity.ok(userService.updateWishList(user, videoList));
     }
 
