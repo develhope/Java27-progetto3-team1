@@ -72,9 +72,14 @@ public class UserController {
         return ResponseEntity.ok(userService.deleteSubscription(user, subscriptionId));
     }
 
-    @PatchMapping("/u/users/updateWatchedShows")
+    @PatchMapping("/u/users/updateWatchedVideos")
     public ResponseEntity<WatchedVideosDTO> updateWatchedVideos(@AuthenticationPrincipal UserDetails user, @RequestBody UpdateWatchedVideoList videoList ) throws BadRequestException {
         return ResponseEntity.ok(userService.updateWatchedVideos(user, videoList));
+    }
+
+    @PatchMapping("/u/users/updateVideoWishList")
+    public ResponseEntity<WatchedVideosDTO> updateWishlist (@AuthenticationPrincipal UserDetails user, @RequestBody UpdateWatchedVideoList videoList){
+        return ResponseEntity.ok(userService.updateWishList(user, videoList));
     }
 
 }
