@@ -73,7 +73,7 @@ class MovieServiceTest {
     @Test
     public void testAddMovie_whenMovieAlreadyExists() {
         when(movieRepository.findMovieByTitleAndDirector(purchasableMovieDTO.getTitle(), purchasableMovieDTO.getDirector())).thenReturn(purchasableMovie);
-        assertThrows(BadRequestException.class, () -> movieService.addMovie(purchasableMovieDTO));
+        assertThrows(BadRequestException.class, () -> movieService.addMovie(purchasableCreateMovieDTO));
     }
 
     @Test
@@ -86,9 +86,13 @@ class MovieServiceTest {
     @Test
     public void testGetAllMovies() {
 
+        int page = 0;
+        int size = 10;
+
         when(movieRepository.findAll()).thenReturn(Arrays.asList(purchasableMovie, rentableMovie));
 
-        List<MovieDTO> result = movieService.getAllMovies();
+        Page<MovieDTO> moviePage = movieService.getAllMovies(page, size);
+        List<MovieDTO> result = moviePage.getContent();
 
         // Verifica che vengano restituiti due film
         assertEquals(2, result.size());
@@ -97,9 +101,12 @@ class MovieServiceTest {
     @Test
     public void testGetAllMovies_NoMoviesFound() {
 
+        int page = 0;
+        int size = 10;
+
         when(movieRepository.findAll()).thenReturn(new ArrayList<>());
 
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> movieService.getAllMovies());
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> movieService.getAllMovies(page, size));
 
         // Verifica che il messaggio di errore sia corretto
         assertEquals("There are no film!", exception.getMessage());
@@ -110,7 +117,7 @@ class MovieServiceTest {
         // con anyLong() si assegna un qualsiasi valore Long visto che movie non ha ancora un Id
         when(movieRepository.findById(anyLong())).thenReturn(Optional.of(purchasableMovie));
 
-         movieService.getMovieDTOById(1L);
+        movieService.getMovieDTOById(1L);
 
         // Verifica che il repository venga chiamato
         verify(movieRepository, times(1)).findById(1L);
@@ -134,16 +141,17 @@ class MovieServiceTest {
         when(movieMapperInj.toMovie(purchasableMovieDTO)).thenReturn(purchasableMovie);
         when(movieMapperInj.toMovieDTO(purchasableMovie)).thenReturn(purchasableMovieDTO);
 
-        MovieDTO result = movieService.updateMovie(1L, purchasableMovieDTO);
+        MovieDTO result = movieService.updateMovie(1L, purchasableCreateMovieDTO);
 
         assertEquals("Il signore degli anelli: le due torri", result.getTitle());
     }
+
 
     @Test
     public void testUpdateMovie_NotFound() {
         when(movieRepository.existsById(1L)).thenReturn(false);
 
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> movieService.updateMovie(1L, purchasableMovieDTO));
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> movieService.updateMovie(1L, purchasableCreateMovieDTO));
 
         assertEquals("There is no movie with id 1", exception.getMessage());
     }
@@ -172,5 +180,4 @@ class MovieServiceTest {
         assertEquals("No movie with id: 1", exception.getMessage());
     }
 
-  
 }
