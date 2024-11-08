@@ -11,6 +11,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class SubscriptionDTO {
 
+    private Long id;
+
     private SubscriptionType subscriptionType;
 
     private Double price;

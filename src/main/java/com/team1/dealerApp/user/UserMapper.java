@@ -1,6 +1,8 @@
 package com.team1.dealerApp.user;
 
 import com.team1.dealerApp.subscription.SubscriptionMapper;
+import com.team1.dealerApp.video.movie.MovieMapper;
+import com.team1.dealerApp.video.tvshow.TvShowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -8,8 +10,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserMapper {
     private final SubscriptionMapper subscriptionMapper;
+    private final MovieMapper movieMapper;
+    private final TvShowMapper tvShowMapper;
 
-    public UserDTO toUserDTO(User user) {
+    public UserDTO toUserDTO( User user ) {
         return UserDTO.builder()
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
@@ -17,8 +21,10 @@ public class UserMapper {
                 .phoneNumber(user.getPhoneNumber())
                 .role(user.getRole())
                 .subscriptions(subscriptionMapper.toDTOList(user.getSubscriptions()))
-                .watchedMovies(user.getWatchedMovies())
-                .watchedShows(user.getWatchedShows())
+                .watchedMovies(user.getWatchedMovies().stream().map(movieMapper::toMovieDTO).toList())
+                .watchedShows(user.getWatchedShows().stream().map(tvShowMapper::toTvShowDTO).toList())
+                .movieWishList(user.getMovieWishList().stream().map(movieMapper::toMovieDTO).toList())
+                .showWishList(user.getShowWishList().stream().map(tvShowMapper::toTvShowDTO).toList())
                 .build();
     }
 

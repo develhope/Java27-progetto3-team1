@@ -10,6 +10,7 @@ public class SubscriptionMapper {
 
     public SubscriptionDTO toDTO(Subscription subscription){
         return SubscriptionDTO.builder()
+                .id(subscription.getId())
                 .price(subscription.getPrice())
                 .status(subscription.getStatus())
                 .startDate(subscription.getStartDate())

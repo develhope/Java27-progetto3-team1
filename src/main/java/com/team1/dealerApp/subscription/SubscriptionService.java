@@ -4,12 +4,9 @@ package com.team1.dealerApp.subscription;
 import com.team1.dealerApp.utils.Pager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -70,6 +67,12 @@ public class SubscriptionService {
 
     public SubscriptionDTO addSubscription(Subscription subscription){
         subscriptionRepository.save(subscription);
+        return subscriptionMapper.toDTO(subscription);
+    }
+
+    public SubscriptionDTO updateSubscriptionStatus(Long orderId, boolean status) {
+        Subscription subscription = subscriptionRepository.findById(orderId).orElseThrow(()-> new NoSuchElementException("There is no order with id " + orderId));
+        subscription.setStatus(status);
         return subscriptionMapper.toDTO(subscription);
     }
 }

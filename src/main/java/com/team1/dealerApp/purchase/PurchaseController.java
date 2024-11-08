@@ -23,7 +23,7 @@ public class PurchaseController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/u/purchases")
-    public ResponseEntity< String> addPurchase( @AuthenticationPrincipal UserDetails user, @RequestBody CreatePurchaseDTO createPurchaseDTO) throws BadRequestException, PayPalRESTException {
+    public ResponseEntity<String> addPurchase( @AuthenticationPrincipal UserDetails user, @RequestBody CreatePurchaseDTO createPurchaseDTO) throws BadRequestException, PayPalRESTException {
         
         return ResponseEntity.ok(purchaseService.addPurchase(user, createPurchaseDTO));
 

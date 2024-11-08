@@ -3,6 +3,7 @@ package com.team1.dealerApp.user;
 import com.paypal.base.rest.PayPalRESTException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -70,6 +70,16 @@ public class UserController {
     @DeleteMapping("/u/users/{subscriptionId}")
     public ResponseEntity<UserDTO> deleteSubscription(@AuthenticationPrincipal UserDetails user, @PathVariable ("subscriptionId") Long subscriptionId){
         return ResponseEntity.ok(userService.deleteSubscription(user, subscriptionId));
+    }
+
+    @PatchMapping("/u/users/updateWatchedVideos")
+    public ResponseEntity<WatchedVideosDTO> updateWatchedVideos(@AuthenticationPrincipal UserDetails user, @RequestBody UpdateWatchedVideoList videoList ) throws BadRequestException {
+        return ResponseEntity.ok(userService.updateWatchedVideos(user, videoList));
+    }
+
+    @PatchMapping("/u/users/updateVideoWishList")
+    public ResponseEntity<WatchedVideosDTO> updateWishlist (@AuthenticationPrincipal UserDetails user, @RequestBody UpdateWatchedVideoList videoList) throws BadRequestException {
+        return ResponseEntity.ok(userService.updateWishList(user, videoList));
     }
 
 }
