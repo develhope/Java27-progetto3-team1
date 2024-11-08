@@ -1,7 +1,11 @@
 package com.team1.dealerApp.rental;
 
 
+import com.paypal.api.payments.Links;
+import com.paypal.api.payments.Payer;
+import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
+import com.team1.dealerApp.paypal.PayPalService;
 import com.team1.dealerApp.user.Role;
 import com.team1.dealerApp.user.User;
 import com.team1.dealerApp.user.UserService;
@@ -11,9 +15,11 @@ import com.team1.dealerApp.video.VideoStatus;
 import com.team1.dealerApp.video.movie.Movie;
 import com.team1.dealerApp.video.movie.MovieDTO;
 import com.team1.dealerApp.video.movie.MovieMapper;
+import com.team1.dealerApp.video.movie.MovieService;
 import com.team1.dealerApp.video.tvshow.TvShow;
 import com.team1.dealerApp.video.tvshow.TvShowDTO;
 import com.team1.dealerApp.video.tvshow.TvShowMapper;
+import com.team1.dealerApp.video.tvshow.TvShowService;
 import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +39,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 
@@ -52,6 +59,15 @@ class RentalServiceTest {
 
     @Mock
     private TvShowMapper tvShowMapper;
+
+    @Mock
+    private MovieService movieService;
+
+    @Mock
+    private TvShowService tvShowService;
+
+    @Mock
+    private PayPalService payPalService;
 
     @InjectMocks
     private RentalService rentalService;
@@ -98,9 +114,7 @@ class RentalServiceTest {
 
         //Movie
         //From List<Movie> to List<Long>
-        List<Long> movieIds = defaultMovieList().stream()
-                .map(Movie::getId)
-                .collect(Collectors.toList());
+        List<Long> movieIds = Arrays.asList(1L, 2L);
 
         //From List<Movie> to List<MovieDTO>
         List<MovieDTO> movieDTOList = defaultMovieList().stream()
@@ -110,9 +124,7 @@ class RentalServiceTest {
 
         //TvShow
         //From List<TvShow> to List<Long>
-        List<Long> tvShowIds = defaultTvShowList().stream()
-                .map(TvShow::getId)
-                .collect(Collectors.toList());
+        List<Long> tvShowIds = Arrays.asList(1L, 2L);
 
         //From List<TvShow> to List<TvShowDTO>
         List<TvShowDTO> tvShowDTOList = defaultTvShowList().stream()
@@ -180,10 +192,28 @@ class RentalServiceTest {
     @Test
     void testAddRental() throws BadRequestException, PayPalRESTException {
         User user = defaultUser(new ArrayList<>(), new ArrayList<>());
-        when(rentalMapper.toRental(createRentalDTO, defaultMovieList(), defaultTvShowList())).thenReturn(rental);
-        when(rentalMapper.toDTO(rental)).thenReturn(rentalDTO);
+        List<String> castMovie = Arrays.asList("Elijah Wood", "Ian McKellan", "Orlando Bloom");
+        Movie rentableMovie = new Movie("Il signore degli anelli: il ritorno del Re", Genre.FANTASY, castMovie, "Peter Jackson", Year.of(2003), 30.00, 10.00, "Il ritorno del Re", 4.0f, VideoStatus.RENTABLE, 0, 0.0, AgeRating.R, 110);
+
+        Payer payer = new Payer();
+        payer.setPaymentMethod("paypal");
+        Payment payment = new Payment("Sales", payer);
+        payment.setLinks(List.of(new Links("123abc", "456")));
+
+        List<String> castShow = Arrays.asList("Bryan Cranston", "Aaron Paul", "Giancarlo Esposito");
+        TvShow whatchedTvShow = new TvShow("Breaking bad", Genre.DRAMA, castShow, "Vince Gilligan", Year.of(2006), 50.0, 10.0, "Un prof si ammala e inizia a fare la droga", 5.0f, VideoStatus.RENTABLE, 6, 1000000.99, AgeRating.G, 5, 50);
+
         when(userService.getUserByEmail(user)).thenReturn(user);
-        rentalService.addRental(user, createRentalDTO);
+        when(rentalRepository.save(rental)).thenReturn(rental);
+
+        when(rentalMapper.toRental(any(CreateRentalDTO.class), anyList(), anyList())).thenReturn(rental);
+        when(rentalMapper.toDTO(rental)).thenReturn(rentalDTO);
+        when(movieService.getMovieById(anyLong())).thenReturn(rentableMovie);
+        when(tvShowService.getShowById(anyLong())).thenReturn(whatchedTvShow);
+
+        when(payPalService.createPayment(anyDouble(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(payment);
+
+        String message = rentalService.addRental(user, createRentalDTO);
 
         assertEquals(40.0, rental.getRentalPrice());  // Assert the rental price is correct
     }
@@ -209,20 +239,21 @@ class RentalServiceTest {
 
         assertEquals(1, result.getTotalElements());
     }
-/*
-    @Test
-    void testUpdateRentalEndDate() {
-        UserDetails user = defaultUser(new ArrayList<>(), new ArrayList<>());
-        LocalDate newEndDate = LocalDate.now().plusDays(30);
-        when(rentalRepository.findByRenter_EmailAndId((user.getUsername()), anyLong()))
-                .thenReturn(Optional.of(rental));
-        when(rentalMapper.toDTO(rental)).thenReturn(rentalDTO);
 
-        rentalService.updateRentalEndDate(user, rentalId, LocalDate.now().plusDays(30));
+    /*
+        @Test
+        void testUpdateRentalEndDate() {
+            UserDetails user = defaultUser(new ArrayList<>(), new ArrayList<>());
+            LocalDate newEndDate = LocalDate.now().plusDays(30);
+            when(rentalRepository.findByRenter_EmailAndId((user.getUsername()), anyLong()))
+                    .thenReturn(Optional.of(rental));
+            when(rentalMapper.toDTO(rental)).thenReturn(rentalDTO);
 
-        assertEquals(newEndDate.truncatedTo(ChronoUnit.MINUTES), rental.getEndDate().truncatedTo(ChronoUnit.MINUTES));
-    }
-*/
+            rentalService.updateRentalEndDate(user, rentalId, LocalDate.now().plusDays(30));
+
+            assertEquals(newEndDate.truncatedTo(ChronoUnit.MINUTES), rental.getEndDate().truncatedTo(ChronoUnit.MINUTES));
+        }
+    */
     @Test
     void testUpdateRentalEndDate_ThrowsNoSuchElementException() {
         UserDetails user = defaultUser(new ArrayList<>(), new ArrayList<>());

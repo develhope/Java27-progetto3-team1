@@ -25,7 +25,9 @@ public class MovieService {
         if (movieRepository.existsByTitleAndDirector(movieDTO.getTitle(), movieDTO.getDirector())) {
             throw new BadRequestException("This movie already exists");
         }
-        Movie added = movieRepository.save(movieMapper.toMovie(movieDTO));
+        Movie movieMapp = movieMapper.toMovie(movieDTO);
+
+        Movie added = movieRepository.save(movieMapp);
         added.setOrderCount(0);
         added.setVideoProfit(0.0);
         return movieMapper.toMovieDTO(added);
@@ -35,13 +37,13 @@ public class MovieService {
         movieRepository.deleteById(id);
     }
 
-    public Page <MovieDTO> getAllMovies(int page, int size) throws NoSuchElementException {
+    public Page<MovieDTO> getAllMovies(int page, int size) throws NoSuchElementException {
 
         Page<Movie> movies = movieRepository.findAll(pager.createPageable(page, size));
-        if (!movies.isEmpty()) {
-            return movies.map(movieMapper::toMovieDTO);
-        } else {
+        if (movies == null || movies.isEmpty()) {
             throw new NoSuchElementException("There are no film!");
+        } else {
+            return movies.map(movieMapper::toMovieDTO);
         }
     }
 
@@ -67,7 +69,6 @@ public class MovieService {
             return movieMapper.toMovieDTO(movieToUpdate);
         }
         throw new NoSuchElementException("There is no movie with id " + movieId);
-
     }
 
     public MovieDTO updateMovieField(Long id, Object value, String field) throws BadRequestException {
@@ -92,7 +93,7 @@ public class MovieService {
     }
 
     public AdminMovieDTO getSalesById(Long movieId) throws NoSuchElementException {
-        Movie movieFound = movieRepository.findById(movieId).orElseThrow(()-> new NoSuchElementException("There is no movie with id " + movieId));
+        Movie movieFound = movieRepository.findById(movieId).orElseThrow(() -> new NoSuchElementException("There is no movie with id " + movieId));
         return movieMapper.toAdminMovieDTO(movieFound);
     }
 

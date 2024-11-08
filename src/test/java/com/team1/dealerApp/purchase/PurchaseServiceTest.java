@@ -83,6 +83,8 @@ class PurchaseServiceTest {
         purchaseDTOCompleteTest.setOrderStatus(OrderStatus.AVAILABLE);
         purchaseDTOCompleteTest.setPurchasePrice(19.99);
 
+        UUID userId = UUID.randomUUID();
+
         List<MovieDTO> defaultMovieDTOList = defaultMovieList.stream()
                 .map(movieMapper::toMovieDTO)
                 .collect(Collectors.toList());
@@ -92,7 +94,7 @@ class PurchaseServiceTest {
 
         purchaseDTOCompleteTest.setMovies(defaultMovieDTOList);
         purchaseDTOCompleteTest.setTvShows(defaultTvShowDTOList);
-        purchaseDTOCompleteTest.setPurchaser(defaultUser(defaultMovieList, defaultTvShowList));
+        purchaseDTOCompleteTest.setUserId(userId);
 
         return purchaseDTOCompleteTest;
     }
@@ -106,8 +108,8 @@ class PurchaseServiceTest {
 
         defaultTvShowList.forEach(tvShow -> tvShowIds.add(tvShow.getId()));
 
-        createPurchaseDTOCompleteTest.setMovieIds(movieIds);
-        createPurchaseDTOCompleteTest.setTvShowIds(tvShowIds);
+        createPurchaseDTOCompleteTest.setMovies(movieIds);
+        createPurchaseDTOCompleteTest.setTvShows(tvShowIds);
 
         return createPurchaseDTOCompleteTest;
     }
