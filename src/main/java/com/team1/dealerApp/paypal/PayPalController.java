@@ -33,10 +33,10 @@ public class PayPalController {
 		if ( "approved".equals(payment.getState()) ) {
 			purchaseService.updatePurchaseStatus(orderId, "paid");
 			// Se il pagamento è approvato, ritorna una conferma
-			return ResponseEntity.ok("Pagamento completato con successo");
+			return ResponseEntity.ok("Payment completed successfully");
 		} else {
 			purchaseService.updatePurchaseStatus(orderId, "canceled");
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pagamento non approvato");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment not approved");
 		}
 	}
 
@@ -49,17 +49,17 @@ public class PayPalController {
 		if ( "approved".equals(payment.getState()) ) {
 			rentalService.updateRentalStatus(orderId, "active");
 			// Se il pagamento è approvato, ritorna una conferma
-			return ResponseEntity.ok("Pagamento completato con successo");
+			return ResponseEntity.ok("Payment completed successfully");
 		} else {
 			rentalService.updateRentalStatus(orderId, "suspended");
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pagamento non approvato");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment not approved");
 		}
 	}
 
 	@GetMapping( "/cancel" )
-	public ResponseEntity < ? > cancelPayment() {
+	public ResponseEntity < String > cancelPayment() {
 		// Restituisci un messaggio di annullamento per informare l'utente
-		return ResponseEntity.ok("Pagamento annullato dall'utente.");
+		return ResponseEntity.ok("Payment canceled by the user");
 	}
 
 	@GetMapping( "/success/user" )
@@ -70,12 +70,11 @@ public class PayPalController {
 
 		if ( "approved".equals(payment.getState()) ) {
 			subscriptionService.updateSubscriptionStatus(orderId, true);
-			rentalService.updateRentalStatus(orderId, "active");
 			// Se il pagamento è approvato, ritorna una conferma
-			return ResponseEntity.ok("Pagamento completato con successo");
+			return ResponseEntity.ok("Payment completed successfully");
 		} else {
-			rentalService.updateRentalStatus(orderId, "false");
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Pagamento non approvato");
+			subscriptionService.updateSubscriptionStatus(orderId,  false);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment not approved");
 		}
 	}
 }
