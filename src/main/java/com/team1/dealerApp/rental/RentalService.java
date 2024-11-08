@@ -15,8 +15,6 @@ import com.team1.dealerApp.video.tvshow.TvShowService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +29,8 @@ public class RentalService {
 	private final RentalMapper rentalMapper;
 	private final UserService userService;
 	private final PayPalService payPalService;
+	private final MovieService movieService;
+	private final TvShowService tvShowService;
 
 	private final Pager pager;
 
@@ -45,9 +45,10 @@ public class RentalService {
 		Rental rental = createRental(user, createRentalDTO, movies, tvShows, totalPrice);
 		updateMovieProfit(movies, renter.getSubscriptions());
 		updateShowProfit(tvShows, renter.getSubscriptions());
-		rentalRepository.save(rental);
-
-		Payment payment = payPalService.createPayment(totalPrice, "EUR", "paypal", "sale", "New rental");
+		rental.setRentalStatus(RentalStatus.SUSPENDED);
+		Rental rental1 = rentalRepository.save(rental);
+		String url = "http://localhost:8080/api/paypal/success/rental?orderId=" + rental1.getId();
+		Payment payment = payPalService.createPayment(totalPrice, "EUR", "paypal", "sale", "New rental", url);
 
 		return payment.getLinks().stream()
 				.filter(link -> "approval_url".equals(link.getRel()))
@@ -138,4 +139,10 @@ public class RentalService {
 		return true;
 	}
 
+	public RentalDTO updateRentalStatus(Long orderId, String rentalStatus) {
+		Rental rental =rentalRepository.findById(orderId).orElseThrow(()-> new NoSuchElementException("There is no rental with id " + orderId));
+		rental.setRentalStatus(RentalStatus.valueOf(rentalStatus.toUpperCase()));
+		rentalRepository.save(rental);
+		return rentalMapper.toDTO(rental);
+	}
 }

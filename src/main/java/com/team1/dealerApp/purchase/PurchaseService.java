@@ -16,8 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -51,9 +49,11 @@ public class PurchaseService {
 		updateMovieProfit(movieList, purchaser.getSubscriptions());
 		updateShowProfit(tvShowList, purchaser.getSubscriptions());
 
-        Payment payment = payPalService.createPayment(totalPurchasePrice, "EUR", "paypal", "sale", "Movie Purchase");
+        purchase.setOrderStatus(OrderStatus.PENDING_PAYMENT);
 
-		purchaseRepository.save(purchase);
+        Purchase purchase1 = purchaseRepository.save(purchase);
+        String url = "http://localhost:8080/api/paypal/success/purchase?orderId=" + purchase1.getId();
+        Payment payment = payPalService.createPayment(totalPurchasePrice, "EUR", "paypal", "sale", "Movie Purchase", url);
 
         return payment.getLinks().stream()
                 .filter(link -> "approval_url".equals(link.getRel()))
@@ -144,6 +144,13 @@ public class PurchaseService {
         purchaseRepository.save(purchaseSelected);
 
         return purchaseMapper.toDTO(purchaseSelected);
+    }
+
+    public PurchaseDTO updatePurchaseStatus(Long id, String orderStatus){
+        Purchase purchase =purchaseRepository.findById(id).orElseThrow(()-> new NoSuchElementException("There is no purchase with id " + id));
+        purchase.setOrderStatus(OrderStatus.valueOf(orderStatus.toUpperCase()));
+        purchaseRepository.save(purchase);
+        return purchaseMapper.toDTO(purchase);
     }
 
 

@@ -4,22 +4,16 @@ import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 import com.team1.dealerApp.paypal.PayPalService;
-import com.team1.dealerApp.subscription.Subscription;
-import com.team1.dealerApp.subscription.SubscriptionMapper;
-import com.team1.dealerApp.subscription.SubscriptionService;
-import com.team1.dealerApp.subscription.SubscriptionType;
+import com.team1.dealerApp.subscription.*;
 import com.team1.dealerApp.utils.Pager;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
@@ -69,7 +63,7 @@ public class UserService {
     }
 
     public boolean deleteUser(UUID id) {
-        Boolean isActive = false;
+        boolean isActive = false;
         User userToDelete = userRepository.findById(id).orElseThrow(()-> new NoSuchElementException("There is no user with id " + id ));
         userToDelete.setActive(isActive);
         userToDelete.getSubscriptions().forEach(s-> s.setStatus(isActive));
@@ -121,10 +115,11 @@ public class UserService {
         newSubscription.setPrice(20.00);
         newSubscription.setStartDate(LocalDate.now());
         newSubscription.setEndDate(LocalDate.now().plusDays(30));
-        subscriptionService.addSubscription(newSubscription);
-        updatable.getSubscriptions().add(newSubscription);
 
-        Payment payment = payPalService.createPayment(newSubscription.getPrice(), "EUR", "paypal", "sale", "Subscription");
+        SubscriptionDTO subscription1 = subscriptionService.addSubscription(newSubscription);
+        updatable.getSubscriptions().add(newSubscription);
+        String url = "http://localhost:8080/api/paypal/success/purchase?orderId=" + subscription1.getId();
+        Payment payment = payPalService.createPayment(newSubscription.getPrice(), "EUR", "paypal", "sale", "Subscription", url);
 
         userRepository.save(updatable);
 
