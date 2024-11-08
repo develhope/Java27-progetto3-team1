@@ -54,6 +54,7 @@ class MovieServiceTest {
 
         purchasableMovieDTO = movieMapper.toMovieDTO(purchasableMovie);
 
+        purchasableCreateMovieDTO = new CreateMovieDTO("Il signore degli anelli: il ritorno del Re", Genre.FANTASY, castMovie, "Peter Jackson", Year.of(2003), 30.00, 10.00, "Il ritorno del Re", 4.0f, VideoStatus.PURCHASABLE, 0, 0.0, AgeRating.PG, 110);
 
     }
 
@@ -62,7 +63,7 @@ class MovieServiceTest {
         //Specifica cosa fare quando viene invocato quel metodo findMovieByTitleAndDirector (contenuto in addMovie)
         when(movieRepository.findMovieByTitleAndDirector(purchasableMovie.getTitle(), purchasableMovie.getDirector())).thenReturn(null);
 
-        MovieDTO result = movieService.addMovie(purchasableMovieDTO);
+        MovieDTO result = movieService.addMovie(purchasableCreateMovieDTO);
 
         // Verifica che il DTO restituito sia quello originale
         assertEquals(purchasableMovieDTO, result);
