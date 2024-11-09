@@ -1,6 +1,5 @@
 package com.team1.dealerApp.video.movie;
 
-
 import com.team1.dealerApp.utils.Pager;
 import com.team1.dealerApp.video.AgeRating;
 import com.team1.dealerApp.video.Genre;
@@ -160,7 +159,6 @@ class MovieServiceTest {
         assertEquals("Il signore degli anelli: le due torri", result.getTitle());
     }
 
-
     @Test
     public void testUpdateMovie_NotFound() {
         when(movieRepository.existsById(1L)).thenReturn(false);
@@ -169,6 +167,7 @@ class MovieServiceTest {
 
         assertEquals("There is no movie with id 1", exception.getMessage());
     }
+
 
     @Test
     public void testUpdateMovieField() throws Exception {
