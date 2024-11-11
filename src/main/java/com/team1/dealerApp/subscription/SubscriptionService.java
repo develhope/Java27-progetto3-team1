@@ -71,7 +71,7 @@ public class SubscriptionService {
     }
 
     public SubscriptionDTO updateSubscriptionStatus(Long orderId, boolean status) {
-        Subscription subscription = subscriptionRepository.findById(orderId).orElseThrow(()-> new NoSuchElementException("There is no order with id " + orderId));
+        Subscription subscription = subscriptionRepository.findById(orderId).orElseThrow(()-> new NoSuchElementException("There is no sub with id " + orderId));
         subscription.setStatus(status);
         return subscriptionMapper.toDTO(subscription);
     }

@@ -127,7 +127,7 @@ public class UserService {
 
 		SubscriptionDTO subscription1 = subscriptionService.addSubscription(newSubscription);
 		updatable.getSubscriptions().add(newSubscription);
-		String url = "http://localhost:8080/api/paypal/success/purchase?orderId=" + subscription1.getId();
+		String url = "http://localhost:8080/api/paypal/success/user?orderId=" + subscription1.getId();
 		Payment payment = payPalService.createPayment(newSubscription.getPrice(), "EUR", "paypal", "sale", "Subscription", url);
 
 		userRepository.save(updatable);

@@ -100,8 +100,8 @@ public class RentalService {
 	private double calculateTotalRentalPrice( List < Movie > movies, List < TvShow > tvShows, List<Subscription> subscriptions ) {
 		double movieRentalPrice = movies.stream().mapToDouble(Movie::getRentalPrice).sum();
 		double tvShowRentalPrice = tvShows.stream().mapToDouble(TvShow::getRentalPrice).sum();
-		if ( subscriptions.stream().anyMatch(s-> "MOVIE".equals(s.getSubscriptionType().toString()))) tvShowRentalPrice = 0;
-		if ( subscriptions.stream().anyMatch(s->"TV_SHOW".equals(s.getSubscriptionType().toString()))) movieRentalPrice = 0;
+		if ( subscriptions.stream().anyMatch(s-> "MOVIE".equals(s.getSubscriptionType().toString()))) movieRentalPrice = 0;
+		if ( subscriptions.stream().anyMatch(s->"TV_SHOW".equals(s.getSubscriptionType().toString()))) tvShowRentalPrice = 0;
 		return movieRentalPrice + tvShowRentalPrice;
 	}
 
