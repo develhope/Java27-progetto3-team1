@@ -40,6 +40,7 @@ public class MovieService {
     public Page<MovieDTO> getAllMovies(int page, int size) throws NoSuchElementException {
 
         Page<Movie> movies = movieRepository.findAll(pager.createPageable(page, size));
+
         if (movies == null || movies.isEmpty()) {
             throw new NoSuchElementException("There are no film!");
         } else {

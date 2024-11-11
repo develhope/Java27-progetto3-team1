@@ -9,6 +9,7 @@ import com.team1.dealerApp.paypal.PayPalService;
 import com.team1.dealerApp.user.Role;
 import com.team1.dealerApp.user.User;
 import com.team1.dealerApp.user.UserService;
+import com.team1.dealerApp.utils.Pager;
 import com.team1.dealerApp.video.AgeRating;
 import com.team1.dealerApp.video.Genre;
 import com.team1.dealerApp.video.VideoStatus;
@@ -36,7 +37,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -69,6 +69,9 @@ class RentalServiceTest {
     @Mock
     private PayPalService payPalService;
 
+    @Mock
+    private Pager pager;
+
     @InjectMocks
     private RentalService rentalService;
 
@@ -78,6 +81,8 @@ class RentalServiceTest {
     private Long rentalId;
     private User userCompleteTest;
     private List<MovieDTO> movieDTOList;
+    private Page<Rental> rentalPage;
+
 
     // Lists - Movie
     public List<Movie> defaultMovieList() {
@@ -219,20 +224,27 @@ class RentalServiceTest {
     }
 
     @Test
-    void testGetAllRentalByUserId_ThrowsNoSuchElementException() {
+    void testgetActiveUserRentals_ThrowsNoSuchElementException() {
         UserDetails user = defaultUser(new ArrayList<>(), new ArrayList<>());
+        rentalPage = new PageImpl<>(Collections.singletonList(null));
         Pageable pageable = PageRequest.of(0, 10);
+
+        when(pager.createPageable(anyInt(), anyInt())).thenReturn(pageable);
+
         when(rentalRepository.findByRenter_Email(user.getUsername(), pageable)).thenReturn(Page.empty());
+
         assertThrows(NoSuchElementException.class, () -> rentalService.getActiveUserRentals(user, 0, 10));
     }
 
     @Test
-    void testGetAllRentalByUserId() {
+    void getActiveUserRentals() {
         UserDetails user = defaultUser(new ArrayList<>(), new ArrayList<>());
-
         Pageable pageable = PageRequest.of(0, 10);
         Page<Rental> rentalPage = new PageImpl<>(List.of(rental));
-        when(rentalRepository.findByRenter_Email(user.getUsername(), pageable)).thenReturn((rentalPage));
+
+        when(pager.createPageable(anyInt(), anyInt())).thenReturn(pageable);
+
+        when(rentalRepository.findByRenter_Email(user.getUsername(), pageable)).thenReturn(rentalPage);
         when(rentalMapper.toDTO(rental)).thenReturn(rentalDTO);
 
         Page<RentalDTO> result = rentalService.getActiveUserRentals(user, 0, 10);
@@ -240,20 +252,26 @@ class RentalServiceTest {
         assertEquals(1, result.getTotalElements());
     }
 
-    /*
-        @Test
-        void testUpdateRentalEndDate() {
-            UserDetails user = defaultUser(new ArrayList<>(), new ArrayList<>());
-            LocalDate newEndDate = LocalDate.now().plusDays(30);
-            when(rentalRepository.findByRenter_EmailAndId((user.getUsername()), anyLong()))
-                    .thenReturn(Optional.of(rental));
-            when(rentalMapper.toDTO(rental)).thenReturn(rentalDTO);
 
-            rentalService.updateRentalEndDate(user, rentalId, LocalDate.now().plusDays(30));
+    @Test
+    void testUpdateRentalEndDate() throws NoSuchElementException, BadRequestException {
 
-            assertEquals(newEndDate.truncatedTo(ChronoUnit.MINUTES), rental.getEndDate().truncatedTo(ChronoUnit.MINUTES));
-        }
-    */
+        UserDetails user = defaultUser(new ArrayList<>(), new ArrayList<>());
+        rentalPage = new PageImpl<>(Collections.singletonList(rental));
+
+        LocalDate newEndDate = LocalDate.now().plusDays(30);
+        when(rentalRepository.findByRenter_EmailAndId(eq(userCompleteTest.getUsername()), anyLong()))
+                .thenReturn(Optional.of(rental));
+
+        when(rentalRepository.save(any(Rental.class))).thenReturn(rental);
+
+        when(rentalMapper.toDTO(rental)).thenReturn(rentalDTO);
+
+        rentalService.updateRentalEndDate(user, rentalId, LocalDate.now().plusDays(30));
+
+        assertEquals(newEndDate, rental.getEndDate());
+    }
+
     @Test
     void testUpdateRentalEndDate_ThrowsNoSuchElementException() {
         UserDetails user = defaultUser(new ArrayList<>(), new ArrayList<>());
@@ -261,6 +279,7 @@ class RentalServiceTest {
 
         assertThrows(NoSuchElementException.class, () -> rentalService.updateRentalEndDate(user, rentalId, LocalDate.now()));
     }
+
 
     @Test
     void testDeleteRental() {
