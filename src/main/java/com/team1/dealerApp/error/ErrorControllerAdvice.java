@@ -33,4 +33,16 @@ public class ErrorControllerAdvice extends ResponseEntityExceptionHandler {
         ErrorDTO errorDTO = ErrorDTO.builder().errorMessage(e.getMessage()).build();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body(errorDTO);
     }
+
+    @ExceptionHandler( NoSuchFieldException.class)
+    public ResponseEntity<ErrorDTO> handleNoSuchFieldException ( NoSuchFieldException e){
+        ErrorDTO errorDTO = ErrorDTO.builder().errorMessage(e.getMessage()).build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(errorDTO);
+    }
+
+    @ExceptionHandler( IllegalAccessError.class)
+    public ResponseEntity<ErrorDTO> handleIllegalAccessException ( IllegalAccessException e ){
+        ErrorDTO errorDTO = ErrorDTO.builder().errorMessage(e.getMessage()).build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body(errorDTO);
+    }
 }
