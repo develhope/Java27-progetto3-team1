@@ -1,5 +1,6 @@
 package com.team1.dealerApp.video.tvshow;
 
+import com.team1.dealerApp.utils.Pager;
 import com.team1.dealerApp.video.AgeRating;
 import com.team1.dealerApp.video.Genre;
 import com.team1.dealerApp.video.VideoStatus;
@@ -9,136 +10,190 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.Year;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 class TvShowServiceTest {
 
-	private final TvShowMapper tvShowMapper = new TvShowMapper();
+    private final TvShowMapper tvShowMapper = new TvShowMapper();
 
-	@Mock
-	private TvShowRepository tvShowRepository;
 
-	@Mock
-	private TvShowMapper tvShowMapperInj;
+    @InjectMocks
+    private TvShowService tvShowService;
 
-	@Mock
-	private TvShowUpdater<Object> tvShowUpdater;
+    @Mock
+    private TvShowRepository tvShowRepository;
 
-	@InjectMocks
-	private TvShowService tvShowService;
+    @Mock
+    private TvShowMapper tvShowMapperInj;
 
-	private TvShow purchasableShow;
-	private TvShow rentableShow;
-	private TvShowDTO purchasableShowDTO;
+    @Mock
+    private TvShowUpdater<Object> tvShowUpdater;
 
-	List <String> cast1= Arrays.asList("Bryan Cranston", "Aaron Paul", "Giancarlo Esposito");
-	List <String> cast2= Arrays.asList("Antony Starr", "Karl Urban", "Jack Quaid");
-/*
-	@BeforeEach
-	void setUp() {
-		MockitoAnnotations.openMocks(this);
+    @Mock
+    private Pager pager;
 
-		purchasableShow = new TvShow("Breaking bad", Genre.DRAMA, cast1, "Vince Gilligan", Year.of(2006), 50.0, 15.0, "Un prof si ammala e inizia a fare la droga", 5.0f, VideoStatus.PURCHASABLE, 0, 0.0, AgeRating.NC17, 6, 52);
-		rentableShow = new TvShow("The boys", Genre.ACTION, cast2, "Erik Kripke", Year.of(2019), 60.0, 20.0, "Patriota impazzisce", 4.6f, VideoStatus.RENTABLE, 0, 0.0, AgeRating.R,  5, 40);
 
-		purchasableShowDTO = tvShowMapper.toTvShowDTO(purchasableShow);
-	}
+    private TvShowDTO purchasableTvShowDTO;
+    private TvShow purchasableTvShow;
+    private TvShow rentableTvShow;
+    private CreateShowDTO purchasableCreateShowDTO;
+    private Page<TvShow> pageTvShow;
 
-	@Test
-	void testAddShow() throws BadRequestException {
-		when(tvShowRepository.existsByTitleAndDirector(purchasableShow.getTitle(), purchasableShow.getDirector())).thenReturn(false);
-		TvShowDTO result = tvShowService.addTvShow(purchasableShowDTO);
 
-		assertEquals(purchasableShowDTO, result);
-	}
+    @BeforeEach
+    public void setup() {
 
-	@Test
-	void testAddShow_WhenShowAlreadyExists() {
-		when(tvShowRepository.existsByTitleAndDirector(purchasableShowDTO.getTitle(), purchasableShowDTO.getDirector())).thenReturn(true);
-		assertThrows(BadRequestException.class, () -> tvShowService.addTvShow(purchasableShowDTO));
-	}
+        MockitoAnnotations.openMocks(this);
 
-	@Test
-	void testGetAllShows () throws BadRequestException {
-		when(tvShowRepository.findAll()).thenReturn(Arrays.asList(purchasableShow, rentableShow));
+        List<String> cast1 = Arrays.asList("Bryan Cranston", "Aaron Paul", "Giancarlo Esposito");
+        List<String> cast2 = Arrays.asList("Antony Starr", "Karl Urban", "Jack Quaid");
 
-		List<TvShowDTO> found = tvShowService.getAllShows();
+        purchasableTvShow = new TvShow("Breaking bad", Genre.DRAMA, cast1, "Vince Gilligan", Year.of(2006), 50.0, 15.0, "Un prof si ammala e inizia a fare la droga", 5.0f, VideoStatus.PURCHASABLE, 0, 0.0, AgeRating.NC17, 6, 52);
+        rentableTvShow = new TvShow("The boys", Genre.ACTION, cast2, "Erik Kripke", Year.of(2019), 60.0, 20.0, "Patriota impazzisce", 4.6f, VideoStatus.RENTABLE, 0, 0.0, AgeRating.R, 5, 40);
 
-		assertEquals(2, found.size());
-	}
+        purchasableTvShowDTO = tvShowMapper.toTvShowDTO(purchasableTvShow);
 
-	@Test
-	void testGetAllShows_NoShowFound (){
-		when(tvShowRepository.findAll()).thenReturn(List.of());
+        purchasableCreateShowDTO = new CreateShowDTO("Breaking bad", Genre.DRAMA, cast1, "Vince Gilligan", Year.of(2006), 50.0, 15.0, "Un prof si ammala e inizia a fare la droga", 5.0f, VideoStatus.PURCHASABLE, 0, 0.0, AgeRating.NC17, 6, 52);
 
-		assertThrows(BadRequestException.class, () -> tvShowService.getAllShows());
-	}
+        pageTvShow = new PageImpl<>(Collections.singletonList(purchasableTvShow));
+    }
 
-	@Test
-	void testGetShowDTOById(){
 
-		when(tvShowRepository.findById(anyLong())).thenReturn(Optional.of(purchasableShow));
-		when(tvShowMapperInj.toTvShowDTO(purchasableShow)).thenReturn(purchasableShowDTO);
+    @Test
+    public void testAddTvShow() throws BadRequestException {
 
-		TvShowDTO found = tvShowService.getShowDTOById(1L);
+        when(tvShowRepository.existsByTitleAndDirector(purchasableTvShow.getTitle(), purchasableTvShow.getDirector())).thenReturn(false);
+        when(tvShowRepository.save(any(TvShow.class))).thenReturn(purchasableTvShow);
+        when(tvShowMapperInj.toTvShow(any(CreateShowDTO.class))).thenReturn(purchasableTvShow);
+        when(tvShowMapperInj.toTvShowDTO(any(TvShow.class))).thenReturn(purchasableTvShowDTO);
 
-		assertEquals(purchasableShowDTO, found);
-	}
+        TvShowDTO result = tvShowService.addTvShow(purchasableCreateShowDTO);
 
-	@Test
-	void testGetShowById_NoShowDTOFound() {
-		when(tvShowRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-		assertThrows(NoSuchElementException.class, () -> tvShowService.getShowDTOById(1L));
-	}
+        assertEquals(purchasableTvShowDTO, result);
+    }
 
-	@Test
-	void testUpdateShow () throws NoSuchElementException{
-		purchasableShowDTO.setPlot("Bella serie");
+    @Test
+    public void testAddTvShow_whenTvShowAlreadyExists() {
+        when(tvShowRepository.existsByTitleAndDirector(purchasableTvShowDTO.getTitle(), purchasableTvShowDTO.getDirector())).thenReturn(true);
+        assertThrows(BadRequestException.class, () -> tvShowService.addTvShow(purchasableCreateShowDTO));
+    }
 
-		when(tvShowRepository.existsById(anyLong())).thenReturn(true);
-		when(tvShowMapperInj.toTvShow(purchasableShowDTO)).thenReturn(purchasableShow);
-		when(tvShowMapperInj.toTvShowDTO(purchasableShow)).thenReturn(purchasableShowDTO);
 
-		TvShowDTO updated = tvShowService.updateShow(purchasableShowDTO, 1L);
+    @Test
+    public void testDeleteShowById() {
+        tvShowService.deleteShowById(1L);
 
-		assertEquals("Bella serie", updated.getPlot());
-	}
+        verify(tvShowRepository, times(1)).deleteById(1L);
+    }
 
-	@Test
-	void testUpdateShow_ShowNotFound () {
-		when(tvShowRepository.existsById(anyLong())).thenReturn(false);
 
-		assertThrows(NoSuchElementException.class, () -> tvShowService.updateShow(purchasableShowDTO, 1L));
-	}
+    @Test
+    public void testGetAllShows() throws BadRequestException {
 
-	@Test
-	void testUpdateShowField () throws NoSuchFieldException, IllegalAccessException, NoSuchElementException {
-		when(tvShowRepository.findById(anyLong())).thenReturn(Optional.of(rentableShow));
+        int page = 0;
+        int size = 10;
 
-		TvShow updatedShow = new TvShow("The boys", Genre.DRAMA, cast2, "Erik Kripke", Year.of(2019), 60.0, 20.0, "Patriota impazzisce", 4.6f, VideoStatus.RENTABLE, 0, 0.0, AgeRating.PG, 5, 40);
+        when(tvShowRepository.findAll()).thenReturn(Arrays.asList(purchasableTvShow, rentableTvShow));
+        when(pager.createPageable(anyInt(), anyInt())).thenReturn(PageRequest.of(page, size));
+        when(tvShowRepository.findAll(pager.createPageable(page, size))).thenReturn(pageTvShow);
 
-		when(tvShowUpdater.updateShowField(rentableShow, "genre", Genre.DRAMA)).thenReturn(updatedShow);
-		when(tvShowMapperInj.toTvShowDTO(updatedShow)).thenReturn(tvShowMapper.toTvShowDTO(updatedShow));
+        Page<TvShowDTO> moviePage = tvShowService.getAllShows(page, size);
+        List<TvShowDTO> result = moviePage.getContent();
 
-		TvShowDTO edited = tvShowService.updateShowField(1L, Genre.DRAMA, "genre" );
+        assertEquals(1, result.size());
+    }
 
-		assertEquals(Genre.DRAMA, edited.getGenre());
-	}
+    @Test
+    public void testGetAllShows_NoShowsFound() {
 
-	@Test
-	void testUpdateShowField_ShowNotFound (){
-		when(tvShowRepository.findById(anyLong())).thenReturn(Optional.empty());
-		assertThrows(NoSuchElementException.class, () -> tvShowService.updateShowField(1L, Genre.DRAMA, "genre" ));
-	}
-*/
+        int page = 0;
+        int size = 10;
+
+        when(tvShowRepository.findAll(PageRequest.of(page, size))).thenReturn(Page.empty());
+
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> tvShowService.getAllShows(page, size));
+
+        assertEquals("There are no shows!", exception.getMessage());
+    }
+
+
+    @Test
+    public void testGetShowDTOById() {
+
+        when(tvShowRepository.findById(anyLong())).thenReturn(Optional.of(purchasableTvShow));
+
+        tvShowService.getShowDTOById(1L);
+
+        verify(tvShowRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testGetShowDTOById_NotFound() {
+
+        when(tvShowRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> tvShowService.getShowDTOById(1L));
+
+        assertEquals("No show with id: 1", exception.getMessage());
+    }
+
+
+    @Test
+    public void testUpdateShow() {
+        purchasableTvShowDTO.setTitle("Breaking bad");
+
+        when(tvShowRepository.existsById(1L)).thenReturn(true);
+        when(tvShowMapperInj.toTvShow(any(CreateShowDTO.class))).thenReturn(purchasableTvShow);
+        when(tvShowRepository.save(any(TvShow.class))).thenReturn(purchasableTvShow);
+        when(tvShowMapperInj.toTvShowDTO(purchasableTvShow)).thenReturn(purchasableTvShowDTO);
+
+        TvShowDTO result = tvShowService.updateShow(purchasableCreateShowDTO, 1L);
+
+        assertEquals("Breaking bad", result.getTitle());
+    }
+
+    @Test
+    public void testUpdateShow_NotFound() {
+        when(tvShowRepository.existsById(1L)).thenReturn(false);
+
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> tvShowService.updateShow(purchasableCreateShowDTO, 1L));
+
+        assertEquals("There is no show with id: 1", exception.getMessage());
+    }
+
+
+    @Test
+    public void testUpdateShowField() throws Exception {
+
+        when(tvShowRepository.findById(1L)).thenReturn(Optional.of(purchasableTvShow));
+
+        TvShow updatedTvShow = new TvShow();
+        when(tvShowUpdater.updateShowField(any(TvShow.class), anyString(), any())).thenReturn(updatedTvShow);
+        when(tvShowMapperInj.toTvShowDTO(updatedTvShow)).thenReturn(new TvShowDTO());
+
+        tvShowService.updateShowField(1L, "New Title", "title");
+
+        verify(tvShowRepository, times(1)).save(updatedTvShow);
+    }
+
+    @Test
+    public void testUpdateShowField_NoMovieFound() {
+        when(tvShowRepository.findById(1L)).thenReturn(Optional.empty());
+
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> tvShowService.updateShowField(1L, "New Title", "title"));
+
+        assertEquals("No show with id: 1", exception.getMessage());
+    }
+
 }

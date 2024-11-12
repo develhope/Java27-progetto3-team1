@@ -25,14 +25,14 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class RentalService {
-	private final RentalRepository rentalRepository;
-	private final RentalMapper rentalMapper;
-	private final UserService userService;
-	private final PayPalService payPalService;
-	private final MovieService movieService;
-	private final TvShowService tvShowService;
+    private final RentalRepository rentalRepository;
+    private final RentalMapper rentalMapper;
+    private final UserService userService;
+    private final PayPalService payPalService;
+    private final MovieService movieService;
+    private final TvShowService tvShowService;
 
-	private final Pager pager;
+    private final Pager pager;
 
 	public PurchaseConfirmDTO addRental( UserDetails user, CreateRentalDTO createRentalDTO ) throws BadRequestException, PayPalRESTException {
 		validateRentalRequest(createRentalDTO);
@@ -71,45 +71,45 @@ public class RentalService {
 				.build();
 	}
 
-	private void updateMovieProfit(List<Movie> movies, List<Subscription> subscriptions){
-		subscriptions.forEach(subscription -> {
-					if ("MOVIE".equals(subscription.getSubscriptionType().toString())) {
-						movies.forEach(movie -> movie.setOrderCount(movie.getOrderCount() + 1));
-					} else {
-						movies.forEach(movie -> {
-							movie.setVideoProfit(movie.getVideoProfit() + movie.getRentalPrice());
-							movie.setOrderCount(movie.getOrderCount() + 1);
-						});
-					}
-				});
-	}
+    private void updateMovieProfit(List<Movie> movies, List<Subscription> subscriptions) {
+        subscriptions.forEach(subscription -> {
+            if ("MOVIE".equals(subscription.getSubscriptionType().toString())) {
+                movies.forEach(movie -> movie.setOrderCount(movie.getOrderCount() + 1));
+            } else {
+                movies.forEach(movie -> {
+                    movie.setVideoProfit(movie.getVideoProfit() + movie.getRentalPrice());
+                    movie.setOrderCount(movie.getOrderCount() + 1);
+                });
+            }
+        });
+    }
 
-	private void updateShowProfit(List<TvShow> shows, List<Subscription> subscriptions){
-		subscriptions.forEach(subscription -> {
-			if ("TV_SHOW".equals(subscription.getSubscriptionType().toString())) {
-				shows.forEach(show -> show.setOrderCount(show.getOrderCount() + 1));
-			} else {
-				shows.forEach(show-> {
-					show.setVideoProfit(show.getVideoProfit() + show.getRentalPrice());
-					show.setOrderCount(show.getOrderCount() + 1);
-				});
-			}
-		});
-	}
+    private void updateShowProfit(List<TvShow> shows, List<Subscription> subscriptions) {
+        subscriptions.forEach(subscription -> {
+            if ("TV_SHOW".equals(subscription.getSubscriptionType().toString())) {
+                shows.forEach(show -> show.setOrderCount(show.getOrderCount() + 1));
+            } else {
+                shows.forEach(show -> {
+                    show.setVideoProfit(show.getVideoProfit() + show.getRentalPrice());
+                    show.setOrderCount(show.getOrderCount() + 1);
+                });
+            }
+        });
+    }
 
-	private void validateRentalRequest( CreateRentalDTO createRentalDTO ) throws BadRequestException {
-		if ( createRentalDTO.getMovies().isEmpty() && createRentalDTO.getTvShows().isEmpty() ) {
-			throw new BadRequestException("Both lists cannot be empty");
-		}
-	}
+    private void validateRentalRequest(CreateRentalDTO createRentalDTO) throws BadRequestException {
+        if (createRentalDTO.getMovies().isEmpty() && createRentalDTO.getTvShows().isEmpty()) {
+            throw new BadRequestException("Both lists cannot be empty");
+        }
+    }
 
-	private List < Movie > fetchMovies( CreateRentalDTO createRentalDTO ) {
-		return createRentalDTO.getMovies().isEmpty()? List.of(): createRentalDTO.getMovies().stream().map(movieService::getMovieById).toList();
-	}
+    private List<Movie> fetchMovies(CreateRentalDTO createRentalDTO) {
+        return createRentalDTO.getMovies().isEmpty() ? List.of() : createRentalDTO.getMovies().stream().map(movieService::getMovieById).toList();
+    }
 
-	private List < TvShow > fetchTvShows( CreateRentalDTO createRentalDTO ) {
-		return createRentalDTO.getTvShows().isEmpty()? List.of(): createRentalDTO.getTvShows().stream().map(tvShowService::getShowById).toList();
-	}
+    private List<TvShow> fetchTvShows(CreateRentalDTO createRentalDTO) {
+        return createRentalDTO.getTvShows().isEmpty() ? List.of() : createRentalDTO.getTvShows().stream().map(tvShowService::getShowById).toList();
+    }
 
 	private double calculateTotalRentalPrice( List < Movie > movies, List < TvShow > tvShows, List<Subscription> subscriptions ) {
 		double movieRentalPrice = movies.stream().mapToDouble(Movie::getRentalPrice).sum();
@@ -119,44 +119,47 @@ public class RentalService {
 		return movieRentalPrice + tvShowRentalPrice;
 	}
 
-	private Rental createRental( UserDetails user, CreateRentalDTO createRentalDTO, List<Movie> movieList, List<TvShow> tvShowsList, double totalPrice ) {
-		Rental rental = rentalMapper.toRental(createRentalDTO, movieList,tvShowsList);
-		rental.setRentalPrice(totalPrice);
-		rental.setStartDate(LocalDate.now());
-		rental.setEndDate(LocalDate.now().plusDays(14));
-		rental.setRenter(userService.getUserByEmail(user));
-		rental.setRentalStatus(RentalStatus.ACTIVE);
-		return rental;
-	}
+    private Rental createRental(UserDetails user, CreateRentalDTO createRentalDTO, List<Movie> movieList, List<TvShow> tvShowsList, double totalPrice) {
+        Rental rental = rentalMapper.toRental(createRentalDTO, movieList, tvShowsList);
+        rental.setRentalPrice(totalPrice);
+        rental.setStartDate(LocalDate.now());
+        rental.setEndDate(LocalDate.now().plusDays(14));
+        rental.setRenter(userService.getUserByEmail(user));
+        rental.setRentalStatus(RentalStatus.ACTIVE);
+        return rental;
+    }
 
-	public Page < RentalDTO > getActiveUserRentals( UserDetails user, int page, int size ) throws NoSuchElementException {
-		Page < Rental > rentalsFind = rentalRepository.findByRenter_Email(user.getUsername(), pager.createPageable(page, size));
-		if ( rentalsFind.isEmpty() ) {
-			throw new NoSuchElementException("Rental's list is empty");
-		}
-		return rentalsFind.map(rentalMapper::toDTO);
-	}
+    public Page<RentalDTO> getActiveUserRentals(UserDetails user, int page, int size) throws NoSuchElementException {
+        Page<Rental> rentalsFind = rentalRepository.findByRenter_Email(user.getUsername(), pager.createPageable(page, size));
+        if (rentalsFind == null || rentalsFind.isEmpty()) {
+            throw new NoSuchElementException("Rental's list is empty");
+        }
+        return rentalsFind.map(rentalMapper::toDTO);
+    }
 
-	public RentalDTO updateRentalEndDate( UserDetails user, Long id, LocalDate date ) throws BadRequestException {
-		Rental rentalFound = rentalRepository.findByRenter_EmailAndId(user.getUsername(), id).orElseThrow(() -> new NoSuchElementException("There is no rental with id " + id));
-		LocalDate rentalEndDate = rentalFound.getEndDate();
-		if(rentalEndDate.isAfter(date)){
-			throw new BadRequestException("Error: " + date + " is before the rental's end date");
-		}
-		rentalFound.setEndDate(date);
-		rentalRepository.save(rentalFound);
-		return rentalMapper.toDTO(rentalFound);
-	}
+    public RentalDTO updateRentalEndDate(UserDetails user, Long id, LocalDate date) throws BadRequestException {
 
-	public boolean deleteRental( Long id ) {
-		rentalRepository.deleteById(id);
-		return true;
-	}
+        Rental rentalFound = rentalRepository.findByRenter_EmailAndId(user.getUsername(), id).orElseThrow(() -> new NoSuchElementException("There is no rental with id " + id));
+        LocalDate rentalEndDate = rentalFound.getEndDate();
 
-	public RentalDTO updateRentalStatus(Long orderId, String rentalStatus) {
-		Rental rental =rentalRepository.findById(orderId).orElseThrow(()-> new NoSuchElementException("There is no rental with id " + orderId));
-		rental.setRentalStatus(RentalStatus.valueOf(rentalStatus.toUpperCase()));
-		rentalRepository.save(rental);
-		return rentalMapper.toDTO(rental);
-	}
+        if (rentalEndDate.isAfter(date)) {
+            throw new BadRequestException("Error: " + date + " is before the rental's end date");
+        }
+        rentalFound.setEndDate(date);
+        rentalRepository.save(rentalFound);
+
+        return rentalMapper.toDTO(rentalFound);
+    }
+
+    public boolean deleteRental(Long id) {
+        rentalRepository.deleteById(id);
+        return true;
+    }
+
+    public RentalDTO updateRentalStatus(Long orderId, String rentalStatus) {
+        Rental rental = rentalRepository.findById(orderId).orElseThrow(() -> new NoSuchElementException("There is no rental with id " + orderId));
+        rental.setRentalStatus(RentalStatus.valueOf(rentalStatus.toUpperCase()));
+        rentalRepository.save(rental);
+        return rentalMapper.toDTO(rental);
+    }
 }

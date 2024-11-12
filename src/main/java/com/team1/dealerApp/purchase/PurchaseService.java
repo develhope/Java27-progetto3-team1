@@ -45,9 +45,9 @@ public class PurchaseService {
 
         double totalPurchasePrice = calculateTotalPrice(movieList, tvShowList, purchaser.getSubscriptions());
 
-		Purchase purchase = createPurchase(createPurchaseDTO, movieList, tvShowList, totalPurchasePrice, purchaser);
-		updateMovieProfit(movieList, purchaser.getSubscriptions());
-		updateShowProfit(tvShowList, purchaser.getSubscriptions());
+        Purchase purchase = createPurchase(createPurchaseDTO, movieList, tvShowList, totalPurchasePrice, purchaser);
+        updateMovieProfit(movieList, purchaser.getSubscriptions());
+        updateShowProfit(tvShowList, purchaser.getSubscriptions());
 
         purchase.setOrderStatus(OrderStatus.PENDING_PAYMENT);
 
@@ -63,41 +63,41 @@ public class PurchaseService {
     }
 
 
-	private void updateMovieProfit(List<Movie> movies, List<Subscription> subscriptions){
-        if( subscriptions.isEmpty() ){
+    private void updateMovieProfit(List<Movie> movies, List<Subscription> subscriptions) {
+        if (subscriptions.isEmpty()) {
             movies.forEach(movie -> {
                 movie.setVideoProfit(movie.getVideoProfit() + movie.getPurchasePrice());
                 movie.setOrderCount(movie.getOrderCount() + 1);
             });
-        }else {
+        } else {
             subscriptions.forEach(subscription -> {
-                if ( "MOVIE".equals(subscription.getSubscriptionType().toString()) ) {
+                if ("MOVIE".equals(subscription.getSubscriptionType().toString())) {
                     movies.forEach(movie -> movie.setOrderCount(movie.getOrderCount() + 1));
                 }
             });
         }
-	}
+    }
 
-	private void updateShowProfit(List<TvShow> shows, List<Subscription> subscriptions){
-        if (subscriptions.isEmpty()){
-            shows.forEach(show-> {
+    private void updateShowProfit(List<TvShow> shows, List<Subscription> subscriptions) {
+        if (subscriptions.isEmpty()) {
+            shows.forEach(show -> {
                 show.setVideoProfit(show.getVideoProfit() + show.getPurchasePrice());
                 show.setOrderCount(show.getOrderCount() + 1);
             });
-        }else {
+        } else {
             subscriptions.forEach(subscription -> {
-                if ( "TV_SHOW".equals(subscription.getSubscriptionType().toString()) ) {
+                if ("TV_SHOW".equals(subscription.getSubscriptionType().toString())) {
                     shows.forEach(show -> show.setOrderCount(show.getOrderCount() + 1));
                 }
             });
         }
-	}
+    }
 
-	private void validatePurchaseRequest( CreatePurchaseDTO createPurchaseDTO ) throws BadRequestException {
-		if ( createPurchaseDTO.getMovies().isEmpty() && createPurchaseDTO.getTvShows().isEmpty() ) {
-			throw new BadRequestException("Both lists cannot be empty");
-		}
-	}
+    private void validatePurchaseRequest(CreatePurchaseDTO createPurchaseDTO) throws BadRequestException {
+        if (createPurchaseDTO.getMovies().isEmpty() && createPurchaseDTO.getTvShows().isEmpty()) {
+            throw new BadRequestException("Both lists cannot be empty");
+        }
+    }
 
     private List<Movie> fetchMovies(CreatePurchaseDTO createPurchaseDTO) {
         return createPurchaseDTO.getMovies().isEmpty() ? List.of() : createPurchaseDTO.getMovies().stream().map(movieService::getMovieById).toList();
@@ -110,8 +110,10 @@ public class PurchaseService {
     private double calculateTotalPrice(List<Movie> movies, List<TvShow> tvShows, List<Subscription> subscriptions) {
         double movieTotal = movies.stream().mapToDouble(Movie::getPurchasePrice).sum();
         double tvShowTotal = tvShows.stream().mapToDouble(TvShow::getPurchasePrice).sum();
-        if ( subscriptions.stream().anyMatch(s-> "MOVIE".equals(s.getSubscriptionType().toString()))) movieTotal -= movieTotal * 0.4;
-        if ( subscriptions.stream().anyMatch(s->"TV_SHOW".equals(s.getSubscriptionType().toString()))) tvShowTotal -= tvShowTotal * 0.4;
+        if (subscriptions.stream().anyMatch(s -> "MOVIE".equals(s.getSubscriptionType().toString())))
+            movieTotal -= movieTotal * 0.4;
+        if (subscriptions.stream().anyMatch(s -> "TV_SHOW".equals(s.getSubscriptionType().toString())))
+            tvShowTotal -= tvShowTotal * 0.4;
         return movieTotal + tvShowTotal;
     }
 
@@ -146,8 +148,8 @@ public class PurchaseService {
         return purchaseMapper.toDTO(purchaseSelected);
     }
 
-    public PurchaseDTO updatePurchaseStatus(Long id, String orderStatus){
-        Purchase purchase =purchaseRepository.findById(id).orElseThrow(()-> new NoSuchElementException("There is no purchase with id " + id));
+    public PurchaseDTO updatePurchaseStatus(Long id, String orderStatus) {
+        Purchase purchase = purchaseRepository.findById(id).orElseThrow(() -> new NoSuchElementException("There is no purchase with id " + id));
         purchase.setOrderStatus(OrderStatus.valueOf(orderStatus.toUpperCase()));
         purchaseRepository.save(purchase);
         return purchaseMapper.toDTO(purchase);

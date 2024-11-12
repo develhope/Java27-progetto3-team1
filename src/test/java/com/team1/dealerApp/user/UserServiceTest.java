@@ -14,12 +14,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.Year;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
+
 
 public class UserServiceTest {
 
@@ -84,8 +85,8 @@ public class UserServiceTest {
         rentalCompleteTest = new Rental();
 
         rentalCompleteTest.setId(rentalId);
-        rentalCompleteTest.setStartDate(LocalDateTime.now());
-        rentalCompleteTest.setEndDate(LocalDateTime.now().plusDays(14));
+        rentalCompleteTest.setStartDate(LocalDate.now());
+        rentalCompleteTest.setEndDate(LocalDate.now().plusDays(14));
         rentalCompleteTest.setRentalStatus(RentalStatus.ACTIVE);
         rentalCompleteTest.setMovies(defaultMovieList);
         rentalCompleteTest.setTvShows(defaultTvShowList);

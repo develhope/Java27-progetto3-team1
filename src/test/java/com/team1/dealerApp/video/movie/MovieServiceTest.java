@@ -1,6 +1,6 @@
 package com.team1.dealerApp.video.movie;
 
-
+import com.team1.dealerApp.utils.Pager;
 import com.team1.dealerApp.video.AgeRating;
 import com.team1.dealerApp.video.Genre;
 import com.team1.dealerApp.video.VideoStatus;
@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.Year;
 import java.util.*;
@@ -32,15 +35,18 @@ class MovieServiceTest {
     @Mock
     private MovieUpdater<Object> movieUpdater;
 
+    @Mock
+    private Pager pager;
+
     // Inietta il MovieService da testare
     @InjectMocks
     private MovieService movieService;
 
-
-
     private MovieDTO purchasableMovieDTO;
     private Movie purchasableMovie;
     private Movie rentableMovie;
+    private CreateMovieDTO purchasableCreateMovieDTO;
+    private Page<Movie> pageMovie;
 
     @BeforeEach
     public void setup() {
@@ -50,19 +56,25 @@ class MovieServiceTest {
         List<String> castMovie2 = Arrays.asList("Ed Wynn", "Richard Haydn", "Kathryn Beaumont");
 
         purchasableMovie = new Movie("Il signore degli anelli: il ritorno del Re", Genre.FANTASY, castMovie, "Peter Jackson", Year.of(2003), 30.00, 10.00, "Il ritorno del Re", 4.0f, VideoStatus.PURCHASABLE, 0, 0.0, AgeRating.PG, 110);
-        rentableMovie = new Movie("Alice nel paese delle Meraviglie", Genre.ANIMATION, castMovie2,"Clyde Geronimi", Year.of(1951), 30.00, 10.00, "Alice nel paese delle meraviglie", 2.0f, VideoStatus.RENTABLE, 0, 0.0, AgeRating.NC17, 110);
+        rentableMovie = new Movie("Alice nel paese delle Meraviglie", Genre.ANIMATION, castMovie2, "Clyde Geronimi", Year.of(1951), 30.00, 10.00, "Alice nel paese delle meraviglie", 2.0f, VideoStatus.RENTABLE, 0, 0.0, AgeRating.NC17, 110);
 
         purchasableMovieDTO = movieMapper.toMovieDTO(purchasableMovie);
 
+        purchasableCreateMovieDTO = new CreateMovieDTO("Il signore degli anelli: il ritorno del Re", Genre.FANTASY, castMovie, "Peter Jackson", Year.of(2003), 30.00, 10.00, "Il ritorno del Re", 4.0f, VideoStatus.PURCHASABLE, 0, 0.0, AgeRating.PG, 110);
 
+        pageMovie = new PageImpl<>(Collections.singletonList(purchasableMovie));
     }
 
     @Test
     public void testAddMovie() throws BadRequestException {
+
         //Specifica cosa fare quando viene invocato quel metodo findMovieByTitleAndDirector (contenuto in addMovie)
         when(movieRepository.findMovieByTitleAndDirector(purchasableMovie.getTitle(), purchasableMovie.getDirector())).thenReturn(null);
+        when(movieRepository.save(any(Movie.class))).thenReturn(purchasableMovie);
+        when(movieMapperInj.toMovie(any(CreateMovieDTO.class))).thenReturn(purchasableMovie);
+        when(movieMapperInj.toMovieDTO(any(Movie.class))).thenReturn(purchasableMovieDTO);
 
-        MovieDTO result = movieService.addMovie(purchasableMovieDTO);
+        MovieDTO result = movieService.addMovie(purchasableCreateMovieDTO);
 
         // Verifica che il DTO restituito sia quello originale
         assertEquals(purchasableMovieDTO, result);
@@ -71,8 +83,8 @@ class MovieServiceTest {
 
     @Test
     public void testAddMovie_whenMovieAlreadyExists() {
-        when(movieRepository.findMovieByTitleAndDirector(purchasableMovieDTO.getTitle(), purchasableMovieDTO.getDirector())).thenReturn(purchasableMovie);
-        assertThrows(BadRequestException.class, () -> movieService.addMovie(purchasableMovieDTO));
+        when(movieRepository.existsByTitleAndDirector(purchasableMovieDTO.getTitle(), purchasableMovieDTO.getDirector())).thenReturn(true);
+        assertThrows(BadRequestException.class, () -> movieService.addMovie(purchasableCreateMovieDTO));
     }
 
     @Test
@@ -85,20 +97,29 @@ class MovieServiceTest {
     @Test
     public void testGetAllMovies() {
 
-        when(movieRepository.findAll()).thenReturn(Arrays.asList(purchasableMovie, rentableMovie));
+        int page = 0;
+        int size = 10;
 
-        List<MovieDTO> result = movieService.getAllMovies();
+        when(movieRepository.findAll()).thenReturn(Arrays.asList(purchasableMovie, rentableMovie));
+        when(pager.createPageable(anyInt(), anyInt())).thenReturn(PageRequest.of(page, size));
+        when(movieRepository.findAll(pager.createPageable(page, size))).thenReturn(pageMovie);
+
+        Page<MovieDTO> moviePage = movieService.getAllMovies(page, size);
+        List<MovieDTO> result = moviePage.getContent();
 
         // Verifica che vengano restituiti due film
-        assertEquals(2, result.size());
+        assertEquals(1, result.size());
     }
 
     @Test
     public void testGetAllMovies_NoMoviesFound() {
 
-        when(movieRepository.findAll()).thenReturn(new ArrayList<>());
+        int page = 0;
+        int size = 10;
 
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> movieService.getAllMovies());
+        when(movieRepository.findAll(PageRequest.of(page, size))).thenReturn(Page.empty());
+
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> movieService.getAllMovies(page, size));
 
         // Verifica che il messaggio di errore sia corretto
         assertEquals("There are no film!", exception.getMessage());
@@ -109,7 +130,7 @@ class MovieServiceTest {
         // con anyLong() si assegna un qualsiasi valore Long visto che movie non ha ancora un Id
         when(movieRepository.findById(anyLong())).thenReturn(Optional.of(purchasableMovie));
 
-         movieService.getMovieDTOById(1L);
+        movieService.getMovieDTOById(1L);
 
         // Verifica che il repository venga chiamato
         verify(movieRepository, times(1)).findById(1L);
@@ -130,10 +151,11 @@ class MovieServiceTest {
         purchasableMovieDTO.setTitle("Il signore degli anelli: le due torri");
 
         when(movieRepository.existsById(1L)).thenReturn(true);
-        when(movieMapperInj.toMovie(purchasableMovieDTO)).thenReturn(purchasableMovie);
+        when(movieMapperInj.toMovie(any(CreateMovieDTO.class))).thenReturn(purchasableMovie);
+        when(movieRepository.save(any(Movie.class))).thenReturn(purchasableMovie);
         when(movieMapperInj.toMovieDTO(purchasableMovie)).thenReturn(purchasableMovieDTO);
 
-        MovieDTO result = movieService.updateMovie(1L, purchasableMovieDTO);
+        MovieDTO result = movieService.updateMovie(1L, purchasableCreateMovieDTO);
 
         assertEquals("Il signore degli anelli: le due torri", result.getTitle());
     }
@@ -142,10 +164,11 @@ class MovieServiceTest {
     public void testUpdateMovie_NotFound() {
         when(movieRepository.existsById(1L)).thenReturn(false);
 
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> movieService.updateMovie(1L, purchasableMovieDTO));
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> movieService.updateMovie(1L, purchasableCreateMovieDTO));
 
         assertEquals("There is no movie with id 1", exception.getMessage());
     }
+
 
     @Test
     public void testUpdateMovieField() throws Exception {
@@ -171,5 +194,4 @@ class MovieServiceTest {
         assertEquals("No movie with id: 1", exception.getMessage());
     }
 
-  
 }
