@@ -34,7 +34,7 @@ public class RentalService {
 
 	private final Pager pager;
 
-	public String addRental( UserDetails user, CreateRentalDTO createRentalDTO ) throws BadRequestException, PayPalRESTException {
+	public PurchaseConfirmDTO addRental( UserDetails user, CreateRentalDTO createRentalDTO ) throws BadRequestException, PayPalRESTException {
 		validateRentalRequest(createRentalDTO);
 
 		List < Movie > movies = fetchMovies(createRentalDTO);
@@ -45,16 +45,30 @@ public class RentalService {
 		Rental rental = createRental(user, createRentalDTO, movies, tvShows, totalPrice);
 		updateMovieProfit(movies, renter.getSubscriptions());
 		updateShowProfit(tvShows, renter.getSubscriptions());
-		rental.setRentalStatus(RentalStatus.SUSPENDED);
+
 		Rental rental1 = rentalRepository.save(rental);
 		String url = "http://localhost:8080/api/paypal/success/rental?orderId=" + rental1.getId();
-		Payment payment = payPalService.createPayment(totalPrice, "EUR", "paypal", "sale", "New rental", url);
 
-		return payment.getLinks().stream()
-				.filter(link -> "approval_url".equals(link.getRel()))
-				.findFirst()
-				.map(Links::getHref)
-				.orElse(null);
+		if(totalPrice > 0){
+			Payment payment = payPalService.createPayment(totalPrice, "EUR", "paypal", "sale", "New rental", url);
+			rental.setRentalStatus(RentalStatus.SUSPENDED);
+			String urlMessage = payment.getLinks().stream()
+					.filter(link -> "approval_url".equals(link.getRel()))
+					.findFirst()
+					.map(Links::getHref)
+					.orElse(null);
+
+			return generateOutput(urlMessage);
+		}
+
+		rental.setRentalStatus(RentalStatus.ACTIVE);
+		return generateOutput("Ordine inserito");
+	}
+
+	public PurchaseConfirmDTO generateOutput(String message){
+		return PurchaseConfirmDTO.builder()
+				.message(message)
+				.build();
 	}
 
 	private void updateMovieProfit(List<Movie> movies, List<Subscription> subscriptions){

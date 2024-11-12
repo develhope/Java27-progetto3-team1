@@ -25,7 +25,7 @@ public class RentalController {
 
     @PreAuthorize( "hasRole('USER')" )
     @PostMapping( "/u/rentals" )
-  public ResponseEntity< String> addRental( @AuthenticationPrincipal UserDetails user, @RequestBody CreateRentalDTO createRentalDTO) throws BadRequestException, PayPalRESTException {
+  public ResponseEntity< PurchaseConfirmDTO > addRental( @AuthenticationPrincipal UserDetails user, @RequestBody CreateRentalDTO createRentalDTO) throws BadRequestException, PayPalRESTException {
         return ResponseEntity.ok(rentalService.addRental(user, createRentalDTO));
   }
 
