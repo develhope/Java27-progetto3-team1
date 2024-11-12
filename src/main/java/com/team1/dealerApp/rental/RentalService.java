@@ -34,28 +34,42 @@ public class RentalService {
 
     private final Pager pager;
 
-    public String addRental(UserDetails user, CreateRentalDTO createRentalDTO) throws BadRequestException, PayPalRESTException {
-        validateRentalRequest(createRentalDTO);
+	public PurchaseConfirmDTO addRental( UserDetails user, CreateRentalDTO createRentalDTO ) throws BadRequestException, PayPalRESTException {
+		validateRentalRequest(createRentalDTO);
 
-        List<Movie> movies = fetchMovies(createRentalDTO);
-        List<TvShow> tvShows = fetchTvShows(createRentalDTO);
-        User renter = userService.getUserByEmail(user);
-        double totalPrice = calculateTotalRentalPrice(movies, tvShows, renter.getSubscriptions());
+		List < Movie > movies = fetchMovies(createRentalDTO);
+		List < TvShow > tvShows = fetchTvShows(createRentalDTO);
+		User renter = userService.getUserByEmail(user);
+		double totalPrice = calculateTotalRentalPrice(movies, tvShows, renter.getSubscriptions());
 
-        Rental rental = createRental(user, createRentalDTO, movies, tvShows, totalPrice);
-        updateMovieProfit(movies, renter.getSubscriptions());
-        updateShowProfit(tvShows, renter.getSubscriptions());
-        rental.setRentalStatus(RentalStatus.SUSPENDED);
-        Rental rental1 = rentalRepository.save(rental);
-        String url = "http://localhost:8080/api/paypal/success/rental?orderId=" + rental1.getId();
-        Payment payment = payPalService.createPayment(totalPrice, "EUR", "paypal", "sale", "New rental", url);
+		Rental rental = createRental(user, createRentalDTO, movies, tvShows, totalPrice);
+		updateMovieProfit(movies, renter.getSubscriptions());
+		updateShowProfit(tvShows, renter.getSubscriptions());
 
-        return payment.getLinks().stream()
-                .filter(link -> "approval_url".equals(link.getRel()))
-                .findFirst()
-                .map(Links::getHref)
-                .orElse(null);
-    }
+		Rental rental1 = rentalRepository.save(rental);
+		String url = "http://localhost:8080/api/paypal/success/rental?orderId=" + rental1.getId();
+
+		if(totalPrice > 0){
+			Payment payment = payPalService.createPayment(totalPrice, "EUR", "paypal", "sale", "New rental", url);
+			rental.setRentalStatus(RentalStatus.SUSPENDED);
+			String urlMessage = payment.getLinks().stream()
+					.filter(link -> "approval_url".equals(link.getRel()))
+					.findFirst()
+					.map(Links::getHref)
+					.orElse(null);
+
+			return generateOutput(urlMessage);
+		}
+
+		rental.setRentalStatus(RentalStatus.ACTIVE);
+		return generateOutput("Ordine inserito");
+	}
+
+	public PurchaseConfirmDTO generateOutput(String message){
+		return PurchaseConfirmDTO.builder()
+				.message(message)
+				.build();
+	}
 
     private void updateMovieProfit(List<Movie> movies, List<Subscription> subscriptions) {
         subscriptions.forEach(subscription -> {
@@ -97,15 +111,13 @@ public class RentalService {
         return createRentalDTO.getTvShows().isEmpty() ? List.of() : createRentalDTO.getTvShows().stream().map(tvShowService::getShowById).toList();
     }
 
-    private double calculateTotalRentalPrice(List<Movie> movies, List<TvShow> tvShows, List<Subscription> subscriptions) {
-        double movieRentalPrice = movies.stream().mapToDouble(Movie::getRentalPrice).sum();
-        double tvShowRentalPrice = tvShows.stream().mapToDouble(TvShow::getRentalPrice).sum();
-        if (subscriptions.stream().anyMatch(s -> "MOVIE".equals(s.getSubscriptionType().toString())))
-            tvShowRentalPrice = 0;
-        if (subscriptions.stream().anyMatch(s -> "TV_SHOW".equals(s.getSubscriptionType().toString())))
-            movieRentalPrice = 0;
-        return movieRentalPrice + tvShowRentalPrice;
-    }
+	private double calculateTotalRentalPrice( List < Movie > movies, List < TvShow > tvShows, List<Subscription> subscriptions ) {
+		double movieRentalPrice = movies.stream().mapToDouble(Movie::getRentalPrice).sum();
+		double tvShowRentalPrice = tvShows.stream().mapToDouble(TvShow::getRentalPrice).sum();
+		if ( subscriptions.stream().anyMatch(s-> "MOVIE".equals(s.getSubscriptionType().toString()))) movieRentalPrice = 0;
+		if ( subscriptions.stream().anyMatch(s->"TV_SHOW".equals(s.getSubscriptionType().toString()))) tvShowRentalPrice = 0;
+		return movieRentalPrice + tvShowRentalPrice;
+	}
 
     private Rental createRental(UserDetails user, CreateRentalDTO createRentalDTO, List<Movie> movieList, List<TvShow> tvShowsList, double totalPrice) {
         Rental rental = rentalMapper.toRental(createRentalDTO, movieList, tvShowsList);

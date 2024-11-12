@@ -19,7 +19,7 @@ public class Subscription {
     private Long id;
 
     @Column( name = "subscription_type", nullable = false)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private SubscriptionType subscriptionType;
 
     @Column(nullable = false)
