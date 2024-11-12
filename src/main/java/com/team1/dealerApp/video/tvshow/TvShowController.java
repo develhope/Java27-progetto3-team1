@@ -51,7 +51,7 @@ public class TvShowController {
 
 	@PreAuthorize( "hasRole('ADMIN')" )
 	@PatchMapping( "/a/tvShows/{id}" )
-	public ResponseEntity < TvShowDTO > updateShowField( @PathVariable Long id, @RequestParam( name = "field" ) String fieldName, @RequestBody Object value ) throws NoSuchElementException {
+	public ResponseEntity < TvShowDTO > updateShowField( @PathVariable Long id, @RequestParam( name = "field" ) String fieldName, @RequestBody Object value ) throws NoSuchElementException, NoSuchFieldException, IllegalAccessException {
 		return ResponseEntity.ok(tvShowService.updateShowField(id, value, fieldName));
 	}
 

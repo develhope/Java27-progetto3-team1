@@ -60,19 +60,14 @@ public class TvShowService {
 		throw new NoSuchElementException("There is no show with id: " + id);
 	}
 
-	public TvShowDTO updateShowField ( Long id, Object value, String field ) throws NoSuchElementException {
+	public TvShowDTO updateShowField ( Long id, Object value, String field ) throws NoSuchElementException, NoSuchFieldException, IllegalAccessException {
 		TvShow tvShow = tvShowRepository
 				.findById(id)
 				.orElseThrow(() -> new NoSuchElementException("No show with id: " + id));
 		TvShow updated = new TvShow();
 
-		try {
 			updated = tvShowUpdater.updateShowField(tvShow, field, value);
-		}catch ( NoSuchFieldException e ){
-			log.error("Error: the field {} does not exist: {}", field, e.getMessage());
-		}catch ( IllegalAccessException e){
-			log.error("Errore nell'accesso alla classe: {}", e.getMessage());
-		}
+
 		tvShowRepository.save(updated);
 		return tvShowMapper.toTvShowDTO(updated);
 	}
