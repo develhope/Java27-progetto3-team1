@@ -2,6 +2,7 @@ package com.team1.dealerApp.video.movie;
 
 
 import com.team1.dealerApp.utils.Pager;
+import com.team1.dealerApp.video.VideoEditDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -72,19 +73,14 @@ public class MovieService {
         throw new NoSuchElementException("There is no movie with id " + movieId);
     }
 
-    public MovieDTO updateMovieField(Long id, Object value, String field) throws BadRequestException {
+    public MovieDTO updateMovieField( VideoEditDTO videoEditDTO, Long id ) throws BadRequestException, NoSuchFieldException, IllegalAccessException {
         Movie movie = movieRepository
                 .findById(id)
                 .orElseThrow(() -> new BadRequestException("No movie with id: " + id));
         Movie updated = new Movie();
 
-        try {
-            updated = movieUpdater.updateMovieField(movie, field, value);
-        } catch (NoSuchFieldException e) {
-            log.error("Error: the field {} does not exist: {}", field, e.getMessage());
-        } catch (IllegalAccessException e) {
-            log.error("Error to access to the class: {}", e.getMessage());
-        }
+            updated = movieUpdater.updateMovieField(movie, videoEditDTO.getField(), videoEditDTO.getValue());
+
         movieRepository.save(updated);
         return movieMapper.toMovieDTO(updated);
     }
