@@ -1,5 +1,6 @@
 package com.team1.dealerApp.video.movie;
 
+import com.team1.dealerApp.video.VideoEditDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -51,8 +52,8 @@ public class MovieController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/a/movies/{movieId}")
-    public ResponseEntity<MovieDTO> updateMovieField(@PathVariable("movieId") Long movieId, @RequestParam(name = "field") String fieldName, @RequestBody Object value) throws BadRequestException {
-        return ResponseEntity.ok(movieService.updateMovieField(movieId, value, fieldName));
+    public ResponseEntity<MovieDTO> updateMovieField( @PathVariable Long movieId, @RequestBody VideoEditDTO videoEditDTO) throws BadRequestException, NoSuchFieldException, IllegalAccessException {
+        return ResponseEntity.ok(movieService.updateMovieField(videoEditDTO, movieId));
     }
 
     @GetMapping("/a/movies/sales/{movieId}")
