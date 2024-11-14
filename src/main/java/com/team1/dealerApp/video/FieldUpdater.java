@@ -1,6 +1,7 @@
-package com.team1.dealerApp.video.movie;
+package com.team1.dealerApp.video;
 
-import com.team1.dealerApp.video.Video;
+import com.team1.dealerApp.video.movie.MovieMapper;
+import com.team1.dealerApp.video.movie.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -8,11 +9,11 @@ import java.lang.reflect.Field;
 
 @Component
 @RequiredArgsConstructor
-public class MovieUpdater<T> {
+public class FieldUpdater <T> {
     private final MovieRepository movieRepository;
     private final MovieMapper movieMapper;
 
-    public Movie updateMovieField( Movie movie, String fieldName, T value, Class < ? > className  ) throws NoSuchFieldException, IllegalAccessException {
+    public <K extends Video> K updateField( K video, String fieldName, T value, Class < ? > className  ) throws NoSuchFieldException, IllegalAccessException {
         Class < ? > currentClass = className;
 
         Field field = null;
@@ -26,8 +27,8 @@ public class MovieUpdater<T> {
                 currentClass = currentClass.getSuperclass();
             }
         }
-        field.set(movie, value);
+        field.set(video, value);
         field.setAccessible(false);
-        return movie;
+        return video;
     }
 }
