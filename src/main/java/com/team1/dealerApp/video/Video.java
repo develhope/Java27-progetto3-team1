@@ -60,6 +60,7 @@ public class Video {
     private Double videoProfit = 0.0;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private AgeRating ageRating;
 
 }
