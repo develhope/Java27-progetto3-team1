@@ -2,6 +2,7 @@ package com.team1.dealerApp.video.movie;
 
 
 import com.team1.dealerApp.utils.Pager;
+import com.team1.dealerApp.video.FieldUpdater;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -19,7 +20,7 @@ public class MovieService {
 
     private final MovieRepository movieRepository;
     private final MovieMapper movieMapper;
-    private final MovieUpdater<Object> movieUpdater;
+    private final FieldUpdater <Object> fieldUpdater;
     private final Pager pager;
 
     public MovieDTO addMovie(CreateMovieDTO movieDTO) throws BadRequestException {
@@ -82,7 +83,7 @@ public class MovieService {
                .stream()
                .map(e -> {
 	        try {
-		        return movieUpdater.updateMovieField(movie, e.getKey(), e.getValue(), Movie.class);
+		        return fieldUpdater.updateField(movie, e.getKey(), e.getValue(), Movie.class);
 	        } catch ( NoSuchFieldException | IllegalAccessException ex) {
 		        throw new RuntimeException(ex);
 	        }
