@@ -1,5 +1,6 @@
 package com.team1.dealerApp.video.movie;
 
+import com.team1.dealerApp.video.Video;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,11 +12,22 @@ public class MovieUpdater<T> {
     private final MovieRepository movieRepository;
     private final MovieMapper movieMapper;
 
-    public Movie updateMovieField(Movie movie, String fieldName, T value) throws NoSuchFieldException, IllegalAccessException {
-        Field field = Movie.class.getDeclaredField(fieldName);
-        field.setAccessible(true);
+    public Movie updateMovieField( Movie movie, String fieldName, T value, Class < ? > className  ) throws NoSuchFieldException, IllegalAccessException {
+        Class < ? > currentClass = className;
+
+        Field field = null;
+        while ( currentClass != null ) {
+            try {
+                // Tenta di ottenere il campo dalla classe corrente
+                field = currentClass.getDeclaredField(fieldName);
+                field.setAccessible(true);
+                break;
+            } catch ( NoSuchFieldException e ) {
+                currentClass = currentClass.getSuperclass();
+            }
+        }
         field.set(movie, value);
+        field.setAccessible(false);
         return movie;
     }
-
 }
