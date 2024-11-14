@@ -2,7 +2,6 @@ package com.team1.dealerApp.video.movie;
 
 
 import com.team1.dealerApp.utils.Pager;
-import com.team1.dealerApp.video.VideoEditDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -10,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -73,13 +73,21 @@ public class MovieService {
         throw new NoSuchElementException("There is no movie with id " + movieId);
     }
 
-    public MovieDTO updateMovieField( VideoEditDTO videoEditDTO, Long id ) throws BadRequestException, NoSuchFieldException, IllegalAccessException {
+    public MovieDTO updateMovieField( Map<String,Object> fieldValueMap, Long id ) throws BadRequestException{
         Movie movie = movieRepository
                 .findById(id)
                 .orElseThrow(() -> new BadRequestException("No movie with id: " + id));
-        Movie updated = new Movie();
 
-            updated = movieUpdater.updateMovieField(movie, videoEditDTO.getField(), videoEditDTO.getValue());
+       Movie updated = fieldValueMap.entrySet()
+               .stream()
+               .map(e -> {
+	        try {
+		        return movieUpdater.updateMovieField(movie, e.getKey(), e.getValue(), Movie.class);
+	        } catch ( NoSuchFieldException | IllegalAccessException ex) {
+		        throw new RuntimeException(ex);
+	        }
+        }).reduce((first, second) -> second)
+               .orElseThrow(() -> new IllegalStateException("Error in updating movie field"));
 
         movieRepository.save(updated);
         return movieMapper.toMovieDTO(updated);
