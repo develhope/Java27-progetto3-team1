@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -51,8 +52,8 @@ public class MovieController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/a/movies/{movieId}")
-    public ResponseEntity<MovieDTO> updateMovieField(@PathVariable("movieId") Long movieId, @RequestParam(name = "field") String fieldName, @RequestBody Object value) throws BadRequestException {
-        return ResponseEntity.ok(movieService.updateMovieField(movieId, value, fieldName));
+    public ResponseEntity<MovieDTO> updateMovieField( @PathVariable Long movieId, @RequestBody Map <String, Object> fieldValueMap) throws BadRequestException, NoSuchFieldException, IllegalAccessException {
+        return ResponseEntity.ok(movieService.updateMovieField(fieldValueMap, movieId));
     }
 
     @GetMapping("/a/movies/sales/{movieId}")

@@ -62,7 +62,7 @@ public class RentalService {
 		}
 
 		rental.setRentalStatus(RentalStatus.ACTIVE);
-		return generateOutput("Ordine inserito");
+		return generateOutput("Order created!");
 	}
 
 	public PurchaseConfirmDTO generateOutput(String message){

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @SuppressWarnings( "unused" )
@@ -51,8 +52,8 @@ public class TvShowController {
 
 	@PreAuthorize( "hasRole('ADMIN')" )
 	@PatchMapping( "/a/tvShows/{id}" )
-	public ResponseEntity < TvShowDTO > updateShowField( @PathVariable Long id, @RequestParam( name = "field" ) String fieldName, @RequestBody Object value ) throws NoSuchElementException, NoSuchFieldException, IllegalAccessException {
-		return ResponseEntity.ok(tvShowService.updateShowField(id, value, fieldName));
+	public ResponseEntity < TvShowDTO > updateShowField( @PathVariable Long id, @RequestBody Map <String, Object> fieldValueMap ) throws NoSuchElementException, NoSuchFieldException, IllegalAccessException {
+		return ResponseEntity.ok(tvShowService.updateShowField(id, fieldValueMap));
 	}
 
 	@PreAuthorize( "hasRole('ADMIN')" )

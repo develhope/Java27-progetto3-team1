@@ -80,7 +80,6 @@ class RentalServiceTest {
     private CreateRentalDTO createRentalDTO;
     private Long rentalId;
     private User userCompleteTest;
-    private List<MovieDTO> movieDTOList;
     private Page<Rental> rentalPage;
 
 
@@ -218,7 +217,7 @@ class RentalServiceTest {
 
         when(payPalService.createPayment(anyDouble(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(payment);
 
-        String message = rentalService.addRental(user, createRentalDTO);
+        rentalService.addRental(user, createRentalDTO);
 
         assertEquals(40.0, rental.getRentalPrice());  // Assert the rental price is correct
     }

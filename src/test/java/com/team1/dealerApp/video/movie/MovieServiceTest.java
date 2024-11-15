@@ -1,9 +1,7 @@
 package com.team1.dealerApp.video.movie;
 
 import com.team1.dealerApp.utils.Pager;
-import com.team1.dealerApp.video.AgeRating;
-import com.team1.dealerApp.video.Genre;
-import com.team1.dealerApp.video.VideoStatus;
+import com.team1.dealerApp.video.*;
 import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +31,7 @@ class MovieServiceTest {
 
     // Simula il MovieUpdater
     @Mock
-    private MovieUpdater<Object> movieUpdater;
+    private FieldUpdater <Object> fieldUpdater;
 
     @Mock
     private Pager pager;
@@ -66,7 +64,7 @@ class MovieServiceTest {
     }
 
     @Test
-    public void testAddMovie() throws BadRequestException {
+    void testAddMovie() throws BadRequestException {
 
         //Specifica cosa fare quando viene invocato quel metodo findMovieByTitleAndDirector (contenuto in addMovie)
         when(movieRepository.findMovieByTitleAndDirector(purchasableMovie.getTitle(), purchasableMovie.getDirector())).thenReturn(null);
@@ -82,20 +80,20 @@ class MovieServiceTest {
 
 
     @Test
-    public void testAddMovie_whenMovieAlreadyExists() {
+    void testAddMovie_whenMovieAlreadyExists() {
         when(movieRepository.existsByTitleAndDirector(purchasableMovieDTO.getTitle(), purchasableMovieDTO.getDirector())).thenReturn(true);
         assertThrows(BadRequestException.class, () -> movieService.addMovie(purchasableCreateMovieDTO));
     }
 
     @Test
-    public void testDeleteMovieById() {
+    void testDeleteMovieById() {
         movieService.deleteMovieById(1L);
         // Verifica che il film venga cancellato correttamente
         verify(movieRepository, times(1)).deleteById(1L);
     }
 
     @Test
-    public void testGetAllMovies() {
+    void testGetAllMovies() {
 
         int page = 0;
         int size = 10;
@@ -112,7 +110,7 @@ class MovieServiceTest {
     }
 
     @Test
-    public void testGetAllMovies_NoMoviesFound() {
+    void testGetAllMovies_NoMoviesFound() {
 
         int page = 0;
         int size = 10;
@@ -126,7 +124,7 @@ class MovieServiceTest {
     }
 
     @Test
-    public void testGetMovieDTOById() {
+    void testGetMovieDTOById() {
         // con anyLong() si assegna un qualsiasi valore Long visto che movie non ha ancora un Id
         when(movieRepository.findById(anyLong())).thenReturn(Optional.of(purchasableMovie));
 
@@ -137,7 +135,7 @@ class MovieServiceTest {
     }
 
     @Test
-    public void testGetMovieDTOById_NotFound() {
+    void testGetMovieDTOById_NotFound() {
 
         when(movieRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -147,7 +145,7 @@ class MovieServiceTest {
     }
 
     @Test
-    public void testUpdateMovie() {
+    void testUpdateMovie() {
         purchasableMovieDTO.setTitle("Il signore degli anelli: le due torri");
 
         when(movieRepository.existsById(1L)).thenReturn(true);
@@ -161,7 +159,7 @@ class MovieServiceTest {
     }
 
     @Test
-    public void testUpdateMovie_NotFound() {
+    void testUpdateMovie_NotFound() {
         when(movieRepository.existsById(1L)).thenReturn(false);
 
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> movieService.updateMovie(1L, purchasableCreateMovieDTO));
@@ -171,25 +169,27 @@ class MovieServiceTest {
 
 
     @Test
-    public void testUpdateMovieField() throws Exception {
+    void testUpdateMovieField() throws Exception {
 
         when(movieRepository.findById(1L)).thenReturn(Optional.of(purchasableMovie));
 
         Movie updatedMovie = new Movie();
-        when(movieUpdater.updateMovieField(any(Movie.class), anyString(), any())).thenReturn(updatedMovie);
+        updatedMovie.setTitle("Gli allegri amici");
+        when(fieldUpdater.updateField(any(Movie.class), anyString(), any(Object.class), any(Class.class))).thenReturn(updatedMovie);
         when(movieMapperInj.toMovieDTO(updatedMovie)).thenReturn(new MovieDTO());
+        when(movieRepository.save(any(Movie.class))).thenReturn(updatedMovie);
 
-        movieService.updateMovieField(1L, "New Title", "title");
+        movieService.updateMovieField(Map.of("title", "Gli allegri amici"), 1L);
 
         // Verifica che il film aggiornato sia salvato
         verify(movieRepository, times(1)).save(updatedMovie);
     }
 
     @Test
-    public void testUpdateMovieField_NoMovieFound() {
+    void testUpdateMovieField_NoMovieFound() {
         when(movieRepository.findById(1L)).thenReturn(Optional.empty());
 
-        BadRequestException exception = assertThrows(BadRequestException.class, () -> movieService.updateMovieField(1L, "New Title", "title"));
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> movieService.updateMovieField( Map.of("title", "Bel film"), 1L));
 
         assertEquals("No movie with id: 1", exception.getMessage());
     }

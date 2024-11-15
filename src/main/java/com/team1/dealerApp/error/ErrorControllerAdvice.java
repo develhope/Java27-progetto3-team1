@@ -45,4 +45,10 @@ public class ErrorControllerAdvice extends ResponseEntityExceptionHandler {
         ErrorDTO errorDTO = ErrorDTO.builder().errorMessage(e.getMessage()).build();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body(errorDTO);
     }
+
+    @ExceptionHandler( NullPointerException.class )
+    public ResponseEntity<ErrorDTO> handleNullPointerException(NullPointerException e){
+        ErrorDTO errorDTO = ErrorDTO.builder().errorMessage(e.getMessage()).build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body(errorDTO);
+    }
 }

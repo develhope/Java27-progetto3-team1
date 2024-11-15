@@ -2,6 +2,7 @@ package com.team1.dealerApp.video.tvshow;
 
 import com.team1.dealerApp.utils.Pager;
 import com.team1.dealerApp.video.AgeRating;
+import com.team1.dealerApp.video.FieldUpdater;
 import com.team1.dealerApp.video.Genre;
 import com.team1.dealerApp.video.VideoStatus;
 import org.apache.coyote.BadRequestException;
@@ -37,7 +38,7 @@ class TvShowServiceTest {
     private TvShowMapper tvShowMapperInj;
 
     @Mock
-    private TvShowUpdater<Object> tvShowUpdater;
+    private FieldUpdater <Object> tvShowUpdater;
 
     @Mock
     private Pager pager;
@@ -70,7 +71,7 @@ class TvShowServiceTest {
 
 
     @Test
-    public void testAddTvShow() throws BadRequestException {
+    void testAddTvShow() throws BadRequestException {
 
         when(tvShowRepository.existsByTitleAndDirector(purchasableTvShow.getTitle(), purchasableTvShow.getDirector())).thenReturn(false);
         when(tvShowRepository.save(any(TvShow.class))).thenReturn(purchasableTvShow);
@@ -84,14 +85,14 @@ class TvShowServiceTest {
     }
 
     @Test
-    public void testAddTvShow_whenTvShowAlreadyExists() {
+    void testAddTvShow_whenTvShowAlreadyExists() {
         when(tvShowRepository.existsByTitleAndDirector(purchasableTvShowDTO.getTitle(), purchasableTvShowDTO.getDirector())).thenReturn(true);
         assertThrows(BadRequestException.class, () -> tvShowService.addTvShow(purchasableCreateShowDTO));
     }
 
 
     @Test
-    public void testDeleteShowById() {
+    void testDeleteShowById() {
         tvShowService.deleteShowById(1L);
 
         verify(tvShowRepository, times(1)).deleteById(1L);
@@ -99,7 +100,7 @@ class TvShowServiceTest {
 
 
     @Test
-    public void testGetAllShows() throws BadRequestException {
+    void testGetAllShows() throws BadRequestException {
 
         int page = 0;
         int size = 10;
@@ -115,7 +116,7 @@ class TvShowServiceTest {
     }
 
     @Test
-    public void testGetAllShows_NoShowsFound() {
+    void testGetAllShows_NoShowsFound() {
 
         int page = 0;
         int size = 10;
@@ -129,7 +130,7 @@ class TvShowServiceTest {
 
 
     @Test
-    public void testGetShowDTOById() {
+    void testGetShowDTOById() {
 
         when(tvShowRepository.findById(anyLong())).thenReturn(Optional.of(purchasableTvShow));
 
@@ -139,7 +140,7 @@ class TvShowServiceTest {
     }
 
     @Test
-    public void testGetShowDTOById_NotFound() {
+    void testGetShowDTOById_NotFound() {
 
         when(tvShowRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -150,7 +151,7 @@ class TvShowServiceTest {
 
 
     @Test
-    public void testUpdateShow() {
+    void testUpdateShow() {
         purchasableTvShowDTO.setTitle("Breaking bad");
 
         when(tvShowRepository.existsById(1L)).thenReturn(true);
@@ -164,7 +165,7 @@ class TvShowServiceTest {
     }
 
     @Test
-    public void testUpdateShow_NotFound() {
+    void testUpdateShow_NotFound() {
         when(tvShowRepository.existsById(1L)).thenReturn(false);
 
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> tvShowService.updateShow(purchasableCreateShowDTO, 1L));
@@ -174,24 +175,24 @@ class TvShowServiceTest {
 
 
     @Test
-    public void testUpdateShowField() throws Exception {
+    void testUpdateShowField() throws Exception {
 
         when(tvShowRepository.findById(1L)).thenReturn(Optional.of(purchasableTvShow));
 
         TvShow updatedTvShow = new TvShow();
-        when(tvShowUpdater.updateShowField(any(TvShow.class), anyString(), any())).thenReturn(updatedTvShow);
+        when(tvShowUpdater.updateField(any(TvShow.class), anyString(), any(Object.class), any(Class.class))).thenReturn(updatedTvShow);
         when(tvShowMapperInj.toTvShowDTO(updatedTvShow)).thenReturn(new TvShowDTO());
 
-        tvShowService.updateShowField(1L, "New Title", "title");
+        tvShowService.updateShowField(1L, Map.of("title", "test"));
 
         verify(tvShowRepository, times(1)).save(updatedTvShow);
     }
 
     @Test
-    public void testUpdateShowField_NoMovieFound() {
+    void testUpdateShowField_NoMovieFound() {
         when(tvShowRepository.findById(1L)).thenReturn(Optional.empty());
 
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> tvShowService.updateShowField(1L, "New Title", "title"));
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> tvShowService.updateShowField(1L, Map.of("New Title", "title")));
 
         assertEquals("No show with id: 1", exception.getMessage());
     }

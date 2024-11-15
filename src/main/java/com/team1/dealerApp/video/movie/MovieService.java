@@ -2,6 +2,7 @@ package com.team1.dealerApp.video.movie;
 
 
 import com.team1.dealerApp.utils.Pager;
+import com.team1.dealerApp.video.FieldUpdater;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -18,7 +20,7 @@ public class MovieService {
 
     private final MovieRepository movieRepository;
     private final MovieMapper movieMapper;
-    private final MovieUpdater<Object> movieUpdater;
+    private final FieldUpdater <Object> fieldUpdater;
     private final Pager pager;
 
     public MovieDTO addMovie(CreateMovieDTO movieDTO) throws BadRequestException {
@@ -72,19 +74,22 @@ public class MovieService {
         throw new NoSuchElementException("There is no movie with id " + movieId);
     }
 
-    public MovieDTO updateMovieField(Long id, Object value, String field) throws BadRequestException {
+    public MovieDTO updateMovieField( Map<String,Object> fieldValueMap, Long id ) throws BadRequestException{
         Movie movie = movieRepository
                 .findById(id)
                 .orElseThrow(() -> new BadRequestException("No movie with id: " + id));
-        Movie updated = new Movie();
 
-        try {
-            updated = movieUpdater.updateMovieField(movie, field, value);
-        } catch (NoSuchFieldException e) {
-            log.error("Error: the field {} does not exist: {}", field, e.getMessage());
-        } catch (IllegalAccessException e) {
-            log.error("Error to access to the class: {}", e.getMessage());
-        }
+       Movie updated = fieldValueMap.entrySet()
+               .stream()
+               .map(e -> {
+	        try {
+		        return fieldUpdater.updateField(movie, e.getKey(), e.getValue(), Movie.class);
+	        } catch ( NoSuchFieldException | IllegalAccessException ex) {
+		        throw new RuntimeException(ex);
+	        }
+        }).reduce((first, second) -> second)
+               .orElseThrow(() -> new IllegalStateException("Error in updating movie field"));
+
         movieRepository.save(updated);
         return movieMapper.toMovieDTO(updated);
     }

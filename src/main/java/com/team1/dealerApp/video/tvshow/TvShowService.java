@@ -2,6 +2,7 @@ package com.team1.dealerApp.video.tvshow;
 
 
 import com.team1.dealerApp.utils.Pager;
+import com.team1.dealerApp.video.FieldUpdater;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -19,7 +21,7 @@ public class TvShowService {
 
     private final TvShowRepository tvShowRepository;
     private final TvShowMapper tvShowMapper;
-    private final TvShowUpdater<Object> tvShowUpdater;
+    private final FieldUpdater <Object> tvShowUpdater;
     private final Pager pager;
 
     public Page<TvShowDTO> getAllShows(int page, int size) throws BadRequestException { //Corretto NoSuchElementException ??????????????????????????????????
@@ -63,13 +65,21 @@ public class TvShowService {
         throw new NoSuchElementException("There is no show with id: " + id);
     }
 
-	public TvShowDTO updateShowField ( Long id, Object value, String field ) throws NoSuchElementException, NoSuchFieldException, IllegalAccessException {
+	public TvShowDTO updateShowField ( Long id, Map<String, Object> fieldValueMap ) throws NoSuchElementException{
 		TvShow tvShow = tvShowRepository
 				.findById(id)
 				.orElseThrow(() -> new NoSuchElementException("No show with id: " + id));
-		TvShow updated = new TvShow();
 
-			updated = tvShowUpdater.updateShowField(tvShow, field, value);
+        TvShow updated = fieldValueMap.entrySet()
+                .stream()
+                .map(e -> {
+                    try{
+                        return tvShowUpdater.updateField(tvShow, e.getKey(), e.getValue(), TvShow.class);
+                    } catch ( NoSuchFieldException | IllegalAccessException ex ) {
+	                    throw new RuntimeException(ex);
+                    }
+                }).reduce((first, second) -> second)
+                .orElseThrow(() -> new IllegalStateException("Error in updating movie field"));
 
 		tvShowRepository.save(updated);
 		return tvShowMapper.toTvShowDTO(updated);
