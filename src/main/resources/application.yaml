@@ -7,7 +7,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    url: jdbc:mysql://localhost:3306/cine_box?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/cine_box?allowPublicKeyRetrieval=true&useSSL=false
     password: admin
   jpa:
     properties:
@@ -22,6 +22,6 @@ spring:
     name: cineBox
 
 paypal:
-  clientId:
-  secret:
+  clientId: AWNKz5fg5qVljb8AzEHuv7t9XE7i3husY4tSBHMWNT2eoq2hVsA-3n2ZuyVIsQqLhmF2Yu4P7bZDR89m
+  secret: EPjEZbHYk-eJcAhUataqv0CLSdriQXKRrmEDShKW-G5nv5VEch44hXBYca4u61UZnaJZEX3QKSlWJRPw
   mode: sandbox
