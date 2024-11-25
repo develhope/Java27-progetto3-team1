@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.team1</groupId>
-	<artifactId>dealerApp</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>dealerApp</name>
-	<description>Application for managing car&apos;s dealer </description>
+	<artifactId>cineBox</artifactId>
+	<version>0.3.2-SNAPSHOT</version>
+	<name>cineBox</name>
+	<description>An application for managing rental and purchases of video products </description>
 	<url/>
 	<licenses>
 		<license/>
